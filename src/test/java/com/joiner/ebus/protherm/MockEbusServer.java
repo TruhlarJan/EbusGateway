@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,13 +13,18 @@ import lombok.extern.slf4j.Slf4j;
 public class MockEbusServer implements Runnable {
 
     private final int port;
+    private final Map<String, byte[]> addressToSlave = new HashMap<>();
 
     public MockEbusServer(int port) {
         this.port = port;
+        // Map of addresses (with spaces) -> corresponding slave data
+        addressToSlave.put("10 08 B5 10", new byte[] { 0x00, 0x01, 0x01, (byte) 0x9A });
     }
 
     @Override
     public void run() {
+        // This is a single-frame mock server for JUnit tests.
+        // It accepts one client, reads one frame, responds, and exits.
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             log.info("Mock eBUS server listening on port {}", port);
 
@@ -26,45 +33,64 @@ public class MockEbusServer implements Runnable {
                 InputStream in = client.getInputStream();
                 OutputStream out = client.getOutputStream();
 
-                // slave posílá synchro byte
-                byte[] syncByte = {(byte) 0xAA};
-                out.write(syncByte);
+                // Slave sends the synchronization byte
+                out.write((byte) 0xAA);
                 out.flush();
-                
-                // přečteme rámec od mastera
-                byte[] buffer = new byte[1024];
-                int length = in.read(buffer);
-                
-                StringBuilder mHex = new StringBuilder();
-                for (int i = 0; i < length; i++) {
-                    mHex.append(String.format("%02X ", buffer[i]));
-                }
-                log.info("Server received ({} bytes): {}", length, mHex.toString().trim());
 
-                if (length > 0 ) {
-                    
-                    // pošleme echo a slave odpověď (ACK, NN, ZZ, CRC)
-                    byte[] response = { 
-                            0x10, 0x08, (byte) 0xB5, 0x10, 0x09, 0x00, 0x00, 0x3E, 0x5A, (byte) 0xFF, (byte) 0xFF, 0x01, (byte) 0xFF, 0x00, 0x1D,
-                            0x00, 0x01, 0x01, (byte) 0x9A };
-                    out.write(response);
-                    out.flush();
-
-                    StringBuilder sHex = new StringBuilder();
-                    for (byte b : response) {
-                        sHex.append(String.format("%02X ", b));
-                    }
-                    log.info("Server sent data ({} bytes): {}", response.length, sHex.toString().trim());
-                    
-                    // přečteme finální ACK+SYN od mastera
-                    int ackByte = in.read();
-                    int synByte = in.read();
-                    log.info(String.format("Server received final byte: %02X %02X", ackByte, synByte));
+                // Read the 4-byte address from master
+                byte[] address = new byte[4];
+                for (int i = 0; i < 4; i++) {
+                    address[i] = (byte) in.read();
                 }
+                String addressHex = bytesToHexWithSpaces(address);
+                log.info("Server received address: {}", addressHex);
+
+                // Read the length byte
+                int length = in.read();
+                log.info("Server received length: {}", String.format("%02X", length));
+
+                // Read master data frame including CRC
+                byte[] masterCrcEnded = new byte[length + 1];
+                for (int i = 0; i < masterCrcEnded.length; i++) {
+                    masterCrcEnded[i] = (byte) in.read();
+                }
+                log.info("Server received master CRC ended: {}", bytesToHexWithSpaces(masterCrcEnded));
+
+                // Select the slave response based on the received address
+                byte[] slave = addressToSlave.get(addressHex);
+
+                // Create the full response: address + length + master data + slave data
+                byte[] response = new byte[address.length + 1 + masterCrcEnded.length + slave.length];
+                System.arraycopy(address, 0, response, 0, address.length);
+                response[address.length] = (byte) length;
+                System.arraycopy(masterCrcEnded, 0, response, address.length + 1, masterCrcEnded.length);
+                System.arraycopy(slave, 0, response, address.length + 1 + masterCrcEnded.length, slave.length);
+
+                // Send the response back to the master
+                out.write(response);
+                out.flush();
+                log.info("Server sent response ({} bytes): {}", response.length, bytesToHexWithSpaces(response));
+
+                // Read the final ACK + SYN bytes from the master
+                byte[] finalBytes = new byte[2];
+                for (int i = 0; i < finalBytes.length; i++) {
+                    finalBytes[i] = (byte) in.read();
+                }
+                log.info("Server received final bytes: {}", bytesToHexWithSpaces(finalBytes));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Utility method to convert a byte array to a hex string with spaces
+    private static String bytesToHexWithSpaces(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X ", b));
+        }
+        return sb.toString().trim();
     }
 }
 
