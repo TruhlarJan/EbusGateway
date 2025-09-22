@@ -37,22 +37,16 @@ public class DataSender {
             }
 
             // -------------------------------
-            // načteme master echo po bytech a ignorujeme vložené SYN
+            // načteme master echo po bytech
             // -------------------------------
             byte[] masterEcho = new byte[masterFrame.length];
             int read = 0;
-            int masterIdx = 0;
-            while (read < masterFrame.length) {
-                int b = in.read();
-                if (b == -1) {
+            while (read < masterEcho.length) {
+                int r = in.read(masterEcho, read, masterEcho.length - read);
+                if (r == -1) {
                     throw new RuntimeException("Connection closed while reading master echo");
                 }
-                // vložené SYN uvnitř rámce ignorujeme
-                if (b == 0xAA && (masterIdx >= masterFrame.length || masterFrame[masterIdx] != (byte) 0xAA)) {
-                    continue;
-                }
-                masterEcho[read++] = (byte) b;
-                masterIdx++;
+                read += r;
             }
 
             // -------------------------------
