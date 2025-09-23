@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import com.joiner.ebus.communication.protherm.DataSender;
 import com.joiner.ebus.communication.protherm.OperationalData;
 import com.joiner.ebus.communication.protherm.RoomController;
-import com.joiner.ebus.io.mock.MockEbusServer;
+import com.joiner.ebus.io.mock.OneTimeEbusMockServer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +26,7 @@ public class EbusGatewayApplication {
         return args -> {
             
             // MOCK
-            new Thread(new MockEbusServer(DataSender.PORT)).start();
+            new Thread(new OneTimeEbusMockServer(DataSender.PORT)).start();
             Thread.sleep(100);
             //
             

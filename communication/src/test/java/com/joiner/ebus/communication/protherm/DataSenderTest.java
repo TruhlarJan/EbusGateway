@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.joiner.ebus.io.mock.MockEbusServer;
+import com.joiner.ebus.io.mock.OneTimeEbusMockServer;
 
 /**
  * 
@@ -22,7 +22,7 @@ class DataSenderTest {
      */
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
-        new Thread(new MockEbusServer(DataSender.PORT)).start();
+        new Thread(new OneTimeEbusMockServer(DataSender.PORT)).start();
     }
 
     /**

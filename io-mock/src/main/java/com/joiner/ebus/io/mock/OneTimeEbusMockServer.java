@@ -10,12 +10,12 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MockEbusServer implements Runnable {
+public class OneTimeEbusMockServer implements Runnable {
 
     private final int port;
     private final Map<String, byte[]> addressToSlave = new HashMap<>();
 
-    public MockEbusServer(int port) {
+    public OneTimeEbusMockServer(int port) {
         this.port = port;
         // Map of addresses (with spaces) -> corresponding slave data
         addressToSlave.put("10 08 B5 10", new byte[] { 0x00, 0x01, 0x01, (byte) 0x9A });

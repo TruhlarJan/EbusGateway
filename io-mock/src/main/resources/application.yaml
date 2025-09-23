@@ -1,0 +1,8 @@
+
+ebus:
+  port: 3333
+  interval: 3000   # ms, jak často posílat rámec
+  packets:
+    - "03 15 B5 13 03 06 64 00 63"
+    - "03 64 B5 12 02 02 00 66"
+    - "03 15 B5 13 03 06 00 00 0E"
