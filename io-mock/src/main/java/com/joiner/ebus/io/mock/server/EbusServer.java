@@ -14,18 +14,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public class EbusServer {
 
-    private final EbusProperties props;
     private final List<Socket> clients = new CopyOnWriteArrayList<>();
-
-    public EbusServer(EbusProperties props) {
-        this.props = props;
-    }
 
     @PostConstruct
     public void startServer() {
         new Thread(() -> {
-            try (ServerSocket serverSocket = new ServerSocket(props.getPort())) {
-                log.info("Mock eBUS server listening on port " + props.getPort());
+            try (ServerSocket serverSocket = new ServerSocket(3333)) {
+                log.info("Mock eBUS server listening on port 3333");
 
                 while (true) {
                     Socket newClient = serverSocket.accept();

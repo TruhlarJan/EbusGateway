@@ -45,10 +45,10 @@ public class RoomController {
         if (!serviceBurnerBlocked && !leadBurnerBlocked) {
             return 0x00;
         } 
-        if (!serviceBurnerBlocked && leadBurnerBlocked) {
+        if (!serviceBurnerBlocked) {
             return 0x01;
         } 
-        if (serviceBurnerBlocked && !leadBurnerBlocked) {
+        if (!leadBurnerBlocked) {
             return 0x02;
         }
         return 0x05;

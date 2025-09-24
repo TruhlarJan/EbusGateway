@@ -25,22 +25,22 @@ public class EbusGatewayApplication {
     public CommandLineRunner run() {
         return args -> {
             
-            // MOCK
-            new Thread(new OneTimeEbusMockServer(DataSender.PORT)).start();
-            Thread.sleep(100);
-            //
-            
-            log.info("Client is going to sent RoomController data: 30, 45.0, false, true");
-
-            DataSender sender = new DataSender();
-            RoomController roomController = new RoomController();
-            OperationalData operationalData = roomController.getOperationalData(30, 45.0, false, true);
-            byte[] masterEcho = sender.sendFrame(operationalData);
-
-            log.debug("Master echo:    {}", bytesToHex(masterEcho));
-            log.debug("Slave response: {}", bytesToHex(operationalData.getSlaveData()));
-            log.info("Client adapted data -> Acknowladge: {}", roomController.getAcknowledge());
-
+//            // MOCK
+//            new Thread(new OneTimeEbusMockServer(DataSender.PORT)).start();
+//            Thread.sleep(100);
+//            //
+//            
+//            log.info("Client is going to sent RoomController data: 30, 45.0, false, true");
+//
+//            DataSender sender = new DataSender();
+//            RoomController roomController = new RoomController();
+//            OperationalData operationalData = roomController.getOperationalData(30, 45.0, false, true);
+//            byte[] masterEcho = sender.sendFrame(operationalData);
+//
+//            log.debug("Master echo:    {}", bytesToHex(masterEcho));
+//            log.debug("Slave response: {}", bytesToHex(operationalData.getSlaveData()));
+//            log.info("Client adapted data -> Acknowladge: {}", roomController.getAcknowledge());
+//
         };
     }
     
