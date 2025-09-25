@@ -37,6 +37,7 @@ public class DataSender {
             for (byte b : masterFrame) {
                 out.write(b & 0xFF);
                 out.flush();
+                Thread.sleep(4, 170_000); // simulace 2400 Bd
             }
 
             // -------------------------------
@@ -72,6 +73,7 @@ public class DataSender {
             for (byte b : ack) {
                 out.write(b & 0xFF);
                 out.flush();
+                Thread.sleep(4, 170_000); // simulace 2400 Bd
             }
 
             data.setSlaveData(slaveResponse);
