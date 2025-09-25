@@ -5,24 +5,33 @@ package com.joiner.ebus.communication.protherm;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import com.joiner.ebus.io.mock.OneTimeEbusMockServer;
+import com.joiner.ebus.io.mock.EbusMockServerApplication;
+import com.joiner.ebus.io.mock.UnifiedEbusMockServer;
 
 /**
  * 
  */
+@SpringBootTest(classes = EbusMockServerApplication.class)
 class DataSenderTest {
 
-    private DataSender dataSender = new DataSender();
-    
+    @InjectMocks
+    private DataSender dataSender;
+
+    @Autowired
+    private UnifiedEbusMockServer unifiedEbusMock;
+
     /**
      * @throws java.lang.Exception
      */
-    @BeforeAll
-    static void setUpBeforeClass() throws Exception {
-        new Thread(new OneTimeEbusMockServer(DataSender.PORT)).start();
+    @BeforeEach
+    void setUpBeforeClass() throws Exception {
+        unifiedEbusMock.setSchedulerEnabled(true);
     }
 
     /**
