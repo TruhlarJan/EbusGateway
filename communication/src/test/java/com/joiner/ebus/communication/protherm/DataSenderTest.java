@@ -5,7 +5,6 @@ package com.joiner.ebus.communication.protherm;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,14 +23,6 @@ class DataSenderTest {
 
     @Autowired
     private UnifiedEbusMockServer unifiedEbusMock;
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeEach
-    void setUpBeforeClass() throws Exception {
-        unifiedEbusMock.setSchedulerEnabled(true);
-    }
 
     /**
      * Test method for {@link com.joiner.ebus.communication.protherm.DataSender#sendFrame(com.joiner.ebus.communication.protherm.OperationalData)}.
@@ -54,6 +45,8 @@ class DataSenderTest {
         // 00 AA
         byte[] finalData = new byte[]{0x00, (byte) 0xAA};
         assertArrayEquals(finalData, operationalData.getMasterFinalData());
+        
+        unifiedEbusMock.stop();
     }
 
 }
