@@ -7,11 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.joiner.ebus.io.mock.EbusMockServerApplication;
+import com.joiner.ebus.EbusMockServerApplication;
 import com.joiner.ebus.io.mock.UnifiedEbusMockServer;
 
 /**
@@ -20,7 +19,7 @@ import com.joiner.ebus.io.mock.UnifiedEbusMockServer;
 @SpringBootTest(classes = EbusMockServerApplication.class)
 class DataSenderTest {
 
-    @InjectMocks
+    @Autowired
     private DataSender dataSender;
 
     @Autowired

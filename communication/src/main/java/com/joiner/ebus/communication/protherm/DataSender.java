@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class DataSender {
 
     public static final String HOST = "127.0.0.1";
