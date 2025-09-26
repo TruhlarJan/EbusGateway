@@ -1,13 +1,17 @@
 package com.joiner.ebus.service.crc;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.joiner.ebus.communication.protherm.DataListener;
 import com.joiner.ebus.communication.protherm.DataSender;
 import com.joiner.ebus.communication.protherm.OperationalData;
 import com.joiner.ebus.communication.protherm.RoomController;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -16,6 +20,16 @@ public class DataCollector {
 
     @Autowired
     private DataSender dataSender;
+
+    @Autowired
+    private DataListener dataListener;
+    private final ReentrantLock ebusLock = new ReentrantLock();
+
+    @PostConstruct
+    public void init() {
+        dataSender.setLock(ebusLock);
+        dataListener.setLock(ebusLock);
+    }
 
     @Scheduled(fixedRate = 10000)
     private void sendData() {

@@ -3,6 +3,7 @@ package com.joiner.ebus.communication.protherm;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.stereotype.Component;
 
@@ -11,8 +12,14 @@ public class DataSender {
 
     public static final String HOST = "127.0.0.1";
     public static final int PORT = 3333;
+    private ReentrantLock lock;
+
+    public void setLock(ReentrantLock lock) {
+        this.lock = lock;
+    }
 
     public byte[] sendFrame(OperationalData data) throws Exception {
+        lock.lock();
         try (Socket socket = new Socket(HOST, PORT)) {
             socket.setSoTimeout(2000); // timeout 2s
 
@@ -78,6 +85,8 @@ public class DataSender {
 
             data.setSlaveData(slaveResponse);
             return masterEcho;
+        } finally {
+            lock.unlock();
         }
     }
 
