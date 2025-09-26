@@ -1,0 +1,76 @@
+package com.joiner.ebus.communication.protherm;
+
+import java.io.InputStream;
+import java.net.Socket;
+
+import org.springframework.stereotype.Service;
+
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class DataListener {
+
+    public static final String HOST = "127.0.0.1";
+    public static final int PORT = 3334;
+
+    private StringBuilder stringBuilder = new StringBuilder();
+
+    private Socket socket;
+    private InputStream in;
+    private volatile boolean running = true;
+
+    @PostConstruct
+    public void start() {
+        new Thread(this::readLoop, "DataListenerThread").start();
+    }
+
+    private void init() throws Exception {
+        if (socket == null) {
+            while (running) {
+                try {
+                    socket = new Socket(HOST, PORT);
+                    socket.setSoTimeout(0); // blokující read
+                    in = socket.getInputStream();
+                    log.info("Connected to eBUS mock server at {}:{}", HOST, PORT);
+                    break;
+                } catch (Exception e) {
+                    log.info("Waiting for eBUS mock server on {}:{}...", HOST, PORT);
+                    Thread.sleep(100); // čekáme 100 ms a zkusíme znovu
+                }
+            }
+        }
+    }
+
+    private void readLoop() {
+        try {
+            init();
+            while (running) {
+                int b = in.read(); // blokuje dokud není byte k dispozici
+                if (b != -1 && b != OperationalData.SYN) {
+                    stringBuilder.append(String.format("%02X", b));
+                }
+                if (!stringBuilder.isEmpty() && b == OperationalData.SYN) {
+                    // process data
+                    log.info("Data: {}", stringBuilder.toString());
+                    stringBuilder = new StringBuilder();
+                }
+            }
+        } catch (Exception e) {
+            if (running) {
+                log.error("Error in readLoop", e);
+            }
+        }
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        running = false;
+        try {
+            if (in != null) in.close();
+            if (socket != null) socket.close();
+        } catch (Exception ignored) {}
+    }
+}

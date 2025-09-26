@@ -31,8 +31,8 @@ public class DataCollector {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
- 
+    } 
+
     private static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
