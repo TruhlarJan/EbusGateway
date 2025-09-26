@@ -12,6 +12,12 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Ebus mock server sends spontaneous packets with the correct prefix 0xAA (really limited to 256 bytes, as the boiler does),
+ * respects master–slave transactions and stops spontaneous operation during them (realistic eBUS simulation),
+ * can be terminated in tests via stop(), so it won't hang,
+ * and responds according to the address map (addressToSlave), so you can extend the response logic as needed.
+ */
 @Service
 @Slf4j
 public class UnifiedEbusMockServer {
@@ -65,43 +71,49 @@ public class UnifiedEbusMockServer {
         }, "UnifiedEbusMockServerThread").start();
     }
 
+    /**
+     * Spontaneous packet sending.
+     * @param client
+     */
     private void sendSpontaneousPackets(Socket client) {
-        int index = 0;
         try (OutputStream out = client.getOutputStream()) {
+            Thread.sleep(1000);
+            log.info("Sending spontaneous packets");
+
+            int index = 0;
             while (!client.isClosed() && running) {
-                Thread.sleep(3000);
+                byte[] packet = spontaneousPackets.get(index);
+                index = (index + 1) % spontaneousPackets.size();
 
-                if (!commLock.tryLock())
-                    continue;
+                for (Socket c : clients) {
+                    if (c.isClosed() || !c.isConnected()) {
+                        disconnect(c);
+                        continue;
+                    }
 
-                try {
-                    byte[] packet = spontaneousPackets.get(index);
-                    index = (index + 1) % spontaneousPackets.size();
+                    OutputStream o = c.getOutputStream();
 
-                    for (Socket c : clients) {
-                        if (c.isClosed() || !c.isConnected()) {
-                            disconnect(c);
-                            continue;
-                        }
-
-                        OutputStream o = c.getOutputStream();
-                        int aaCount = 5 + random.nextInt(26);
+                    // Realistický prefix 0xAA – max 256 bajtů
+                    commLock.lockInterruptibly();
+                    try {
+                        int aaCount = 6 + random.nextInt(251); // 6–256 bajtů
                         byte[] prefix = new byte[aaCount];
                         Arrays.fill(prefix, (byte) 0xAA);
 
-                        byte[] frame = new byte[prefix.length + packet.length];
-                        System.arraycopy(prefix, 0, frame, 0, prefix.length);
-                        System.arraycopy(packet, 0, frame, prefix.length, packet.length);
-
-                        for (byte b : frame) {
+                        for (byte b : prefix) {
                             o.write(b);
                             o.flush();
                             Thread.sleep(4, 170_000);
                         }
+
+                        for (byte b : packet) {
+                            o.write(b);
+                            o.flush();
+                            Thread.sleep(4, 170_000);
+                        }
+                    } finally {
+                        commLock.unlock();
                     }
-                    log.info("Sent spontaneous packet");
-                } finally {
-                    commLock.unlock();
                 }
             }
         } catch (Exception e) {
@@ -111,7 +123,11 @@ public class UnifiedEbusMockServer {
         }
     }
 
-    public void handleOneTimeTransaction(Socket client) {
+    /**
+     * Master-slave transaction.
+     * @param client
+     */
+    private void handleOneTimeTransaction(Socket client) {
         if (client == null || client.isClosed() || !client.isConnected())
             return;
 
@@ -145,7 +161,7 @@ public class UnifiedEbusMockServer {
                 commLock.unlock();
             }
 
-            // Čtení finálních bajtů od mastera (blokující, bez zámku)
+            // Čtení finálních bajtů od mastera
             byte[] finalBytes = in.readNBytes(2);
             log.info("Master–slave transaction finished with final bytes: {}", bytesToHex(finalBytes));
 
