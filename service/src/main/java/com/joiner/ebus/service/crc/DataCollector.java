@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.joiner.ebus.communication.protherm.DataListener;
 import com.joiner.ebus.communication.protherm.DataSender;
 import com.joiner.ebus.communication.protherm.OperationalData;
 import com.joiner.ebus.communication.protherm.RoomController;
@@ -16,6 +17,9 @@ public class DataCollector {
 
     @Autowired
     private DataSender dataSender;
+    
+    @Autowired
+    private DataListener dataListener;
 
     @Scheduled(fixedRate = 10000)
     private void sendData() {
@@ -31,8 +35,16 @@ public class DataCollector {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    } 
+    @Scheduled(fixedDelay = 2)
+    private void readData() {
+        try {
+            dataListener.poll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
- 
+
     private static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {

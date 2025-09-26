@@ -59,6 +59,8 @@ public class SpontaneousMockServer {
             int index = 0;
             while (!client.isClosed() && running) {
                 byte[] packet = spontaneousPackets.get(index);
+                index = (index + 1) % spontaneousPackets.size();
+
                 int aaCount = 6 + random.nextInt(251); // 6–256 bajtů
                 byte[] prefix = new byte[aaCount];
                 Arrays.fill(prefix, (byte) 0xAA);
