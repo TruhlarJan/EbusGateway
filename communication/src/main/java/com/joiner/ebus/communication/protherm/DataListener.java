@@ -33,48 +33,67 @@ public class DataListener {
         this.lock = lock;
     }
 
-    private void init() throws Exception {
-        if (socket == null) {
-            while (running) {
-                try {
-                    socket = new Socket(HOST, PORT);
-                    socket.setSoTimeout(0); // blokující read
-                    in = socket.getInputStream();
-                    log.info("Connected to eBUS mock server at {}:{}", HOST, PORT);
-                    break;
-                } catch (Exception e) {
-                    log.info("Waiting for eBUS mock server on {}:{}...", HOST, PORT);
-                    Thread.sleep(100);
-                }
+    private void connect() throws InterruptedException {
+        int attempt = 0;
+        while (running) {
+            try {
+                socket = new Socket(HOST, PORT);
+                socket.setSoTimeout(0); // blokující read
+                in = socket.getInputStream();
+                log.info("Connected to eBUS mock server at {}:{}", HOST, PORT);
+                break;
+            } catch (Exception e) {
+                attempt++;
+                int wait = Math.min(100 * attempt, 2000); // max 2 s
+                log.info("Waiting {} ms for eBUS mock server... attempt {}", wait, attempt);
+                Thread.sleep(wait);
             }
         }
     }
 
     private void readLoop() {
-        try {
-            init();
-            while (running) {
-                int b = in.read(); // blokuje dokud není byte k dispozici
-                if (b != -1) {
-                    lock.lock();
-                    try {
-                        if (b != OperationalData.SYN) {
-                            stringBuilder.append(String.format("%02X", b));
-                        }
-                        if (!stringBuilder.isEmpty() && b == OperationalData.SYN) {
-                            // process data
-                            log.info("Data: {}", stringBuilder.toString());
-                            stringBuilder.setLength(0);
-                        }
-                    } finally {
+        while (running) {
+            try {
+                if (socket == null || socket.isClosed() || !socket.isConnected()) {
+                    connect();
+                }
+
+                lock.lock();
+                try {
+                    int b = in.read(); // blokuje dokud není byte k dispozici
+                    processByte(b);
+                } finally {
+                    if (lock.isHeldByCurrentThread()) {
                         lock.unlock();
                     }
                 }
+            } catch (Exception e) {
+                if (running) {
+                    log.warn("Lost connection to {}:{}, will retry...", HOST, PORT, e);
+                    try { 
+                        if (in != null) in.close(); 
+                        if (socket != null) socket.close(); 
+                    } catch (Exception ignored) {}
+                    socket = null;
+                    in = null;
+                    try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+                }
             }
-        } catch (Exception e) {
-            if (running) {
-                log.error("Error in readLoop", e);
+        }
+    }
+
+    private void processByte(int b) {
+        if (b != -1 && b != OperationalData.SYN) {
+            stringBuilder.append(String.format("%02X", b));
+
+            if (stringBuilder.length() > 1024) {
+                log.warn("StringBuilder overflow, resetting");
+                stringBuilder.setLength(0);
             }
+        }
+        if (!stringBuilder.isEmpty() && b == OperationalData.SYN) {
+            log.info("Data: {}", stringBuilder.toString());
+            stringBuilder.setLength(0);
         }
     }
 
