@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.joiner.ebus.EbusMockServerApplication;
-import com.joiner.ebus.io.mock.UnifiedEbusMockServer;
+import com.joiner.ebus.io.mock.MasterSlaveMockServer;
 
 /**
  * 
@@ -22,7 +22,7 @@ class DataSenderTest {
     private DataSender dataSender;
 
     @Autowired
-    private UnifiedEbusMockServer unifiedEbusMock;
+    private MasterSlaveMockServer masterSlaveMockServer;
 
     /**
      * Test method for {@link com.joiner.ebus.communication.protherm.DataSender#sendFrame(com.joiner.ebus.communication.protherm.OperationalData)}.
@@ -46,7 +46,7 @@ class DataSenderTest {
         byte[] finalData = new byte[]{0x00, (byte) 0xAA};
         assertArrayEquals(finalData, operationalData.getMasterFinalData());
         
-        unifiedEbusMock.stop();
+        masterSlaveMockServer.stop();
     }
 
 }

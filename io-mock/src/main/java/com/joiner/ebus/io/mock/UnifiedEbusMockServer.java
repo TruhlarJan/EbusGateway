@@ -1,16 +1,21 @@
 package com.joiner.ebus.io.mock;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import jakarta.annotation.PostConstruct;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Ebus mock server sends spontaneous packets with the correct prefix 0xAA (really limited to 256 bytes, as the boiler does),
@@ -47,7 +52,6 @@ public class UnifiedEbusMockServer {
         addressToSlave.put("10 08 B5 10", new byte[]{0x00, 0x01, 0x01, (byte) 0x9A});
     }
 
-    @PostConstruct
     public void startServer() {
         new Thread(() -> {
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
