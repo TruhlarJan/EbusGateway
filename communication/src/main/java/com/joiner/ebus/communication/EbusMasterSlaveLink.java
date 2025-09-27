@@ -5,13 +5,18 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EbusMasterSlaveLink {
 
-    public static final String HOST = "127.0.0.1";
-    public static final int PORT = 3333;
+    @Value("${adapter.host:127.0.0.1}")
+    private String host;
+
+    @Value("${adapter.port.raw:3333}")
+    private int port;
+
     private ReentrantLock lock = new ReentrantLock();
 
     public void setLock(ReentrantLock lock) {
@@ -20,7 +25,7 @@ public class EbusMasterSlaveLink {
 
     public byte[] sendFrame(MasterSlaveData data) throws Exception {
         lock.lock();
-        try (Socket socket = new Socket(HOST, PORT)) {
+        try (Socket socket = new Socket(host, port)) {
             socket.setSoTimeout(2000); // timeout 2s
 
             OutputStream out = socket.getOutputStream();

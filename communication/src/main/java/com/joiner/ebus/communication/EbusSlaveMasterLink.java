@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -17,8 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EbusSlaveMasterLink {
 
-    public static final String HOST = "127.0.0.1";
-    public static final int PORT = 3334;
+    @Value("${adapter.host:127.0.0.1}")
+    private String host;
+
+    @Value("${adapter.port.listen:3334}")
+    private int port;
 
     private ReentrantLock lock = new ReentrantLock();
 
@@ -45,10 +49,10 @@ public class EbusSlaveMasterLink {
         int attempt = 0;
         while (running) {
             try {
-                socket = new Socket(HOST, PORT);
+                socket = new Socket(host, port);
                 socket.setSoTimeout(0); // blokující read
                 in = socket.getInputStream();
-                log.info("Connected to eBUS mock server at {}:{}", HOST, PORT);
+                log.info("Connected to eBUS mock server at {}", socket.getInetAddress());
                 break;
             } catch (Exception e) {
                 attempt++;
@@ -77,7 +81,7 @@ public class EbusSlaveMasterLink {
                 }
             } catch (Exception e) {
                 if (running) {
-                    log.warn("Lost connection to {}:{}, will retry...", HOST, PORT, e);
+                    log.warn("Lost connection to {}:{}, will retry...", host, port, e);
                     try { 
                         if (in != null) in.close(); 
                         if (socket != null) socket.close(); 

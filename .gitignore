@@ -1,6 +1,7 @@
 target/
 .settings/
 .metadata/
+**/META-INF/
 
 .classpath
 .project

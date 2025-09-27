@@ -36,7 +36,7 @@ public class DataCollector {
         dataListener.setLock(ebusLock);
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRateString = "${collector.scheduler.rate:10000}")
     public void sendData() {
         RoomController roomController = new RoomController();
         log.info("Client sending RoomController data: 30, 45.0, false, true");
