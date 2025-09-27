@@ -3,11 +3,9 @@ package com.joiner.ebus.communication.protherm;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -30,9 +28,10 @@ public class DataListener {
 
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     
+    @Autowired
     @Getter
-    private Map<Long, byte[]> map = new HashMap<>();
-    
+    private FrameParser frameParser;
+
     @PostConstruct
     public void start() {
         new Thread(this::readLoop, "DataListenerThread").start();
@@ -101,24 +100,9 @@ public class DataListener {
             }
         }
         if (byteArrayOutputStream.size() > 0 && b == OperationalData.SYN) {
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-            byte[] slave = Arrays.copyOfRange(byteArray, 5, byteArray.length);
-            map.put(bytesToLong(byteArray, 5), slave);
+            frameParser.save(byteArrayOutputStream.toByteArray());
             byteArrayOutputStream.reset();
         }
-    }
-
-    /**
-     * @param byteArray
-     * @return
-     */
-    private long bytesToLong(byte[] byteArray, int masterSize) {
-        // uděláme z prvních 5 bajtů jedno číslo typu long
-        long key = 0;
-        for (int i = 0; i < masterSize; i++) {
-            key = (key << 8) | (byteArray[i] & 0xFFL);
-        }
-        return key;
     }
 
     @PreDestroy

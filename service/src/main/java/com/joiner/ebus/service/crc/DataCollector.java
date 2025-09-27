@@ -1,14 +1,16 @@
 package com.joiner.ebus.service.crc;
 
-import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.protherm.DataListener;
 import com.joiner.ebus.communication.protherm.DataSender;
+import com.joiner.ebus.communication.protherm.FrameReceivedEvent;
 import com.joiner.ebus.communication.protherm.OperationalData;
 import com.joiner.ebus.communication.protherm.RoomController;
 
@@ -34,7 +36,7 @@ public class DataCollector {
     }
 
     @Scheduled(fixedRate = 10000)
-    private void sendData() {
+    public void sendData() {
         RoomController roomController = new RoomController();
         log.info("Client sending RoomController data: 30, 45.0, false, true");
         OperationalData operationalData = roomController.getOperationalData(30, 45.0, false, true);
@@ -44,15 +46,17 @@ public class DataCollector {
             log.debug("Master echo:    {}", bytesToHex(masterEcho));
             log.debug("Slave response: {}", bytesToHex(operationalData.getSlaveData()));
             log.debug("Client adapted data -> Acknowledge: {}", roomController.getAcknowledge());
-            
-            Map<Long, byte[]> map = dataListener.getMap();
-            map.forEach((key, value) -> log.info("Intercepted data: {} {}", bytesToHex(longToBytes(key)), bytesToHex(value)));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     } 
 
+    @Async
+    @EventListener
+    public void handleFrame(FrameReceivedEvent event) {
+        log.info("Intercepted data: {} {}", bytesToHex(event.getAddress()), bytesToHex(event.getData()));
+    }
+    
     private static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -60,14 +64,5 @@ public class DataCollector {
         }
         return sb.toString().trim();
     }
-    
-    // Rekonstrukce 5 bajtů z long klíče
-    private static byte[] longToBytes(long key) {
-        byte[] result = new byte[5];
-        for (int i = 4; i >= 0; i--) {
-            result[i] = (byte) (key & 0xFF);
-            key >>= 8;
-        }
-        return result;
-    }
+
 }
