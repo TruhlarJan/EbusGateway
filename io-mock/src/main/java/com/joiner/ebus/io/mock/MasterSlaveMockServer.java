@@ -50,7 +50,8 @@ public class MasterSlaveMockServer {
 
             byte[] addr = in.readNBytes(4);
             String addrHex = bytesToHex(addr);
-
+            log.info("Master–slave transaction started with master bytes: {}", addrHex);
+            
             int len = in.read();
             byte[] masterFrame = in.readNBytes(len + 1);
 

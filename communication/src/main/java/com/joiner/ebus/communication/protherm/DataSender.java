@@ -12,7 +12,7 @@ public class DataSender {
 
     public static final String HOST = "127.0.0.1";
     public static final int PORT = 3333;
-    private ReentrantLock lock;
+    private ReentrantLock lock = new ReentrantLock();
 
     public void setLock(ReentrantLock lock) {
         this.lock = lock;
