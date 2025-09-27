@@ -9,14 +9,11 @@ public class FrameReceivedEvent extends ApplicationEvent {
     private static final long serialVersionUID = -493943632679525060L;
     
     @Getter
-    private final byte[] address;
-    
-    @Getter
-    private final byte[] data;
+    private MasterData slaveOperationalData;
 
-    public FrameReceivedEvent(Object source, byte[] address, byte[] data) {
+    public FrameReceivedEvent(Object source, MasterData slaveOperationalData) {
         super(source);
-        this.address = address;
-        this.data = data;
+        this.slaveOperationalData = slaveOperationalData;
     }
+
 }

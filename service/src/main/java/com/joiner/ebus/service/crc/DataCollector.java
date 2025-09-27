@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.protherm.DataListener;
 import com.joiner.ebus.communication.protherm.DataSender;
+import com.joiner.ebus.communication.protherm.FrameParser;
 import com.joiner.ebus.communication.protherm.FrameReceivedEvent;
 import com.joiner.ebus.communication.protherm.OperationalData;
 import com.joiner.ebus.communication.protherm.RoomController;
+import com.joiner.ebus.communication.protherm.MasterData;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,9 @@ public class DataCollector {
             log.debug("Master echo:    {}", bytesToHex(masterEcho));
             log.debug("Slave response: {}", bytesToHex(operationalData.getSlaveData()));
             log.debug("Client adapted data -> Acknowledge: {}", roomController.getAcknowledge());
+            
+            FrameParser frameParser = dataListener.getFrameParser();
+            frameParser.getMap().forEach((k, v) -> log.info("Intercepted address: {}: {}", k, bytesToHex(frameParser.longToBytes(k))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,7 +59,8 @@ public class DataCollector {
     @Async
     @EventListener
     public void handleFrame(FrameReceivedEvent event) {
-        log.info("Intercepted data: {} {}", bytesToHex(event.getAddress()), bytesToHex(event.getData()));
+        MasterData slaveOperationalData = event.getSlaveOperationalData();
+        log.info("Intercepted data: {} {}", bytesToHex(slaveOperationalData.getAddress()), bytesToHex(slaveOperationalData.getData()));
     }
     
     private static String bytesToHex(byte[] bytes) {

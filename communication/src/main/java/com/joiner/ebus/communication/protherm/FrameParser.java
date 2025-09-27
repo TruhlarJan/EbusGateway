@@ -22,8 +22,15 @@ public class FrameParser {
     public void save(byte[] byteArray) {
         byte[] address = Arrays.copyOfRange(byteArray, 0, 5);
         byte[] data = Arrays.copyOfRange(byteArray, 5, byteArray.length);
-        publisher.publishEvent(new FrameReceivedEvent(this, address, data));
-        map.put(bytesToLong(address), data);
+        
+        long key = bytesToLong(address);
+        if (key == 14574490114L) {
+            publisher.publishEvent(new FrameReceivedEvent(this, new O3h64hB5h12hOperationData(address, data)));
+        } else if (key == 13249090307L) {
+            publisher.publishEvent(new FrameReceivedEvent(this, new O3h15hB5h13hOperationData(address, data)));
+        } else {
+            map.put(key, data);
+        }
     }
 
     // uděláme z prvních 5 bajtů jedno číslo typu long
