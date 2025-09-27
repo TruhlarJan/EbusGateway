@@ -58,12 +58,14 @@ public class EbusSlaveMasterLink {
                 socket = new Socket(host, port);
                 socket.setSoTimeout(0); // blokující read
                 in = socket.getInputStream();
-                log.info("Connected to eBUS mock server at {}", socket.getInetAddress());
+                log.info("Connected to eBUS server at {}", socket.getInetAddress());
                 break;
             } catch (Exception e) {
                 attempt++;
                 int wait = Math.min(100 * attempt, 2000); // max 2 s
-                log.info("Waiting {} ms for eBUS mock server... attempt {}", wait, attempt);
+                if (attempt % 5 == 0) {
+                    log.warn("Still waiting for eBUS server at {}:{} after {} attempts", host, port, attempt, e);
+                }
                 Thread.sleep(wait);
             }
         }
