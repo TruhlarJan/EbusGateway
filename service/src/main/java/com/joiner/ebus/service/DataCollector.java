@@ -1,5 +1,11 @@
 package com.joiner.ebus.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +18,7 @@ import org.springframework.stereotype.Service;
 import com.joiner.ebus.communication.EbusMasterSlaveLink;
 import com.joiner.ebus.communication.EbusSlaveMasterLink;
 import com.joiner.ebus.communication.FrameParser;
-import com.joiner.ebus.communication.FrameReceivedEvent;
+import com.joiner.ebus.communication.FrameParsedEvent;
 import com.joiner.ebus.communication.MasterData;
 import com.joiner.ebus.communication.MasterSlaveData;
 
@@ -34,6 +40,8 @@ public class DataCollector {
 
     private final ReentrantLock ebusLock = new ReentrantLock();
 
+    private Map<Long, MasterData> map = new HashMap<>();
+    
     @PostConstruct
     public void init() {
         dataSender.setLock(ebusLock);
@@ -65,8 +73,9 @@ public class DataCollector {
 
     @Async
     @EventListener
-    public void handleFrame(FrameReceivedEvent event) {
-        MasterData masterData = event.getSlaveOperationalData();
+    public void handleFrame(FrameParsedEvent event) {
+        MasterData masterData = event.getMasterData();
+        map.put(event.getKey(), masterData);
         log.info("Intercepted data: {} {}", bytesToHex(masterData.getAddress()), bytesToHex(masterData.getData()));
     }
     

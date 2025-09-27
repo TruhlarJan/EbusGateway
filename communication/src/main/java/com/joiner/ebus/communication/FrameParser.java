@@ -27,10 +27,10 @@ public class FrameParser {
         byte[] data = Arrays.copyOfRange(byteArray, 5, byteArray.length);
         
         long key = bytesToLong(address);
-        if (key == 14574490114L) {
-            publisher.publishEvent(new FrameReceivedEvent(this, new Address03h64hB5h12hData(address, data)));
-        } else if (key == 13249090307L) {
-            publisher.publishEvent(new FrameReceivedEvent(this, new Address03h15hB5h13hData(address, data)));
+        if (key == Address03h64hB5h12hData.KYE) {
+            publisher.publishEvent(new FrameParsedEvent(this, key, new Address03h64hB5h12hData( address, data)));
+        } else if (key == Address03h15hB5h13hData.KYE) {
+            publisher.publishEvent(new FrameParsedEvent(this, key, new Address03h15hB5h13hData(address, data)));
         } else {
             map.put(key, data);
         }
