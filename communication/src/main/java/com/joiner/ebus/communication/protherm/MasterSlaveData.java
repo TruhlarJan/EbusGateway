@@ -1,6 +1,6 @@
 package com.joiner.ebus.communication.protherm;
 
-public interface OperationalData {
+public interface MasterSlaveData {
     
     /** Source address - Main Control Unit */
     public static int QQ_BYTE = 0x10;

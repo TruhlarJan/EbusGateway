@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class DataListener {
+public class EbusSlaveMasterLink {
 
     public static final String HOST = "127.0.0.1";
     public static final int PORT = 3334;
@@ -91,7 +91,7 @@ public class DataListener {
     }
 
     private void processByte(int b) {
-        if (b != -1 && b != OperationalData.SYN) {
+        if (b != -1 && b != MasterSlaveData.SYN) {
             byteArrayOutputStream.write(b);
 
             if (byteArrayOutputStream.size() > 1024) {
@@ -99,7 +99,7 @@ public class DataListener {
                 byteArrayOutputStream.reset();
             }
         }
-        if (byteArrayOutputStream.size() > 0 && b == OperationalData.SYN) {
+        if (byteArrayOutputStream.size() > 0 && b == MasterSlaveData.SYN) {
             frameParser.save(byteArrayOutputStream.toByteArray());
             byteArrayOutputStream.reset();
         }

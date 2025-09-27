@@ -25,9 +25,9 @@ public class FrameParser {
         
         long key = bytesToLong(address);
         if (key == 14574490114L) {
-            publisher.publishEvent(new FrameReceivedEvent(this, new O3h64hB5h12hOperationData(address, data)));
+            publisher.publishEvent(new FrameReceivedEvent(this, new Address03h64hB5h12hData(address, data)));
         } else if (key == 13249090307L) {
-            publisher.publishEvent(new FrameReceivedEvent(this, new O3h15hB5h13hOperationData(address, data)));
+            publisher.publishEvent(new FrameReceivedEvent(this, new Address03h15hB5h13hData(address, data)));
         } else {
             map.put(key, data);
         }

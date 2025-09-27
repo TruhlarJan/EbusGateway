@@ -5,9 +5,9 @@ package com.joiner.ebus.communication.protherm;
  * Application Layer – OSI 7
  * Vaillant specific extensions V0.6.0
  * 
- * 3.6 B5h 11h 00h - Not specified.
+ * 3.6 B5h 11h 02h - Operational Data of Burner Control Unit to Room Control Unit.
  */
-public class B5h11h00hOperationalData implements OperationalData {
+public class Address10h08hB5h11h02hData implements MasterSlaveData {
 
     @Override
     public byte[] getMasterCrcEndedData() {

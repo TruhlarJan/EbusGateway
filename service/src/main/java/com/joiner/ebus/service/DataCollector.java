@@ -1,4 +1,4 @@
-package com.joiner.ebus.service.crc;
+package com.joiner.ebus.service;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -8,12 +8,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.joiner.ebus.communication.protherm.DataListener;
-import com.joiner.ebus.communication.protherm.DataSender;
+import com.joiner.ebus.communication.protherm.EbusSlaveMasterLink;
+import com.joiner.ebus.communication.protherm.EbusMasterSlaveLink;
 import com.joiner.ebus.communication.protherm.FrameParser;
 import com.joiner.ebus.communication.protherm.FrameReceivedEvent;
-import com.joiner.ebus.communication.protherm.OperationalData;
-import com.joiner.ebus.communication.protherm.RoomController;
+import com.joiner.ebus.communication.protherm.MasterSlaveData;
 import com.joiner.ebus.communication.protherm.MasterData;
 
 import jakarta.annotation.PostConstruct;
@@ -24,10 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 public class DataCollector {
 
     @Autowired
-    private DataSender dataSender;
+    private EbusMasterSlaveLink dataSender;
 
     @Autowired
-    private DataListener dataListener;
+    private EbusSlaveMasterLink dataListener;
 
     private final ReentrantLock ebusLock = new ReentrantLock();
 
@@ -41,7 +40,7 @@ public class DataCollector {
     public void sendData() {
         RoomController roomController = new RoomController();
         log.info("Client sending RoomController data: 30, 45.0, false, true");
-        OperationalData operationalData = roomController.getOperationalData(30, 45.0, false, true);
+        MasterSlaveData operationalData = roomController.getOperationalData(30, 45.0, false, true);
 
         try {
             byte[] masterEcho = dataSender.sendFrame(operationalData);

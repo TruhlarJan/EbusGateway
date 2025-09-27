@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataSender {
+public class EbusMasterSlaveLink {
 
     public static final String HOST = "127.0.0.1";
     public static final int PORT = 3333;
@@ -18,7 +18,7 @@ public class DataSender {
         this.lock = lock;
     }
 
-    public byte[] sendFrame(OperationalData data) throws Exception {
+    public byte[] sendFrame(MasterSlaveData data) throws Exception {
         lock.lock();
         try (Socket socket = new Socket(HOST, PORT)) {
             socket.setSoTimeout(2000); // timeout 2s
@@ -35,7 +35,7 @@ public class DataSender {
                 if (readByte == -1) {
                     throw new RuntimeException("Connection closed before receiving SYN");
                 }
-            } while (readByte != OperationalData.SYN);
+            } while (readByte != MasterSlaveData.SYN);
 
             // -------------------------------
             // pošleme master rámec po bytech

@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  * 3.5 B5h 10h - Operational Data from Room Controller to Burner Control Unit
  */
 @Slf4j
-public class B5h10hOperationalData implements OperationalData {
+public class Address10h08hB5h10hData implements MasterSlaveData {
     
     /**
      * SB byte - Operational Data from Room Controller to Burner Control Unit.
@@ -42,7 +42,7 @@ public class B5h10hOperationalData implements OperationalData {
      * @param m9 M9 - Service water target temperature
      * @param m12 M12 - Burner blocking (00 = nothing blocked, 01 = lead water burner blocked, 02 = service water burner blocked, 05 = all blocked)
      */
-    public B5h10hOperationalData(final int m8byte, final int m9byte, final int m12byte) {
+    public Address10h08hB5h10hData(final int m8byte, final int m9byte, final int m12byte) {
         masterStream.write(QQ_BYTE);
         masterStream.write(ZZ_BYTE);
         masterStream.write(PB_BYTE);
@@ -61,7 +61,7 @@ public class B5h10hOperationalData implements OperationalData {
 
     public byte[] getMasterCrcEndedData() {
         byte[] frame = masterStream.toByteArray();
-        int crc = BaseEbusCrc.computeCrc(frame);
+        int crc = EbusCrc.computeCrc(frame);
         byte[] frameWithCrc = new byte[frame.length + 1];
         System.arraycopy(frame, 0, frameWithCrc, 0, frame.length);
         frameWithCrc[frame.length] = (byte) crc;
@@ -78,7 +78,7 @@ public class B5h10hOperationalData implements OperationalData {
         byte[] responseWithOutCrc = new byte[response.length - 1];
         System.arraycopy(response, 0, responseWithOutCrc, 0, responseWithOutCrc.length);
         int crcResponsed = response[responseWithOutCrc.length] & 0xFF;
-        int crcComputed = BaseEbusCrc.computeCrc(responseWithOutCrc);
+        int crcComputed = EbusCrc.computeCrc(responseWithOutCrc);
         if (crcResponsed != crcComputed) {
             log.info("CRC responsed {} != CRC computed {}", crcResponsed, crcComputed); 
         }

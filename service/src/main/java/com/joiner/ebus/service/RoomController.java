@@ -1,10 +1,13 @@
-package com.joiner.ebus.communication.protherm;
+package com.joiner.ebus.service;
+
+import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
+import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 public class RoomController {
 
     private static final int ACKNOWLEDGE_INDEX = 2;
     
-    private B5h10hOperationalData operationalData;
+    private Address10h08hB5h10hData operationalData;
 
     /**
      * Method initializes adapted operation data.
@@ -14,10 +17,10 @@ public class RoomController {
      * @param leadBurnerBlocked
      * @return initialized operation data
      */
-    public OperationalData getOperationalData(
+    public MasterSlaveData getOperationalData(
             double leadTemperature, double serviceTemperature,
             boolean serviceBurnerBlocked, boolean leadBurnerBlocked) {
-        operationalData = new B5h10hOperationalData(
+        operationalData = new Address10h08hB5h10hData(
                 toHexValue(leadTemperature),
                 toHexValue(serviceTemperature),
                 toBooleanValue(serviceBurnerBlocked, leadBurnerBlocked));

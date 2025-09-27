@@ -16,21 +16,21 @@ import com.joiner.ebus.io.mock.MasterSlaveMockServer;
  * 
  */
 @SpringBootTest(classes = EbusMockServerApplication.class)
-class DataSenderTest {
+class EbusMasterSlaveLinkTest {
 
     @Autowired
-    private DataSender dataSender;
+    private EbusMasterSlaveLink dataSender;
 
     @Autowired
     private MasterSlaveMockServer masterSlaveMockServer;
 
     /**
-     * Test method for {@link com.joiner.ebus.communication.protherm.DataSender#sendFrame(com.joiner.ebus.communication.protherm.OperationalData)}.
+     * Test method for {@link com.joiner.ebus.communication.protherm.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
      * @throws Exception 
      */
     @Test
     void testSendFrame() throws Exception {
-        OperationalData operationalData = new B5h10hOperationalData(0x3E, 0x5A, 0x01);
+        MasterSlaveData operationalData = new Address10h08hB5h10hData(0x3E, 0x5A, 0x01);
         byte[] echoMasterFrame = dataSender.sendFrame(operationalData);
 
         // 10 08 B5 10 09 00 00 3E 5A FF FF 01 FF 00 1D

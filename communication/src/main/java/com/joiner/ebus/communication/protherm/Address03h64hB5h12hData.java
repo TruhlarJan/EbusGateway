@@ -3,14 +3,14 @@ package com.joiner.ebus.communication.protherm;
 import lombok.Getter;
 
 @Getter
-public class O3h64hB5h12hOperationData implements MasterData {
+public class Address03h64hB5h12hData implements MasterData {
 
     public static final long KYE = 14574490114L;
 
     private byte[] address;
     private byte[] data;
 
-    public O3h64hB5h12hOperationData(byte[] address, byte[] data) {
+    public Address03h64hB5h12hData(byte[] address, byte[] data) {
         this.address = address;
         this.data = data;
     }

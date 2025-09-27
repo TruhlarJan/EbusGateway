@@ -1,6 +1,6 @@
 package com.joiner.ebus.communication.protherm;
 
-public class BaseEbusCrc {
+public class EbusCrc {
 
     // CRC8 lookup table z ebusd (polynom 0x9B = x^8 + x^7 + x^4 + x^3 + x^1 + 1)
     private static final int[] CRC_TABLE = {
