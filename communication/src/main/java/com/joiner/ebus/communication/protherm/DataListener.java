@@ -1,13 +1,18 @@
 package com.joiner.ebus.communication.protherm;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -17,13 +22,17 @@ public class DataListener {
     public static final String HOST = "127.0.0.1";
     public static final int PORT = 3334;
 
-    private StringBuilder stringBuilder = new StringBuilder();
-    private ReentrantLock lock;
+    private ReentrantLock lock = new ReentrantLock();
 
     private Socket socket;
     private InputStream in;
     private volatile boolean running = true;
 
+    private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    
+    @Getter
+    private Map<Long, byte[]> map = new HashMap<>();
+    
     @PostConstruct
     public void start() {
         new Thread(this::readLoop, "DataListenerThread").start();
@@ -84,17 +93,32 @@ public class DataListener {
 
     private void processByte(int b) {
         if (b != -1 && b != OperationalData.SYN) {
-            stringBuilder.append(String.format("%02X", b));
+            byteArrayOutputStream.write(b);
 
-            if (stringBuilder.length() > 1024) {
+            if (byteArrayOutputStream.size() > 1024) {
                 log.warn("StringBuilder overflow, resetting");
-                stringBuilder.setLength(0);
+                byteArrayOutputStream.reset();
             }
         }
-        if (!stringBuilder.isEmpty() && b == OperationalData.SYN) {
-            log.info("Data: {}", stringBuilder.toString());
-            stringBuilder.setLength(0);
+        if (byteArrayOutputStream.size() > 0 && b == OperationalData.SYN) {
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            byte[] slave = Arrays.copyOfRange(byteArray, 5, byteArray.length);
+            map.put(bytesToLong(byteArray, 5), slave);
+            byteArrayOutputStream.reset();
         }
+    }
+
+    /**
+     * @param byteArray
+     * @return
+     */
+    private long bytesToLong(byte[] byteArray, int masterSize) {
+        // uděláme z prvních 5 bajtů jedno číslo typu long
+        long key = 0;
+        for (int i = 0; i < masterSize; i++) {
+            key = (key << 8) | (byteArray[i] & 0xFFL);
+        }
+        return key;
     }
 
     @PreDestroy

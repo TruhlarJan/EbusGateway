@@ -1,5 +1,6 @@
 package com.joiner.ebus.service.crc;
 
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class DataCollector {
 
     @Autowired
     private DataListener dataListener;
+
     private final ReentrantLock ebusLock = new ReentrantLock();
 
     @PostConstruct
@@ -41,7 +43,11 @@ public class DataCollector {
             byte[] masterEcho = dataSender.sendFrame(operationalData);
             log.debug("Master echo:    {}", bytesToHex(masterEcho));
             log.debug("Slave response: {}", bytesToHex(operationalData.getSlaveData()));
-            log.info("Client adapted data -> Acknowledge: {}", roomController.getAcknowledge());
+            log.debug("Client adapted data -> Acknowledge: {}", roomController.getAcknowledge());
+            
+            Map<Long, byte[]> map = dataListener.getMap();
+            map.forEach((key, value) -> log.info("Intercepted data: {} {}", bytesToHex(longToBytes(key)), bytesToHex(value)));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,5 +59,15 @@ public class DataCollector {
             sb.append(String.format("%02X ", b));
         }
         return sb.toString().trim();
+    }
+    
+    // Rekonstrukce 5 bajtů z long klíče
+    private static byte[] longToBytes(long key) {
+        byte[] result = new byte[5];
+        for (int i = 4; i >= 0; i--) {
+            result[i] = (byte) (key & 0xFF);
+            key >>= 8;
+        }
+        return result;
     }
 }
