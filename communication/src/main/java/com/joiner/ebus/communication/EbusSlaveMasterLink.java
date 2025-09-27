@@ -18,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EbusSlaveMasterLink {
 
+    @Value("${collector.listener.enabled:true}")
+    private boolean listenerEnabled;
+    
     @Value("${adapter.host:127.0.0.1}")
     private String host;
 
@@ -38,6 +41,9 @@ public class EbusSlaveMasterLink {
 
     @PostConstruct
     public void start() {
+        if (!listenerEnabled) {
+            return;
+        }
         new Thread(this::readLoop, "DataListenerThread").start();
     }
 

@@ -3,6 +3,7 @@ package com.joiner.ebus.service;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,6 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataCollector {
 
+    @Value("${collector.poller.enabled:true}")
+    private boolean pollerEnabled;
+    
     @Autowired
     private EbusMasterSlaveLink dataSender;
 
@@ -38,14 +42,18 @@ public class DataCollector {
 
     @Scheduled(fixedRateString = "${collector.scheduler.rate:10000}")
     public void sendData() {
+        if (!pollerEnabled) {
+            return;
+        }
+
         RoomController roomController = new RoomController();
         log.info("Client sending RoomController data: 30, 45.0, false, true");
-        MasterSlaveData operationalData = roomController.getOperationalData(30, 45.0, false, true);
+        MasterSlaveData masterSlaveData = roomController.getOperationalData(30, 45.0, false, true);
 
         try {
-            byte[] masterEcho = dataSender.sendFrame(operationalData);
+            byte[] masterEcho = dataSender.sendFrame(masterSlaveData);
             log.debug("Master echo:    {}", bytesToHex(masterEcho));
-            log.debug("Slave response: {}", bytesToHex(operationalData.getSlaveData()));
+            log.debug("Slave response: {}", bytesToHex(masterSlaveData.getSlaveData()));
             log.debug("Client adapted data -> Acknowledge: {}", roomController.getAcknowledge());
             
             FrameParser frameParser = dataListener.getFrameParser();
@@ -58,8 +66,8 @@ public class DataCollector {
     @Async
     @EventListener
     public void handleFrame(FrameReceivedEvent event) {
-        MasterData slaveOperationalData = event.getSlaveOperationalData();
-        log.info("Intercepted data: {} {}", bytesToHex(slaveOperationalData.getAddress()), bytesToHex(slaveOperationalData.getData()));
+        MasterData masterData = event.getSlaveOperationalData();
+        log.info("Intercepted data: {} {}", bytesToHex(masterData.getAddress()), bytesToHex(masterData.getData()));
     }
     
     private static String bytesToHex(byte[] bytes) {
