@@ -1,4 +1,4 @@
-package com.joiner.ebus.communication.protherm;
+package com.joiner.ebus.communication;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +7,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+
+import com.joiner.ebus.communication.protherm.Address03h15hB5h13hData;
+import com.joiner.ebus.communication.protherm.Address03h64hB5h12hData;
 
 import lombok.Getter;
 

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.joiner.ebus.EbusMockServerApplication;
+import com.joiner.ebus.communication.EbusMasterSlaveLink;
+import com.joiner.ebus.communication.MasterSlaveData;
 import com.joiner.ebus.io.mock.MasterSlaveMockServer;
 
 /**
@@ -25,7 +27,7 @@ class EbusMasterSlaveLinkTest {
     private MasterSlaveMockServer masterSlaveMockServer;
 
     /**
-     * Test method for {@link com.joiner.ebus.communication.protherm.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
+     * Test method for {@link com.joiner.ebus.communication.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.MasterSlaveData)}.
      * @throws Exception 
      */
     @Test

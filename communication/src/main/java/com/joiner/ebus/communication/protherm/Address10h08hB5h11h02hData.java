@@ -1,5 +1,7 @@
 package com.joiner.ebus.communication.protherm;
 
+import com.joiner.ebus.communication.MasterSlaveData;
+
 /**
  * eBUS Specification
  * Application Layer – OSI 7

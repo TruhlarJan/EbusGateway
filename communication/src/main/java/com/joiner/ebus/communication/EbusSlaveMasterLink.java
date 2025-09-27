@@ -1,4 +1,4 @@
-package com.joiner.ebus.communication.protherm;
+package com.joiner.ebus.communication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

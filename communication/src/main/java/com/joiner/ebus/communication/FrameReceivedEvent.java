@@ -1,4 +1,4 @@
-package com.joiner.ebus.communication.protherm;
+package com.joiner.ebus.communication;
 
 import org.springframework.context.ApplicationEvent;
 

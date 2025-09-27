@@ -8,12 +8,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.joiner.ebus.communication.protherm.EbusSlaveMasterLink;
-import com.joiner.ebus.communication.protherm.EbusMasterSlaveLink;
-import com.joiner.ebus.communication.protherm.FrameParser;
-import com.joiner.ebus.communication.protherm.FrameReceivedEvent;
-import com.joiner.ebus.communication.protherm.MasterSlaveData;
-import com.joiner.ebus.communication.protherm.MasterData;
+import com.joiner.ebus.communication.EbusMasterSlaveLink;
+import com.joiner.ebus.communication.EbusSlaveMasterLink;
+import com.joiner.ebus.communication.FrameParser;
+import com.joiner.ebus.communication.FrameReceivedEvent;
+import com.joiner.ebus.communication.MasterData;
+import com.joiner.ebus.communication.MasterSlaveData;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
