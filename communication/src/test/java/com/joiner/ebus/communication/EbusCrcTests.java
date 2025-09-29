@@ -61,7 +61,7 @@ class EbusCrcTests {
     }
 
     /**
-     * Frame: 10 08 B5 11 01 00 -> CRC = 0x89
+     * Frame: 10 08 B5 11 01 00 -> CRC = 0x88
      */
     @Test
     void testFrame7() {
