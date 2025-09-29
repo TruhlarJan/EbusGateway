@@ -13,7 +13,6 @@ import com.joiner.ebus.EbusMockServerApplication;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
-import com.joiner.ebus.io.mock.MasterSlaveMockServer;
 
 /**
  * 
@@ -23,9 +22,6 @@ class EbusMasterSlaveLinkTest {
 
     @Autowired
     private EbusMasterSlaveLink dataSender;
-
-    @Autowired
-    private MasterSlaveMockServer masterSlaveMockServer;
 
     /**
      * Test method for {@link com.joiner.ebus.communication.link.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
@@ -60,8 +56,8 @@ class EbusMasterSlaveLinkTest {
         assertArrayEquals(masterCrcEnded, operationalData.getMasterStartData());
         assertArrayEquals(masterCrcEnded, echoMasterFrame);
 
-        // 00 08 50 02 0c 00 1f 10 00 80 88
-        byte[] slaveData = new byte[]{0x00, 0x08, 0x50, 0x02, 0x0C, 0x00, 0x1F, 0x10, 0x00, (byte) 0x80, (byte) 0x88};
+        // 00 08 50 02 0c 00 1f 10 00 80 07
+        byte[] slaveData = new byte[]{0x00, 0x08, 0x50, 0x02, 0x0C, 0x00, 0x1F, 0x10, 0x00, (byte) 0x80, (byte) 0x07};
         assertArrayEquals(slaveData, operationalData.getSlaveData());
 
         // 00 AA

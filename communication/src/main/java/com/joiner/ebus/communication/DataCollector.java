@@ -63,7 +63,7 @@ public class DataCollector {
                 log.error("Ebus MasterToSlave communication failed.", e);
             }
         } );
-        masterDataMap.forEach((k, v) -> log.info("Intercepted address: {}   {}   {}", k, bytesToHex(v.getAddress()), bytesToHex(v.getData())));
+        masterDataMap.forEach((k, v) -> log.info("Intercepted address. Key: {}, Last data: {} {}", k, bytesToHex(v.getAddress()), bytesToHex(v.getData())));
     } 
 
     @Async
