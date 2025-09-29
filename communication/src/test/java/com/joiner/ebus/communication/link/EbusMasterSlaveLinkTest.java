@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.joiner.ebus.EbusMockServerApplication;
-import com.joiner.ebus.communication.link.EbusMasterSlaveLink;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 import com.joiner.ebus.io.mock.MasterSlaveMockServer;
@@ -38,7 +37,7 @@ class EbusMasterSlaveLinkTest {
 
         // 10 08 B5 10 09 00 00 3E 5A FF FF 01 FF 00 1D
         byte[] masterCrcEnded = new byte[]{0x10, 0x08, (byte) 0xB5, 0x10, 0x09, 0x00, 0x00, 0x3E, 0x5A, (byte) 0xFF, (byte) 0xFF, 0x01, (byte) 0xFF, 0x00, 0x1D};
-        assertArrayEquals(masterCrcEnded, operationalData.getMasterCrcEndedData());
+        assertArrayEquals(masterCrcEnded, operationalData.getMasterData());
         assertArrayEquals(masterCrcEnded, echoMasterFrame);
 
         // 00 01 01 9A

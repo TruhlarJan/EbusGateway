@@ -44,6 +44,9 @@ public class DataCollector {
     public void init() {
         ebusMasterSlaveLink.setLock(ebusLock);
         ebusSlaveMasterLink.setLock(ebusLock);
+        //test
+        log.info("Client sending RoomController data: 30, 45.0, false, true");
+        masterSlaveDataMap.put(1L, new Address10h08hB5h10hData(0x3C, 0x5A, 0x01));
     }
 
     @Scheduled(fixedRateString = "${collector.scheduler.rate:10000}")
@@ -51,11 +54,6 @@ public class DataCollector {
         if (!pollerEnabled) {
             return;
         }
-        //test
-        log.info("Client sending RoomController data: 30, 45.0, false, true");
-        MasterSlaveData address10h08hB5h10hData = new Address10h08hB5h10hData(0x3C, 0x5A, 0x01);
-        masterSlaveDataMap.put(1L, address10h08hB5h10hData);
-
         masterSlaveDataMap.values().forEach(masterSlaveDataValues -> {
             try {
                 byte[] masterEcho = ebusMasterSlaveLink.sendFrame(masterSlaveDataValues);

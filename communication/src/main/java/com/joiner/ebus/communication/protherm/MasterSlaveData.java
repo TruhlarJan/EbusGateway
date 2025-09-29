@@ -3,19 +3,13 @@ package com.joiner.ebus.communication.protherm;
 public interface MasterSlaveData {
     
     /** Source address - Main Control Unit */
-    public static int QQ_BYTE = 0x10;
+    public static int QQ = 0x10;
 
     /** Target address */
-    public static int ZZ_BYTE = 0x08;
+    public static int ZZ = 0x08;
 
     /** Vaillant command */
-    public static int PB_BYTE = 0xB5;
-
-    /** 00h */
-    public static int UNKNOWN_00 = 0x00;
-
-    /** FFh */
-    public static int UNKNOWN_FF = 0xFF;
+    public static int PB = 0xB5;
 
     /** positive acknowledge symbol. */
     public static int ACK = 0x00;
@@ -27,7 +21,7 @@ public interface MasterSlaveData {
      * Master data terminated CRC.
      * @return
      */
-    byte[] getMasterCrcEndedData();
+    byte[] getMasterData();
 
     /**
      * Data size of the slave response.

@@ -1,6 +1,6 @@
 package com.joiner.ebus.communication.protherm;
 
-import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
 import com.joiner.ebus.communication.EbusCrc;
 
@@ -18,23 +18,34 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Address10h08hB5h10hData implements MasterSlaveData {
     
-    /**
-     * SB byte - Operational Data from Room Controller to Burner Control Unit.
-     */
-    public static final int SB_BYTE = 0x10;
+    /* SB byte - Operational Data from Room Controller to Burner Control Unit. */
+    private static final int SB = 0x10;
     
-    /** NN byte - Length of data in master M6 - M15
-     * 
-     */
-    public static final int NN_BYTE = 0x09;
+    /* NN byte - Length of data in master M6 - M15 */
+    private static final int NN = 0x09;
 
-    /**
-     * Length of the slave data (ACK, NN, ZZ, CRC)
-     */
+    /* Default value M8 = 00 */
+    private static final int M8 = 0x14;
+    private static final int M8_INDEX = 7;
+
+    /* Default value M9 = 0x5A */
+    private static final int M9 = 0x5A;
+    private static final int M9_INDEX = 8;
+
+    /* Default value M12 = 0x01 */
+    private static final int M12 = 0x05;
+    private static final int M12_INDEX = 11;
+    
+    /* Default value CRC = 0x47 */ 
+    private static final int CRC = 0x47;
+    private static final int CRC_INDEX = 14;
+
+    /* Length of the slave data (ACK, NN, ZZ, CRC) */
     private static final int SLAVE_SIZE = 4;
 
-    private final ByteArrayOutputStream masterStream = new ByteArrayOutputStream();
-    
+    /* B5h 10h B5h 10h*/
+    private final byte[] masterData = new byte[] {QQ, ZZ, (byte) PB, SB, NN, 0x00, 0x00, M8, M9, (byte) 0xFF, (byte) 0xFF, M12, (byte) 0xFF, 0x00, CRC};
+
     @Getter
     private byte[] slaveData;
     
@@ -45,29 +56,14 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
      * @param m12 M12 - Burner blocking (00 = nothing blocked, 01 = lead water burner blocked, 02 = service water burner blocked, 05 = all blocked)
      */
     public Address10h08hB5h10hData(final int m8byte, final int m9byte, final int m12byte) {
-        masterStream.write(QQ_BYTE);
-        masterStream.write(ZZ_BYTE);
-        masterStream.write(PB_BYTE);
-        masterStream.write(SB_BYTE);
-        masterStream.write(NN_BYTE);
-        masterStream.write(UNKNOWN_00);
-        masterStream.write(UNKNOWN_00);
-        masterStream.write(m8byte);
-        masterStream.write(m9byte);
-        masterStream.write(UNKNOWN_FF);
-        masterStream.write(UNKNOWN_FF);
-        masterStream.write(m12byte);
-        masterStream.write(UNKNOWN_FF);
-        masterStream.write(UNKNOWN_00);
+        masterData[M8_INDEX] = (byte) m8byte;
+        masterData[M9_INDEX] = (byte) m9byte;
+        masterData[M12_INDEX] = (byte) m12byte;
     }
 
-    public byte[] getMasterCrcEndedData() {
-        byte[] frame = masterStream.toByteArray();
-        int crc = EbusCrc.computeCrc(frame);
-        byte[] frameWithCrc = new byte[frame.length + 1];
-        System.arraycopy(frame, 0, frameWithCrc, 0, frame.length);
-        frameWithCrc[frame.length] = (byte) crc;
-        return frameWithCrc;
+    public byte[] getMasterData() {
+        masterData[CRC_INDEX] = (byte) EbusCrc.computeCrc(Arrays.copyOf(masterData, masterData.length - 1));
+        return masterData;
     }
     
     @Override
@@ -77,10 +73,8 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
 
     @Override
     public void setSlaveData(byte[] response) {
-        byte[] responseWithOutCrc = new byte[response.length - 1];
-        System.arraycopy(response, 0, responseWithOutCrc, 0, responseWithOutCrc.length);
-        int crcResponsed = response[responseWithOutCrc.length] & 0xFF;
-        int crcComputed = EbusCrc.computeCrc(responseWithOutCrc);
+        int crcResponsed = response[response.length - 1];
+        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(response, response.length - 1));
         if (crcResponsed != crcComputed) {
             log.info("CRC responsed {} != CRC computed {}", crcResponsed, crcComputed); 
         }
