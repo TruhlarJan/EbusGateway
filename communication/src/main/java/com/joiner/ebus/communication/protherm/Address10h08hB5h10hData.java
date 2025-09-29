@@ -76,8 +76,8 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
 
     @Override
     public void setSlaveData(byte[] response) {
-        int crcResponsed = response[response.length - 1];
-        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(response, response.length - 1));
+        int crcResponsed = response[response.length - 1] & 0xFF;
+        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(response, response.length - 1)) & 0xFF;
         if (crcResponsed != crcComputed) {
             log.info("CRC responsed {} != CRC computed {}", crcResponsed, crcComputed); 
         }

@@ -11,9 +11,9 @@ import com.joiner.ebus.EbusMockServerApplication;
 import com.joiner.ebus.communication.protherm.Address03h15hB5h13hData;
 import com.joiner.ebus.communication.protherm.Address03h64hB5h12hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h00hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h02hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
 
 @SpringBootTest(classes = EbusMockServerApplication.class)
 class FrameParserTest {
@@ -32,14 +32,14 @@ class FrameParserTest {
         byte[] address10h08hB5h10hByte = new Address10h08hB5h10hData(0x00, 0x00, 0x00).getMasterStartData();
         assertEquals(Address10h08hB5h10hData.KEY, frameParser.save(address10h08hB5h10hByte));
 
-        byte[] address10h08hB5h11h00hByte = new Address10h08hB5h11h00hData().getMasterStartData();
-        assertEquals(Address10h08hB5h11h00hData.KEY, frameParser.save(address10h08hB5h11h00hByte));
+        byte[] address10h08hB5h11h01h00hByte = new Address10h08hB5h11h01h00hData().getMasterStartData();
+        assertEquals(Address10h08hB5h11h01h00hData.KEY, frameParser.save(address10h08hB5h11h01h00hByte));
 
-        byte[] address10h08hB5h11h01hByte = new Address10h08hB5h11h01hData().getMasterStartData();
-        assertEquals(Address10h08hB5h11h01hData.KEY, frameParser.save(address10h08hB5h11h01hByte));
+        byte[] address10h08hB5h11h01h01hByte = new Address10h08hB5h11h01h01hData().getMasterStartData();
+        assertEquals(Address10h08hB5h11h01h01hData.KEY, frameParser.save(address10h08hB5h11h01h01hByte));
 
-        byte[] address10h08hB5h11h02hByte = new Address10h08hB5h11h02hData().getMasterStartData();
-        assertEquals(Address10h08hB5h11h02hData.KEY, frameParser.save(address10h08hB5h11h02hByte));
+        byte[] address10h08hB5h11h01h02hByte = new Address10h08hB5h11h01h02hData().getMasterStartData();
+        assertEquals(Address10h08hB5h11h01h02hData.KEY, frameParser.save(address10h08hB5h11h01h02hByte));
 
     }
 

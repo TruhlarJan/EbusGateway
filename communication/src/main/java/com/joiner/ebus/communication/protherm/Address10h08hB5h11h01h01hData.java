@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-public class Address10h08hB5h11h01hData implements MasterSlaveData {
+public class Address10h08hB5h11h01h01hData implements MasterSlaveData {
 
     public static final Long KEY = 17629583507713L;
 
@@ -55,8 +55,8 @@ public class Address10h08hB5h11h01hData implements MasterSlaveData {
 
     @Override
     public void setSlaveData(byte[] response) {
-        int crcResponsed = response[response.length - 1];
-        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(response, response.length - 1));
+        int crcResponsed = response[response.length - 1] & 0xFF;
+        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(response, response.length - 1)) & 0xFF;
         if (crcResponsed != crcComputed) {
             log.info("CRC responsed {} != CRC computed {}", crcResponsed, crcComputed); 
         }

@@ -23,6 +23,7 @@ public class MasterSlaveMockServer {
     public MasterSlaveMockServer(MockContainer mockContainer) {
         this.mockContainer = mockContainer;
         mockContainer.setData(17629583509760L, 15, new byte[]{0x00, 0x01, 0x01, (byte) 0x9A});
+        mockContainer.setData(17629583573248L, 7, new byte[]{0x00, 0x08, 0x50, 0x02, 0x0C, 0x00, 0x1F, 0x10, 0x00, (byte) 0x80, (byte) 0x88});
     }
 
     @PostConstruct
