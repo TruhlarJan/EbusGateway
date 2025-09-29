@@ -1,4 +1,4 @@
-package com.joiner.ebus.service.crc;
+package com.joiner.ebus.communication;
 
 public class JohnEbusCrc {
 

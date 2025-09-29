@@ -1,7 +1,7 @@
 package com.joiner.ebus.service;
 
-import com.joiner.ebus.communication.MasterSlaveData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
+import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 public class RoomController {
 

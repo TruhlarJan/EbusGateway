@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.joiner.ebus.communication.protherm;
+package com.joiner.ebus.communication.link;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
@@ -10,8 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.joiner.ebus.EbusMockServerApplication;
-import com.joiner.ebus.communication.EbusMasterSlaveLink;
-import com.joiner.ebus.communication.MasterSlaveData;
+import com.joiner.ebus.communication.link.EbusMasterSlaveLink;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
+import com.joiner.ebus.communication.protherm.MasterSlaveData;
 import com.joiner.ebus.io.mock.MasterSlaveMockServer;
 
 /**
@@ -27,7 +28,7 @@ class EbusMasterSlaveLinkTest {
     private MasterSlaveMockServer masterSlaveMockServer;
 
     /**
-     * Test method for {@link com.joiner.ebus.communication.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.MasterSlaveData)}.
+     * Test method for {@link com.joiner.ebus.communication.link.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
      * @throws Exception 
      */
     @Test

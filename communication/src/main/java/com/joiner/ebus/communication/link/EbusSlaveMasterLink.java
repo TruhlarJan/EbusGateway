@@ -1,4 +1,4 @@
-package com.joiner.ebus.communication;
+package com.joiner.ebus.communication.link;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -8,6 +8,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;

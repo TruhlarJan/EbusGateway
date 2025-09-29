@@ -1,4 +1,4 @@
-package com.joiner.ebus.communication;
+package com.joiner.ebus.communication.link;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,11 +28,11 @@ public class FrameParser {
         
         long key = bytesToLong(address);
         if (key == Address03h64hB5h12hData.KYE) {
-            publisher.publishEvent(new FrameParsedEvent(this, key, new Address03h64hB5h12hData( address, data)));
+            publisher.publishEvent(new FrameParsedEvent(this, key, new Address03h64hB5h12hData(address, data)));
         } else if (key == Address03h15hB5h13hData.KYE) {
             publisher.publishEvent(new FrameParsedEvent(this, key, new Address03h15hB5h13hData(address, data)));
         } else {
-            map.put(key, data);
+            map.put(key, byteArray);
         }
     }
 

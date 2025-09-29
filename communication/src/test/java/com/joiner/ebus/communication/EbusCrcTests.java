@@ -1,4 +1,4 @@
-package com.joiner.ebus.communication.protherm;
+package com.joiner.ebus.communication;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

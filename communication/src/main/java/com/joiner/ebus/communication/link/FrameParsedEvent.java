@@ -1,6 +1,8 @@
-package com.joiner.ebus.communication;
+package com.joiner.ebus.communication.link;
 
 import org.springframework.context.ApplicationEvent;
+
+import com.joiner.ebus.communication.protherm.MasterData;
 
 import lombok.Getter;
 

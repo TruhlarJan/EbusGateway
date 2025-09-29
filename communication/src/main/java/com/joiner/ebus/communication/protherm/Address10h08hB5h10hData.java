@@ -3,7 +3,6 @@ package com.joiner.ebus.communication.protherm;
 import java.io.ByteArrayOutputStream;
 
 import com.joiner.ebus.communication.EbusCrc;
-import com.joiner.ebus.communication.MasterSlaveData;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

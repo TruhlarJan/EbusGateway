@@ -1,4 +1,4 @@
-package com.joiner.ebus.communication;
+package com.joiner.ebus.communication.protherm;
 
 public interface MasterSlaveData {
     
