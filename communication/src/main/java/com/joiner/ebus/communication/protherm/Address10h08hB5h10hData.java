@@ -61,7 +61,8 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
         masterData[M12_INDEX] = (byte) m12byte;
     }
 
-    public byte[] getMasterData() {
+    @Override
+    public byte[] getMasterStartData() {
         masterData[CRC_INDEX] = (byte) EbusCrc.computeCrc(Arrays.copyOf(masterData, masterData.length - 1));
         return masterData;
     }

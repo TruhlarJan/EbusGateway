@@ -22,7 +22,7 @@ public class FrameParser {
     @Getter
     private Map<Long, byte[]> map = new HashMap<>();
     
-    public void save(byte[] byteArray) {
+    public long save(byte[] byteArray) {
         byte[] address = Arrays.copyOfRange(byteArray, 0, 5);
         byte[] data = Arrays.copyOfRange(byteArray, 5, byteArray.length);
         
@@ -34,6 +34,7 @@ public class FrameParser {
         } else {
             map.put(key, byteArray);
         }
+        return key;
     }
 
     // uděláme z prvních 5 bajtů jedno číslo typu long

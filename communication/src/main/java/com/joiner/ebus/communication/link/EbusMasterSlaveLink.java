@@ -47,7 +47,7 @@ public class EbusMasterSlaveLink {
             // -------------------------------
             // pošleme master rámec po bytech
             // -------------------------------
-            byte[] masterFrame = data.getMasterData();
+            byte[] masterFrame = data.getMasterStartData();
             for (byte b : masterFrame) {
                 out.write(b & 0xFF);
                 out.flush();

@@ -10,7 +10,7 @@ package com.joiner.ebus.communication.protherm;
 public class Address10h08hB5h11h02hData implements MasterSlaveData {
 
     @Override
-    public byte[] getMasterData() {
+    public byte[] getMasterStartData() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

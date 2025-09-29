@@ -21,7 +21,7 @@ public interface MasterSlaveData {
      * Master data terminated CRC.
      * @return
      */
-    byte[] getMasterData();
+    byte[] getMasterStartData();
 
     /**
      * Data size of the slave response.
