@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import com.joiner.ebus.communication.EbusCrc;
-
 class EbusCrcTests {
 
     /**
@@ -63,10 +61,19 @@ class EbusCrcTests {
     }
 
     /**
-     * Frame: 10 08 B5 11 01 01 -> CRC = 0x89
+     * Frame: 10 08 B5 11 01 00 -> CRC = 0x89
      */
     @Test
     void testFrame7() {
+        byte[] frame = {0x10, 0x08, (byte) 0xB5, 0x11, 0x01, 0x00};
+        assertEquals(0x88, EbusCrc.computeCrc(frame));
+    }
+    
+    /**
+     * Frame: 10 08 B5 11 01 01 -> CRC = 0x89
+     */
+    @Test
+    void testFrame8() {
         byte[] frame = {0x10, 0x08, (byte) 0xB5, 0x11, 0x01, 0x01};
         assertEquals(0x89, EbusCrc.computeCrc(frame));
     }
@@ -75,7 +82,7 @@ class EbusCrcTests {
      * Frame: 10 08 B5 11 01 02 -> CRC = 0x8A
      */
     @Test
-    void testFrame8() {
+    void testFrame9() {
         byte[] frame = {0x10, 0x08, (byte) 0xB5, 0x11, 0x01, 0x02};
         assertEquals(0x8A, EbusCrc.computeCrc(frame));
     }

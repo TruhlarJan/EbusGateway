@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Address10h08hB5h10hData implements MasterSlaveData {
     
+    public static final Long KEY = 17629583509760L;
+    
     /* SB byte - Operational Data from Room Controller to Burner Control Unit. */
     private static final int SB = 0x10;
     
@@ -40,11 +42,11 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
     private static final int CRC = 0x47;
     private static final int CRC_INDEX = 14;
 
+    /* 10h 08h B5h 10h 09h*/
+    private final byte[] masterData = new byte[] {QQ, ZZ, (byte) PB, SB, NN, 0x00, 0x00, M8, M9, (byte) 0xFF, (byte) 0xFF, M12, (byte) 0xFF, 0x00, CRC};
+
     /* Length of the slave data (ACK, NN, ZZ, CRC) */
     private static final int SLAVE_SIZE = 4;
-
-    /* B5h 10h B5h 10h*/
-    private final byte[] masterData = new byte[] {QQ, ZZ, (byte) PB, SB, NN, 0x00, 0x00, M8, M9, (byte) 0xFF, (byte) 0xFF, M12, (byte) 0xFF, 0x00, CRC};
 
     @Getter
     private byte[] slaveData;

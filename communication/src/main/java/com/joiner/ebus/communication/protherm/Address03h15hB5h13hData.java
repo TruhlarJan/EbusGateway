@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class Address03h15hB5h13hData implements MasterData {
 
-    public static final long KYE = 13249090307L;
+    public static final long KEY = 3391767118598L;
     
     private byte[] address;
     private byte[] data;
