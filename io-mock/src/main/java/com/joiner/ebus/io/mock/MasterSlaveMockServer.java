@@ -1,27 +1,28 @@
 package com.joiner.ebus.io.mock;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import jakarta.annotation.PostConstruct;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.joiner.ebus.io.mock.MockContainer.MockData;
+
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class MasterSlaveMockServer {
 
     private static final int PORT = 3333;
-    private final Map<String, byte[]> addressToSlave = new HashMap<>();
     private volatile boolean running = true;
+    private MockContainer mockContainer;
 
-    public MasterSlaveMockServer() {
-        // Jednorázové odpovědi podle adresy
-        addressToSlave.put("10 08 B5 10", new byte[]{0x00, 0x01, 0x01, (byte) 0x9A});
+    public MasterSlaveMockServer(MockContainer mockContainer) {
+        this.mockContainer = mockContainer;
+        mockContainer.setData(17629583509760L, 15, new byte[]{0x00, 0x01, 0x01, (byte) 0x9A});
     }
 
     @PostConstruct
@@ -32,6 +33,7 @@ public class MasterSlaveMockServer {
 
                 while (running) {
                     Socket client = serverSocket.accept();
+                    client.setSoTimeout(0);
                     log.info("Client connected: {}", client.getInetAddress());
                     new Thread(() -> handleTransaction(client)).start();
                 }
@@ -48,20 +50,18 @@ public class MasterSlaveMockServer {
             out.write(0xAA);
             out.flush();
 
-            byte[] addr = in.readNBytes(4);
-            String addrHex = bytesToHex(addr);
+            byte[] address = in.readNBytes(6);
+            String addrHex = bytesToHex(address);
             log.info("Master–slave transaction started with master bytes: {}", addrHex);
-            
-            int len = in.read();
-            byte[] masterFrame = in.readNBytes(len + 1);
 
-            byte[] slave = addressToSlave.getOrDefault(addrHex, new byte[]{0x00});
-            byte[] response = new byte[addr.length + 1 + masterFrame.length + slave.length];
+            MockData mockConteiner = mockContainer.getData(getKey(address));
+            byte[] master = in.readNBytes(mockConteiner.getLength() - 6);
+            byte[] slave = mockConteiner.getSlave();
 
-            System.arraycopy(addr, 0, response, 0, addr.length);
-            response[addr.length] = (byte) len;
-            System.arraycopy(masterFrame, 0, response, addr.length + 1, masterFrame.length);
-            System.arraycopy(slave, 0, response, addr.length + 1 + masterFrame.length, slave.length);
+            byte[] response = new byte[address.length + master.length + slave.length];
+            System.arraycopy(address, 0, response, 0, address.length);
+            System.arraycopy(master, 0, response, address.length, master.length);
+            System.arraycopy(slave, 0, response, address.length + master.length, slave.length);
 
             for (byte b : response) {
                 out.write(b);
@@ -86,4 +86,14 @@ public class MasterSlaveMockServer {
         for (byte b : data) sb.append(String.format("%02X ", b));
         return sb.toString().trim();
     }
+    
+    
+    private long getKey(byte[] byteArray) {
+        long key = 0;
+        for (int i = 0; i < 6; i++) {
+            key = (key << 8) | (byteArray[i] & 0xFFL);
+        }
+        return key;
+    }
+
 }
