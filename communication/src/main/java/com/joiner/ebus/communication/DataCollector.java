@@ -18,7 +18,7 @@ import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
-import com.joiner.ebus.communication.protherm.MasterData;
+import com.joiner.ebus.communication.protherm.SlaveData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 import jakarta.annotation.PostConstruct;
@@ -44,7 +44,7 @@ public class DataCollector {
     private Map<Long, MasterSlaveData> masterSlaveDataMap = new HashMap<>();
 
     @Getter
-    private Map<Long, MasterData> masterDataMap = new HashMap<>();
+    private Map<Long, SlaveData> masterDataMap = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -77,9 +77,9 @@ public class DataCollector {
     @EventListener
     public void handleFrame(FrameParsedEvent event) {
         long key = event.getKey();
-        MasterData masterData = event.getMasterData();
-        masterDataMap.put(key, masterData);
-        log.debug("Intercepted master data. Key: {}, bytes: {} {}", key, bytesToHex(masterData.getAddress()), bytesToHex(masterData.getData()));
+        SlaveData slaveData = event.getSlaveData();
+        masterDataMap.put(key, slaveData);
+        log.info("Intercepted slave data. Key: {} , bytes: {} {}", key, bytesToHex(slaveData.getAddress()), bytesToHex(slaveData.getData()));
     }
 
     public String bytesToHex(byte[] bytes) {

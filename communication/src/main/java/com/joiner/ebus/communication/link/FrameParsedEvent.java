@@ -2,7 +2,7 @@ package com.joiner.ebus.communication.link;
 
 import org.springframework.context.ApplicationEvent;
 
-import com.joiner.ebus.communication.protherm.MasterData;
+import com.joiner.ebus.communication.protherm.SlaveData;
 
 import lombok.Getter;
 
@@ -14,12 +14,12 @@ public class FrameParsedEvent extends ApplicationEvent {
     private long key;
     
     @Getter
-    private transient MasterData masterData;
+    private transient SlaveData slaveData;
 
-    public FrameParsedEvent(Object source, long key, MasterData masterData) {
+    public FrameParsedEvent(Object source, long key, SlaveData slaveData) {
         super(source);
         this.key = key;
-        this.masterData = masterData;
+        this.slaveData = slaveData;
     }
 
 }

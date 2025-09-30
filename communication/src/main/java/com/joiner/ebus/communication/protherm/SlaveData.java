@@ -1,6 +1,6 @@
 package com.joiner.ebus.communication.protherm;
 
-public interface MasterData {
+public interface SlaveData {
 
     byte[] getAddress();
     

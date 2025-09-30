@@ -3,7 +3,7 @@ package com.joiner.ebus.communication.protherm;
 import lombok.Getter;
 
 @Getter
-public class Address03h15hB5h13hData implements MasterData {
+public class Address03h15hB5h13hData implements SlaveData {
 
     public static final long KEY = 3391767118598L;
     
