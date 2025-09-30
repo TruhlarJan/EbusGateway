@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.joiner.ebus.EbusMockServerApplication;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 /**
@@ -58,6 +59,25 @@ class EbusMasterSlaveLinkTest {
 
         // 00 08 50 02 0c 00 1f 10 00 80 07
         byte[] slaveData = new byte[]{0x00, 0x08, 0x50, 0x02, 0x0C, 0x00, 0x1F, 0x10, 0x00, (byte) 0x80, (byte) 0x07};
+        assertArrayEquals(slaveData, operationalData.getSlaveData());
+
+        // 00 AA
+        byte[] finalData = new byte[]{0x00, (byte) 0xAA};
+        assertArrayEquals(finalData, operationalData.getMasterFinalData());
+    }
+
+    @Test
+    void testSendFrame10h08hB5h11h01h01h() throws Exception {
+        MasterSlaveData operationalData = new Address10h08hB5h11h01h01hData();
+        byte[] echoMasterFrame = dataSender.sendFrame(operationalData);
+
+        // 10 08 B5 11 01 01 89
+        byte[] masterCrcEnded = new byte[]{0x10, 0x08, (byte) 0xB5, 0x11, 0x01, 0x01, (byte) 0x89};
+        assertArrayEquals(masterCrcEnded, operationalData.getMasterStartData());
+        assertArrayEquals(masterCrcEnded, echoMasterFrame);
+
+        // 00 09 4a 46 00 80 ff 5c 00 00 ff 80
+        byte[] slaveData = new byte[]{0x00, 0x09, 0x4a, 0x46, 0x00, (byte) 0x80, (byte) 0xFF, 0x5c, 0x00, 0x00, (byte) 0xFF, (byte) 0x80};
         assertArrayEquals(slaveData, operationalData.getSlaveData());
 
         // 00 AA

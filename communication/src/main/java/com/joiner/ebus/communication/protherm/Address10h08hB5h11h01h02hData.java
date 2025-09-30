@@ -20,10 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Address10h08hB5h11h01h02hData implements MasterSlaveData {
 
-    public static final Long KEY = 17629583507714L;
+    public static final Long KEY = 17629583573250L;
 
     /* SB byte - Operational Data from Room Controller to Burner Control Unit. */
-    private static final int SB = 0x10;
+    private static final int SB = 0x11;
     
     /* NN byte - Length of data */
     private static final int NN = 0x01;

@@ -24,6 +24,7 @@ public class MasterSlaveMockServer {
         this.mockContainer = mockContainer;
         mockContainer.setData(17629583509760L, 15, new byte[]{0x00, 0x01, 0x01, (byte) 0x9A});
         mockContainer.setData(17629583573248L, 7, new byte[]{0x00, 0x08, 0x50, 0x02, 0x0C, 0x00, 0x1F, 0x10, 0x00, (byte) 0x80, (byte) 0x07});
+        mockContainer.setData(17629583573249L, 7, new byte[]{0x00, 0x09, 0x4a, 0x46, 0x00, (byte) 0x80, (byte) 0xFF, 0x5c, 0x00, 0x00, (byte) 0xFF, (byte) 0x80});
     }
 
     @PostConstruct
@@ -55,7 +56,8 @@ public class MasterSlaveMockServer {
             String addrHex = bytesToHex(address);
             log.info("Master–slave transaction started with master bytes: {}", addrHex);
 
-            MockData mockConteiner = mockContainer.getData(getKey(address));
+            long key = getKey(address);
+            MockData mockConteiner = mockContainer.getData(key);
             byte[] master = in.readNBytes(mockConteiner.getLength() - 6);
             byte[] slave = mockConteiner.getSlave();
 
