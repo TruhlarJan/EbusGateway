@@ -22,6 +22,7 @@ import com.joiner.ebus.communication.protherm.MasterData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -39,8 +40,10 @@ public class DataCollector {
 
     private final ReentrantLock ebusLock = new ReentrantLock();
 
+    @Getter
     private Map<Long, MasterSlaveData> masterSlaveDataMap = new HashMap<>();
 
+    @Getter
     private Map<Long, MasterData> masterDataMap = new HashMap<>();
 
     @PostConstruct
@@ -79,7 +82,7 @@ public class DataCollector {
         log.debug("Intercepted master data. Key: {}, bytes: {} {}", key, bytesToHex(masterData.getAddress()), bytesToHex(masterData.getData()));
     }
 
-    private static String bytesToHex(byte[] bytes) {
+    public String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02X ", b));
