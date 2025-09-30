@@ -79,7 +79,7 @@ public class DataCollector {
         long key = event.getKey();
         SlaveData slaveData = event.getSlaveData();
         masterDataMap.put(key, slaveData);
-        log.info("Intercepted slave data. Key: {} , bytes: {} {}", key, bytesToHex(slaveData.getAddress()), bytesToHex(slaveData.getData()));
+        log.debug("Intercepted slave data. Key: {} , bytes: {} {}", key, bytesToHex(slaveData.getAddress()), bytesToHex(slaveData.getData()));
     }
 
     public String bytesToHex(byte[] bytes) {

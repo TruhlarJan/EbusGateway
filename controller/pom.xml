@@ -7,14 +7,14 @@
         <artifactId>EbusGateway</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>application</artifactId>
-    <name>application</name>
+    <artifactId>controller</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>com.joiner</groupId>
-            <artifactId>controller</artifactId>
+            <artifactId>service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-
     </dependencies>
+
 </project>

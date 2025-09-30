@@ -40,5 +40,6 @@
     	<module>service</module>
     	<module>communication</module>
     	<module>io-mock</module>
+    	<module>controller</module>
     </modules>
 </project>

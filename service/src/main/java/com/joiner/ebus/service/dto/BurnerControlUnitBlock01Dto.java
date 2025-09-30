@@ -5,7 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BurnerControlUnitBlock01Dto extends MasterSlaveDataDto {
+public class BurnerControlUnitBlock01Dto {
+    
+    String data;
     
     Double leadWaterTemperature;
     
