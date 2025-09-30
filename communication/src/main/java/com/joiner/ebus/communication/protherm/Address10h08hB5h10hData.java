@@ -26,7 +26,7 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
     /* NN byte - Length of data in master M6 - M15 */
     private static final int NN = 0x09;
 
-    /* Default value M8 = 00 */
+    /* Default value M8 = 14 */
     private static final int M8 = 0x14;
     private static final int M8_INDEX = 7;
 
@@ -50,7 +50,16 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
 
     @Getter
     private byte[] slaveData;
-    
+
+    /**
+     * Default constructor.
+     * <li>M8={@value #M8}
+     * <li>M9={@value #M9}
+     * <li>M12={@value #M12}
+     */
+    public Address10h08hB5h10hData() {
+    }    
+   
     /**
      * Master byte M1 - M15
      * @param m8 M8 - Lead water target temperature

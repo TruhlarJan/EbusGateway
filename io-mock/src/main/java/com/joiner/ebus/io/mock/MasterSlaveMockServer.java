@@ -54,14 +54,12 @@ public class MasterSlaveMockServer {
             out.flush();
 
             byte[] address = in.readNBytes(6);
-            String addrHex = bytesToHex(address);
-            log.info("Master–slave transaction started with master bytes: {}", addrHex);
 
-            long key = getKey(address);
-            MockData mockConteiner = mockContainer.getData(key);
+            MockData mockConteiner = mockContainer.getData(getKey(address));
             byte[] master = in.readNBytes(mockConteiner.getLength() - 6);
+            log.info("Master–slave transaction started with master bytes: {} {}", bytesToHex(address), bytesToHex(master));
+            
             byte[] slave = mockConteiner.getSlave();
-
             byte[] response = new byte[address.length + master.length + slave.length];
             System.arraycopy(address, 0, response, 0, address.length);
             System.arraycopy(master, 0, response, address.length, master.length);
@@ -72,6 +70,7 @@ public class MasterSlaveMockServer {
                 out.flush();
                 Thread.sleep(4, 170_000); // simulace 2400 Bd
             }
+            log.info("Master–slave transaction responsed with echo bytes: {}", bytesToHex(response));
 
             byte[] finalBytes = in.readNBytes(2);
             log.info("Master–slave transaction finished with final bytes: {}", bytesToHex(finalBytes));

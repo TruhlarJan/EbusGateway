@@ -15,6 +15,9 @@ import com.joiner.ebus.communication.link.EbusMasterSlaveLink;
 import com.joiner.ebus.communication.link.EbusSlaveMasterLink;
 import com.joiner.ebus.communication.link.FrameParsedEvent;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
 import com.joiner.ebus.communication.protherm.MasterData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
@@ -44,9 +47,11 @@ public class DataCollector {
     public void init() {
         ebusMasterSlaveLink.setLock(ebusLock);
         ebusSlaveMasterLink.setLock(ebusLock);
-        //test
-        log.info("Client sending RoomController data: 30, 45.0, false, true");
-        masterSlaveDataMap.put(1L, new Address10h08hB5h10hData(0x3C, 0x5A, 0x01));
+        // data
+        masterSlaveDataMap.put(Address10h08hB5h10hData.KEY, new Address10h08hB5h10hData());
+        masterSlaveDataMap.put(Address10h08hB5h11h01h00hData.KEY, new Address10h08hB5h11h01h00hData());
+        masterSlaveDataMap.put(Address10h08hB5h11h01h01hData.KEY, new Address10h08hB5h11h01h01hData());
+        masterSlaveDataMap.put(Address10h08hB5h11h01h02hData.KEY, new Address10h08hB5h11h01h02hData());
     }
 
     @Scheduled(fixedRateString = "${collector.scheduler.rate:10000}")
@@ -62,16 +67,16 @@ public class DataCollector {
             } catch (Exception e) {
                 log.error("Ebus MasterToSlave communication failed.", e);
             }
-        } );
-        masterDataMap.forEach((k, v) -> log.info("Intercepted address. Key: {}, Last data: {} {}", k, bytesToHex(v.getAddress()), bytesToHex(v.getData())));
+        });
     } 
 
     @Async
     @EventListener
     public void handleFrame(FrameParsedEvent event) {
+        long key = event.getKey();
         MasterData masterData = event.getMasterData();
-        masterDataMap.put(event.getKey(), masterData);
-        log.debug("Intercepted data: {} {}", bytesToHex(masterData.getAddress()), bytesToHex(masterData.getData()));
+        masterDataMap.put(key, masterData);
+        log.debug("Intercepted master data. Key: {}, bytes: {} {}", key, bytesToHex(masterData.getAddress()), bytesToHex(masterData.getData()));
     }
 
     private static String bytesToHex(byte[] bytes) {
