@@ -11,6 +11,8 @@ import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
+import com.joiner.ebus.service.converter.Bit.*;
+import com.joiner.ebus.service.converter.Hex.*;
 import com.joiner.ebus.service.dto.BurnerControlUnit;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock00Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock01Dto;
@@ -59,11 +61,11 @@ public class BurnerControlService {
         
         BurnerControlUnitBlock01Dto dto = new BurnerControlUnitBlock01Dto();
         dto.setData(conversionService.convert(masterSlaveData, String.class));
-        dto.setLeadWaterTemperature(conversionService.convert(slaveData[2], Double.class));
-        dto.setReturnWaterTemperature(conversionService.convert(slaveData[3], Double.class));
-        dto.setServiceWaterTemperature(conversionService.convert(slaveData[7], Double.class));
-        dto.setHeating(conversionService.convert(slaveData[8] & 1 , Boolean.class));
-        dto.setServiceWater(conversionService.convert((slaveData[8] >> 2) & 1 , Boolean.class));
+        dto.setLeadWaterTemperature(conversionService.convert(S3.of(slaveData), Double.class));
+        dto.setReturnWaterTemperature(conversionService.convert(S4.of(slaveData), Double.class));
+        dto.setServiceWaterTemperature(conversionService.convert(S8.of(slaveData), Double.class));
+        dto.setHeating(conversionService.convert(S9b0.of(slaveData) , Boolean.class));
+        dto.setServiceWater(conversionService.convert(S9b2.of(slaveData), Boolean.class));
         return dto;
     }
 
@@ -77,7 +79,7 @@ public class BurnerControlService {
         
         BurnerControlUnitBlock02Dto dto = new BurnerControlUnitBlock02Dto();
         dto.setData(conversionService.convert(masterSlaveData, String.class));
-        dto.setServiceWaterTargetTemperature(conversionService.convert(slaveData[6], Double.class));
+        dto.setServiceWaterTargetTemperature(conversionService.convert(S7.of(slaveData), Double.class));
         return dto;
     }
 }

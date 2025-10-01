@@ -4,14 +4,15 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BitToBoolean implements Converter<Integer, Boolean> {
+public class BitToBoolean implements Converter<Bit, Boolean> {
 
     @Override
-    public Boolean convert(Integer source) {
-        if (source == null) {
+    public Boolean convert(Bit source) {
+        Integer value = source.value();
+        if (value == null) {
             return null;
         }
-        return source != 0;
+        return value != 0;
     }
 
 }
