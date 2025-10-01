@@ -90,4 +90,9 @@ public class DataCollector {
         return sb.toString().trim();
     }
 
+    public Integer putAddress10h08hB5h10hData(MasterSlaveData masterSlaveData) {
+        masterSlaveDataMap.put(Address10h08hB5h10hData.KEY, masterSlaveData);
+        return null;
+    }
+
 }
