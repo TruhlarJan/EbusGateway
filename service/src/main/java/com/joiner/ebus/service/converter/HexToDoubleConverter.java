@@ -3,6 +3,8 @@ package com.joiner.ebus.service.converter;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import com.joiner.ebus.service.converter.source.Hex;
+
 @Component
 public class HexToDoubleConverter implements Converter<Hex, Double> {
 

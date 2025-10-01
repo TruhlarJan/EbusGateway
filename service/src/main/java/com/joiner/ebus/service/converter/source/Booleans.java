@@ -1,4 +1,4 @@
-package com.joiner.ebus.service.converter;
+package com.joiner.ebus.service.converter.source;
 
 import lombok.Getter;
 

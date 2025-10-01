@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.DataCollector;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
-import com.joiner.ebus.service.converter.Booleans;
+import com.joiner.ebus.service.converter.source.Booleans;
 import com.joiner.ebus.service.dto.RoomControlUnitDto;
 
 @Service
