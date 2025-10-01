@@ -13,7 +13,7 @@ import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 import com.joiner.ebus.service.converter.Bit.*;
 import com.joiner.ebus.service.converter.Hex.*;
-import com.joiner.ebus.service.dto.BurnerControlUnit;
+import com.joiner.ebus.service.dto.BurnerControlUnitsDto;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock00Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock01Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock02Dto;
@@ -21,21 +21,23 @@ import com.joiner.ebus.service.dto.BurnerControlUnitBlock02Dto;
 @Service
 public class BurnerControlService {
 
-    @Autowired
-    private DataCollector dataCollector;
+    private Map<Long, MasterSlaveData> masterSlaveDataMap;
     
     @Autowired
     private ConversionService conversionService;
 
+    public BurnerControlService(DataCollector dataCollector) {
+        masterSlaveDataMap = dataCollector.getMasterSlaveDataMap();
+    }
+    
     /**
      * Operational Data of Burner Control Unit to Room Control Unit (B5h 11h Block 1)
      */
-    public BurnerControlUnit getBurnerControlUnit() {
-        Map<Long, MasterSlaveData> masterSlaveDataMap = dataCollector.getMasterSlaveDataMap();
-        BurnerControlUnit burnerControlUnit = new BurnerControlUnit();
-        burnerControlUnit.setBlock00(getBurnerControlUnitBlock00Dto(masterSlaveDataMap));
-        burnerControlUnit.setBlock01(getBurnerControlUnitBlock01Dto(masterSlaveDataMap));
-        burnerControlUnit.setBlock02(getBurnerControlUnitBlock02Dto(masterSlaveDataMap));
+    public BurnerControlUnitsDto getBurnerControlUnits() {
+        BurnerControlUnitsDto burnerControlUnit = new BurnerControlUnitsDto();
+        burnerControlUnit.setBlock00(getBurnerControlUnitBlock00Dto());
+        burnerControlUnit.setBlock01(getBurnerControlUnitBlock01Dto());
+        burnerControlUnit.setBlock02(getBurnerControlUnitBlock02Dto());
         return burnerControlUnit;
     }
 
@@ -43,7 +45,7 @@ public class BurnerControlService {
      * @param masterSlaveDataMap
      * @return
      */
-    private BurnerControlUnitBlock00Dto getBurnerControlUnitBlock00Dto(Map<Long, MasterSlaveData> masterSlaveDataMap) {
+    public BurnerControlUnitBlock00Dto getBurnerControlUnitBlock00Dto() {
         MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h00hData.KEY);
         
         BurnerControlUnitBlock00Dto dto = new BurnerControlUnitBlock00Dto();
@@ -55,7 +57,7 @@ public class BurnerControlService {
      * @param masterSlaveDataMap
      * @return
      */
-    private BurnerControlUnitBlock01Dto getBurnerControlUnitBlock01Dto(Map<Long, MasterSlaveData> masterSlaveDataMap) {
+    public BurnerControlUnitBlock01Dto getBurnerControlUnitBlock01Dto() {
         MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h01hData.KEY);
         byte[] slaveData = masterSlaveData.getSlaveData();
         
@@ -73,7 +75,7 @@ public class BurnerControlService {
      * @param masterSlaveDataMap
      * @return
      */
-    private BurnerControlUnitBlock02Dto getBurnerControlUnitBlock02Dto(Map<Long, MasterSlaveData> masterSlaveDataMap) {
+    public BurnerControlUnitBlock02Dto getBurnerControlUnitBlock02Dto() {
         MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h02hData.KEY);
         byte[] slaveData = masterSlaveData.getSlaveData();
         

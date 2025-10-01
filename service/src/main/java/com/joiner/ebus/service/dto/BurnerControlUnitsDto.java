@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BurnerControlUnit {
+public class BurnerControlUnitsDto {
 
     private BurnerControlUnitBlock00Dto block00;
 
