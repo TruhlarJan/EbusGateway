@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.joiner.ebus.service.converter.source.Bit;
 
 @Component
-public class BitToBoolean implements Converter<Bit, Boolean> {
+public class BitToBooleanConverter implements Converter<Bit, Boolean> {
 
     @Override
     public Boolean convert(Bit source) {

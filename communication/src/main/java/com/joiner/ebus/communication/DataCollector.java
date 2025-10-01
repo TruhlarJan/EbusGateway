@@ -31,7 +31,10 @@ public class DataCollector {
 
     @Value("${collector.poller.enabled:true}")
     private boolean pollerEnabled;
-    
+
+    @Value("${collector.processor.immediate:false}")
+    private boolean processorImmediate;
+
     @Autowired
     private EbusMasterSlaveLink ebusMasterSlaveLink;
 
@@ -90,9 +93,18 @@ public class DataCollector {
         return sb.toString().trim();
     }
 
-    public Integer putAddress10h08hB5h10hData(MasterSlaveData masterSlaveData) {
+    public byte[] putAddress10h08hB5h10hData(MasterSlaveData masterSlaveData) {
         masterSlaveDataMap.put(Address10h08hB5h10hData.KEY, masterSlaveData);
-        return null;
+        byte[] b = null;
+        if (processorImmediate) {
+            try {
+                ebusMasterSlaveLink.sendFrame(masterSlaveData);
+                b = masterSlaveData.getSlaveData();
+            } catch (Exception e) {
+                log.error("Ebus MasterToSlave communication failed.", e);
+            }
+        }
+        return b;
     }
 
 }

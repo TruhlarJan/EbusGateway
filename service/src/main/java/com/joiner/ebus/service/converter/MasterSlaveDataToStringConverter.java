@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 @Component
-public class MasterSlaveDataToString implements Converter<MasterSlaveData, String> {
+public class MasterSlaveDataToStringConverter implements Converter<MasterSlaveData, String> {
 
     @Override
     public String convert(MasterSlaveData source) {
