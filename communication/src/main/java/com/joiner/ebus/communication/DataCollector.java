@@ -6,19 +6,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.link.EbusMasterSlaveLink;
 import com.joiner.ebus.communication.link.EbusSlaveMasterLink;
-import com.joiner.ebus.communication.link.SlaveDataReadyEvent;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
-import com.joiner.ebus.communication.protherm.SlaveData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 import jakarta.annotation.PostConstruct;
@@ -49,9 +45,6 @@ public class DataCollector {
     @Getter
     private Map<Long, MasterSlaveData> masterSlaveDataMap = new HashMap<>();
 
-    @Getter
-    private Map<Long, SlaveData> masterDataMap = new HashMap<>();
-
     @PostConstruct
     public void init() {
         ebusMasterSlaveLink.setLock(ebusLock);
@@ -78,15 +71,6 @@ public class DataCollector {
             }
         });
     } 
-
-    @Async
-    @EventListener
-    public void handleFrame(SlaveDataReadyEvent event) {
-        SlaveData slaveData = event.getSlaveData();
-        long key = slaveData.getKey();
-        masterDataMap.put(key, slaveData);
-        log.debug("Intercepted slave data. Key: {} , bytes: {} {}", key, byteUtils.bytesToHex(slaveData.getAddress()), byteUtils.bytesToHex(slaveData.getData()));
-    }
 
     public byte[] putAddress10h08hB5h10hData(MasterSlaveData masterSlaveData) {
         masterSlaveDataMap.put(Address10h08hB5h10hData.KEY, masterSlaveData);
