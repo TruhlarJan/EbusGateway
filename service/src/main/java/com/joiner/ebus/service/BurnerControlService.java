@@ -6,17 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
-import com.joiner.ebus.communication.DataCollector;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
-import com.joiner.ebus.service.dto.BurnerControlUnitsDto;
-import com.joiner.ebus.service.converter.source.Bit.*;
-import com.joiner.ebus.service.converter.source.Hex.*;
+import com.joiner.ebus.service.cache.DataCache;
+import com.joiner.ebus.service.converter.source.Bit.S9b0;
+import com.joiner.ebus.service.converter.source.Bit.S9b2;
+import com.joiner.ebus.service.converter.source.Hex.S3;
+import com.joiner.ebus.service.converter.source.Hex.S4;
+import com.joiner.ebus.service.converter.source.Hex.S7;
+import com.joiner.ebus.service.converter.source.Hex.S8;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock00Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock01Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock02Dto;
+import com.joiner.ebus.service.dto.BurnerControlUnitsDto;
 
 @Service
 public class BurnerControlService {
@@ -26,8 +30,8 @@ public class BurnerControlService {
     @Autowired
     private ConversionService conversionService;
 
-    public BurnerControlService(DataCollector dataCollector) {
-        masterSlaveDataMap = dataCollector.getMasterSlaveDataMap();
+    public BurnerControlService(DataCache dataCache) {
+        masterSlaveDataMap = dataCache.getMasterSlaveDataMap();
     }
     
     /**

@@ -5,7 +5,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
@@ -19,13 +21,17 @@ public class EbusMasterSlaveLink {
     @Value("${adapter.port.raw:3333}")
     private int port;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     private ReentrantLock lock = new ReentrantLock();
 
+    
     public void setLock(ReentrantLock lock) {
         this.lock = lock;
     }
 
-    public byte[] sendFrame(MasterSlaveData data) throws Exception {
+    public void sendFrame(MasterSlaveData masterSlaveData) throws Exception {
         lock.lock();
         try (Socket socket = new Socket(host, port)) {
             socket.setSoTimeout(2000); // timeout 2s
@@ -47,7 +53,7 @@ public class EbusMasterSlaveLink {
             // -------------------------------
             // pošleme master rámec po bytech
             // -------------------------------
-            byte[] masterFrame = data.getMasterStartData();
+            byte[] masterFrame = masterSlaveData.getMasterStartData();
             for (byte b : masterFrame) {
                 out.write(b & 0xFF);
                 out.flush();
@@ -70,7 +76,7 @@ public class EbusMasterSlaveLink {
             // -------------------------------
             // načteme slave odpověď přesně podle velikosti
             // -------------------------------
-            byte[] slaveResponse = new byte[data.getSlaveSize()];
+            byte[] slaveResponse = new byte[masterSlaveData.getSlaveSize()];
             read = 0;
             while (read < slaveResponse.length) {
                 int r = in.read(slaveResponse, read, slaveResponse.length - read);
@@ -83,15 +89,15 @@ public class EbusMasterSlaveLink {
             // -------------------------------
             // pošleme ACK (a SYN) po bytech
             // -------------------------------
-            byte[] ack = data.getMasterFinalData();
+            byte[] ack = masterSlaveData.getMasterFinalData();
             for (byte b : ack) {
                 out.write(b & 0xFF);
                 out.flush();
                 Thread.sleep(4, 170_000); // simulace 2400 Bd
             }
 
-            data.setSlaveData(slaveResponse);
-            return masterEcho;
+            masterSlaveData.setSlaveData(slaveResponse);
+            publisher.publishEvent(new MasterSlaveDataReadyEvent(this, masterSlaveData));
         } finally {
             lock.unlock();
         }

@@ -43,7 +43,6 @@ public class EbusSlaveMasterLink {
     @Getter
     private FrameParser frameParser;
 
-
     @Autowired
     private ApplicationEventPublisher publisher;
 

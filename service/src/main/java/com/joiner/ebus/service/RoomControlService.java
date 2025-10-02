@@ -13,9 +13,12 @@ import com.joiner.ebus.service.dto.RoomControlUnitDto;
 @Service
 public class RoomControlService {
 
-    @Autowired
     private DataCollector dataCollector;
     
+    public RoomControlService(DataCollector dataCollector) {
+        this.dataCollector = dataCollector;
+    }
+
     @Autowired
     private ConversionService conversionService;
 
@@ -23,7 +26,7 @@ public class RoomControlService {
         int m8 =  conversionService.convert(roomControlUnitDto.getLeadWaterTargetTemperature(), Byte.class);
         int m9 =  conversionService.convert(roomControlUnitDto.getServiceWaterTargetTemperature(), Byte.class);
         int m12 = conversionService.convert(of(roomControlUnitDto.isLeadWaterHeatingBlocked(), roomControlUnitDto.isServiceWaterHeatingBlocked()), Byte.class);
-        dataCollector.putAddress10h08hB5h10hData(new Address10h08hB5h10hData(m8, m9, m12));
+        dataCollector.sendDataImmidiately(new Address10h08hB5h10hData(m8, m9, m12));
     }
 
 }
