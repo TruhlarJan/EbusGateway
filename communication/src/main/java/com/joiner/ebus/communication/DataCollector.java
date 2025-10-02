@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.link.EbusMasterSlaveLink;
 import com.joiner.ebus.communication.link.EbusSlaveMasterLink;
-import com.joiner.ebus.communication.link.FrameParsedEvent;
+import com.joiner.ebus.communication.link.SlaveDataReadyEvent;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
@@ -78,9 +78,9 @@ public class DataCollector {
 
     @Async
     @EventListener
-    public void handleFrame(FrameParsedEvent event) {
-        long key = event.getKey();
+    public void handleFrame(SlaveDataReadyEvent event) {
         SlaveData slaveData = event.getSlaveData();
+        long key = slaveData.getKey();
         masterDataMap.put(key, slaveData);
         log.debug("Intercepted slave data. Key: {} , bytes: {} {}", key, bytesToHex(slaveData.getAddress()), bytesToHex(slaveData.getData()));
     }

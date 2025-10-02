@@ -15,4 +15,9 @@ public class Address03h15hB5h13hData implements SlaveData {
         this.data = data;
     }
 
+    @Override
+    public long getKey() {
+        return KEY;
+    }
+
 }

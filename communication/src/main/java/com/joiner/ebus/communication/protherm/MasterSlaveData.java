@@ -48,4 +48,10 @@ public interface MasterSlaveData {
      * @return Checked data according to OCR
      */
     byte[] getSlaveData();
+
+    /**
+     * Address key of the MasterSlave object.
+     * @return
+     */
+    long getKey();
 }

@@ -93,4 +93,9 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
         slaveData = response;
     }
 
+    @Override
+    public long getKey() {
+        return KEY;
+    }
+
 }

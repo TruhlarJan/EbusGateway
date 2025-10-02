@@ -7,9 +7,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
+import com.joiner.ebus.communication.protherm.SlaveData;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -40,6 +42,10 @@ public class EbusSlaveMasterLink {
     @Autowired
     @Getter
     private FrameParser frameParser;
+
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @PostConstruct
     public void start() {
@@ -114,8 +120,9 @@ public class EbusSlaveMasterLink {
             }
         }
         if (byteArrayOutputStream.size() > 0 && b == MasterSlaveData.SYN) {
-            frameParser.save(byteArrayOutputStream.toByteArray());
+            SlaveData slaveData = frameParser.getSlaveData(byteArrayOutputStream.toByteArray());
             byteArrayOutputStream.reset();
+            publisher.publishEvent(new SlaveDataReadyEvent(this, slaveData));
         }
     }
 
