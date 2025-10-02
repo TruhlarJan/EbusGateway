@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.joiner.ebus.EbusMockServerApplication;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
@@ -19,7 +18,7 @@ import com.joiner.ebus.communication.protherm.MasterSlaveData;
 /**
  * 
  */
-@SpringBootTest(classes = EbusMockServerApplication.class)
+@SpringBootTest
 class EbusMasterSlaveLinkTest {
 
     @Autowired

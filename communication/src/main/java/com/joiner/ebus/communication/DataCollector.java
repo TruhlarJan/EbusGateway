@@ -41,6 +41,9 @@ public class DataCollector {
     @Autowired
     private EbusSlaveMasterLink ebusSlaveMasterLink;
 
+    @Autowired
+    private ByteUtils byteUtils;
+    
     private final ReentrantLock ebusLock = new ReentrantLock();
 
     @Getter
@@ -68,8 +71,8 @@ public class DataCollector {
         masterSlaveDataMap.values().forEach(masterSlaveDataValues -> {
             try {
                 byte[] masterEcho = ebusMasterSlaveLink.sendFrame(masterSlaveDataValues);
-                log.debug("Master echo:    {}", bytesToHex(masterEcho));
-                log.debug("Slave response: {}", bytesToHex(masterSlaveDataValues.getSlaveData()));
+                log.debug("Master echo:    {}", byteUtils.bytesToHex(masterEcho));
+                log.debug("Slave response: {}", byteUtils.bytesToHex(masterSlaveDataValues.getSlaveData()));
             } catch (Exception e) {
                 log.error("Ebus MasterToSlave communication failed.", e);
             }
@@ -82,15 +85,7 @@ public class DataCollector {
         SlaveData slaveData = event.getSlaveData();
         long key = slaveData.getKey();
         masterDataMap.put(key, slaveData);
-        log.debug("Intercepted slave data. Key: {} , bytes: {} {}", key, bytesToHex(slaveData.getAddress()), bytesToHex(slaveData.getData()));
-    }
-
-    public String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X ", b));
-        }
-        return sb.toString().trim();
+        log.debug("Intercepted slave data. Key: {} , bytes: {} {}", key, byteUtils.bytesToHex(slaveData.getAddress()), byteUtils.bytesToHex(slaveData.getData()));
     }
 
     public byte[] putAddress10h08hB5h10hData(MasterSlaveData masterSlaveData) {

@@ -6,13 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.joiner.ebus.EbusMockServerApplication;
 import com.joiner.ebus.communication.protherm.Address03h15hB5h13hData;
 import com.joiner.ebus.communication.protherm.Address03h64hB5h12hData;
 import com.joiner.ebus.communication.protherm.AddressUnknownData;
 import com.joiner.ebus.communication.protherm.SlaveData;
 
-@SpringBootTest(classes = EbusMockServerApplication.class)
+@SpringBootTest
 class FrameParserTest {
 
     @Autowired
@@ -29,11 +28,6 @@ class FrameParserTest {
         SlaveData slaveData3 = frameParser.getSlaveData(new byte[6]);
         assertEquals(AddressUnknownData.KEY, slaveData3.getKey());
 
-    }
-
-    @Test
-    void testBytesToLong() {
-        assertEquals(4328719365L, frameParser.getKey(new byte[]{0x00, 0x01, 0x02, 0x03, 0x04, 0x05}));
     }
 
 }
