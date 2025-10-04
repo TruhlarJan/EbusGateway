@@ -84,16 +84,16 @@ public interface MasterSlaveData {
     default void setMasterSlaveData(byte[] address, byte[] data) {
         byte[] combined = ByteBuffer.allocate(address.length + data.length).put(address).put(data).array();
         int slaveLength = combined.length - getMasterData().length;
+        if (slaveLength <= 0 || slaveLength > combined.length) {
+            return;
+        }
         setMasterData(Arrays.copyOfRange(combined, 0, combined.length - slaveLength));
-
         byte[] slave = Arrays.copyOfRange(combined, combined.length - slaveLength, combined.length);
-        if (slave.length > 1) {
-            int crcResponsed = slave[slave.length - 1] & 0xFF;
-            int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
-            if (crcResponsed != 0 && crcResponsed == crcComputed) {
-                setSlaveData(slave);
-                setDate(new Date());
-            }
+        int crcResponsed = slave[slave.length - 1] & 0xFF;
+        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
+        if (crcResponsed != 0 && crcResponsed == crcComputed) {
+            setSlaveData(slave);
+            setDate(new Date());
         }
     }
 
