@@ -54,8 +54,12 @@ public class Address10h08hB5h11h01h01hData implements MasterSlaveData {
         setMasterData(masterData);
     }
 
-    public Address10h08hB5h11h01h01hData(byte[] address, byte[] data) {
-        setMasterSlaveData(address, data);
+    /**
+     * 
+     * @param data
+     */
+    public Address10h08hB5h11h01h01hData(byte[] data) {
+        setMasterSlaveData(data);
     }
 
     @Override

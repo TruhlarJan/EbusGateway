@@ -22,8 +22,12 @@ public class Address03h64hB5h12hData implements MasterSlaveData {
     @Setter
     private Date date;
 
-    public Address03h64hB5h12hData(byte[] address, byte[] data) {
-        setMasterSlaveData(address, data);
+    /**
+     * 
+     * @param data
+     */
+    public Address03h64hB5h12hData(byte[] data) {
+        setMasterSlaveData(data);
     }
 
     @Override

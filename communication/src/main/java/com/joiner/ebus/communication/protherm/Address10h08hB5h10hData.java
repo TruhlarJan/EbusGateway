@@ -75,11 +75,10 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
 
     /**
      * 
-     * @param address
      * @param data
      */
-    public Address10h08hB5h10hData(byte[] address, byte[] data) {
-        setMasterSlaveData(address, data);
+    public Address10h08hB5h10hData(byte[] data) {
+        setMasterSlaveData(data);
     }
 
     @Override

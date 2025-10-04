@@ -1,6 +1,5 @@
 package com.joiner.ebus.communication.protherm;
 
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -51,12 +50,14 @@ public interface MasterSlaveData {
 
     /**
      * Date of accepted slave data.
+     * 
      * @return
      */
     Date getDate();
-    
+
     /**
      * Date of responded correct master slave data
+     * 
      * @param date
      */
     void setDate(Date date);
@@ -78,22 +79,20 @@ public interface MasterSlaveData {
 
     /**
      * 
-     * @param address
      * @param data
      */
-    default void setMasterSlaveData(byte[] address, byte[] data) {
-        byte[] combined = ByteBuffer.allocate(address.length + data.length).put(address).put(data).array();
-        int slaveLength = combined.length - getMasterData().length;
-        if (slaveLength <= 0 || slaveLength > combined.length) {
-            return;
+    default void setMasterSlaveData(byte[] data) {
+        if (getMasterData().length <= data.length) {
+            setMasterData(Arrays.copyOfRange(data, 0, getMasterData().length));
         }
-        setMasterData(Arrays.copyOfRange(combined, 0, combined.length - slaveLength));
-        byte[] slave = Arrays.copyOfRange(combined, combined.length - slaveLength, combined.length);
-        int crcResponsed = slave[slave.length - 1] & 0xFF;
-        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
-        if (crcResponsed != 0 && crcResponsed == crcComputed) {
-            setSlaveData(slave);
-            setDate(new Date());
+        if (data.length > getMasterData().length) {
+            byte[] slave = Arrays.copyOfRange(data, getMasterData().length, data.length);
+            int crcResponsed = slave[slave.length - 1] & 0xFF;
+            int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
+            if (crcResponsed != 0 && crcResponsed == crcComputed) {
+                setSlaveData(slave);
+                setDate(new Date());
+            }
         }
     }
 

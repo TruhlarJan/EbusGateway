@@ -22,8 +22,12 @@ public class AddressUnknownData implements MasterSlaveData {
     @Setter
     private Date date;
 
-    public AddressUnknownData(byte[] address, byte[] data) {
-        setMasterSlaveData(address, data);
+    /**
+     * 
+     * @param data
+     */
+    public AddressUnknownData(byte[] data) {
+        setMasterSlaveData(data);
     }
 
     @Override

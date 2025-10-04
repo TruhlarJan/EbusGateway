@@ -21,25 +21,24 @@ public class FrameParser {
     @Autowired
     private ByteUtils utils;
     
-    public MasterSlaveData getMasterSlaveData(byte[] byteArray) {
-        byte[] address = Arrays.copyOfRange(byteArray, 0, 6);
-        byte[] data = Arrays.copyOfRange(byteArray, 6, byteArray.length);
+    public MasterSlaveData getMasterSlaveData(byte[] data) {
+        byte[] address = Arrays.copyOfRange(data, 0, 6);
         
         long key = utils.getKey(address);
         if (key == Address10h08hB5h10hData.KEY) {
-            return new Address10h08hB5h10hData(address, data);
+            return new Address10h08hB5h10hData(data);
         } else if (key == Address10h08hB5h11h01h00hData.KEY) {
-            return new Address10h08hB5h11h01h00hData(address, data);
+            return new Address10h08hB5h11h01h00hData(data);
         } else if (key == Address10h08hB5h11h01h01hData.KEY) {
-            return new Address10h08hB5h11h01h01hData(address, data);
+            return new Address10h08hB5h11h01h01hData(data);
         } else if (key == Address10h08hB5h11h01h02hData.KEY) {
-            return new Address10h08hB5h11h01h02hData(address, data);
+            return new Address10h08hB5h11h01h02hData(data);
         } else if (key == Address03h64hB5h12hData.KEY) {
-            return new Address03h64hB5h12hData(address, data);
+            return new Address03h64hB5h12hData(data);
          } else if (key == Address03h15hB5h13hData.KEY) {
-             return new Address03h15hB5h13hData(address, data);
+             return new Address03h15hB5h13hData(data);
         } else {
-            return new AddressUnknownData(address, data);
+            return new AddressUnknownData(data);
         }
     }
 
