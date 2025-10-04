@@ -95,7 +95,7 @@ public class EbusSlaveMasterLink {
         if (b != -1 && b != SYN) {
             byteArrayOutputStream.write(b);
 
-            if (byteArrayOutputStream.size() > 1024) {
+            if (byteArrayOutputStream.size() > 32) {
                 log.warn("StringBuilder overflow, resetting");
                 byteArrayOutputStream.reset();
             }
@@ -103,9 +103,7 @@ public class EbusSlaveMasterLink {
         if (byteArrayOutputStream.size() >= ADDRESS_SIZE && b == SYN) {
             MasterSlaveData masterSlaveData = frameParser.getMasterSlaveData(byteArrayOutputStream.toByteArray());
             byteArrayOutputStream.reset();
-            if (!isAllZero(masterSlaveData.getSlaveData())) {
-                publisher.publishEvent(new MasterSlaveDataReadyEvent(this, masterSlaveData));
-            }
+            publisher.publishEvent(new MasterSlaveDataReadyEvent(this, masterSlaveData));
         }
     }
 

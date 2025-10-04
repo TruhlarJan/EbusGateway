@@ -23,6 +23,9 @@ public class DataCollector {
     @Value("${collector.poller.enabled:true}")
     private boolean pollerEnabled;
 
+    @Value("${collector.iteration.delay:2000}")
+    private long schedulerDelay;
+
     @Autowired
     private EbusMasterSlaveLink ebusMasterSlaveLink;
 
@@ -48,7 +51,7 @@ public class DataCollector {
         for (MasterSlaveData masterSlaveData : list) {
             try {
                 ebusMasterSlaveLink.sendFrame(masterSlaveData);
-                Thread.sleep(1000);
+                Thread.sleep(schedulerDelay);
             } catch (Exception e) {
                 log.error("Ebus MasterToSlave communication failed.", e);
             }

@@ -40,6 +40,9 @@ public class DataCache {
     @EventListener
     public void handleFrame(MasterSlaveDataReadyEvent event) {
         MasterSlaveData masterSlaveData = event.getMasterSlaveData();
+        if (ByteUtils.isAllZero(masterSlaveData.getSlaveData())) {
+            return;
+        }
         long key = masterSlaveData.getKey();
         if (key == Address10h08hB5h10hData.KEY) {
             masterSlaveDataMap.put(key, masterSlaveData);

@@ -82,11 +82,12 @@ public interface MasterSlaveData {
      * @param data
      */
     default void setMasterSlaveData(byte[] data) {
-        if (getMasterData().length <= data.length) {
-            setMasterData(Arrays.copyOfRange(data, 0, getMasterData().length));
+        int masterLength = getMasterData().length;
+        if (masterLength <= data.length) {
+            setMasterData(Arrays.copyOfRange(data, 0, masterLength));
         }
-        if (data.length > getMasterData().length) {
-            byte[] slave = Arrays.copyOfRange(data, getMasterData().length, data.length);
+        if (data.length > masterLength) {
+            byte[] slave = Arrays.copyOfRange(data, masterLength, data.length);
             int crcResponsed = slave[slave.length - 1] & 0xFF;
             int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
             if (crcResponsed == crcComputed) {
