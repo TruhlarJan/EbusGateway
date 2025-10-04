@@ -20,12 +20,6 @@ public class EbusMasterSlaveLink {
 
     @Value("${adapter.port.raw:3333}")
     private int port;
-
-    @Value("${ebus.ack.delay:2}")
-    private long ackDelay;
-
-    @Value("${ebus.byte.delay:4}")
-    private long byteDelay;
     
     private Socket socket;
     private OutputStream out;
@@ -68,17 +62,13 @@ public class EbusMasterSlaveLink {
                     throw new RuntimeException("Connection closed before receiving SYN");
                 }
             } while (readByte != MasterSlaveData.SYN);
-            Thread.sleep(ackDelay); // simulace 2400 Bd
 
             // -------------------------------
             // pošleme master rámec po bytech
             // -------------------------------
-            byte[] masterFrame = masterSlaveData.getMasterData();
-            for (byte b : masterFrame) {
-                out.write(b);
-                out.flush();
-                Thread.sleep(byteDelay); // simulace 2400 Bd
-            }
+            out.write(masterSlaveData.getMasterData());
+            out.flush();
+            Thread.sleep(100);
         } catch (Exception e) {
             // TODO: handle exception
         }
