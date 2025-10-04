@@ -12,10 +12,13 @@ import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.ByteUtils;
 import com.joiner.ebus.communication.link.MasterSlaveDataReadyEvent;
-import com.joiner.ebus.communication.link.SlaveDataReadyEvent;
-import com.joiner.ebus.communication.protherm.AddressUnknownData;
+import com.joiner.ebus.communication.protherm.Address03h15hB5h13hData;
+import com.joiner.ebus.communication.protherm.Address03h64hB5h12hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
-import com.joiner.ebus.communication.protherm.SlaveData;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,34 +31,32 @@ public class DataCache {
     private ByteUtils byteUtils;
 
     @Getter
-    private List<SlaveData> unknownList = new ArrayList<>();
-    
-    @Getter
-    private Map<Long, SlaveData> slaveDataMap = new HashMap<>();
+    private List<MasterSlaveData> unknownList = new ArrayList<>();
 
     @Getter
     private Map<Long, MasterSlaveData> masterSlaveDataMap = new HashMap<>();
 
     @Async
     @EventListener
-    public void handleFrame(SlaveDataReadyEvent event) {
-        SlaveData slaveData = event.getSlaveData();
-        long key = slaveData.getKey();
-        if (key == AddressUnknownData.KEY) {
-            unknownList.add(slaveData);
-        } else {
-            slaveDataMap.put(key, slaveData);
-        }
-        log.debug("Intercepted slave data. Key: {} , bytes: {} {}", key, byteUtils.bytesToHex(slaveData.getAddress()), byteUtils.bytesToHex(slaveData.getData()));
-    }
-
-    @Async
-    @EventListener
     public void handleFrame(MasterSlaveDataReadyEvent event) {
         MasterSlaveData masterSlaveData = event.getMasterSlaveData();
         long key = masterSlaveData.getKey();
-        masterSlaveDataMap.put(key, masterSlaveData);
-        log.debug("Done masterSlave data. Key: {} , bytes: {} {} {}", key, byteUtils.bytesToHex(masterSlaveData.getMasterStartData()), byteUtils.bytesToHex(masterSlaveData.getSlaveData()), byteUtils.bytesToHex(masterSlaveData.getMasterFinalData()));
+        if (key == Address10h08hB5h10hData.KEY) {
+            masterSlaveDataMap.put(key, masterSlaveData);
+        } else if (key == Address10h08hB5h11h01h00hData.KEY) {
+            masterSlaveDataMap.put(key, masterSlaveData);
+        } else if (key == Address10h08hB5h11h01h01hData.KEY) {
+            masterSlaveDataMap.put(key, masterSlaveData);
+        } else if (key == Address10h08hB5h11h01h02hData.KEY) {
+            masterSlaveDataMap.put(key, masterSlaveData);
+        } else if (key == Address03h15hB5h13hData.KEY) {
+            masterSlaveDataMap.put(key, masterSlaveData);
+        } else if (key == Address03h64hB5h12hData.KEY) {
+            masterSlaveDataMap.put(key, masterSlaveData);
+        } else {
+            unknownList.add(masterSlaveData);
+        }
+        log.debug("Done masterSlave data. Key: {} , bytes: {} {}", key, byteUtils.bytesToHex(masterSlaveData.getMasterData()), byteUtils.bytesToHex(masterSlaveData.getSlaveData()));
     }
     
 }

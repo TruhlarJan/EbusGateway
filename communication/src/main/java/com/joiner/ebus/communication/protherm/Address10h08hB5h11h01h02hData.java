@@ -1,13 +1,11 @@
 package com.joiner.ebus.communication.protherm;
 
-import java.util.Arrays;
+import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
-import com.joiner.ebus.communication.EbusCrc;
-
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Setter;
 
 /**
  * eBUS Specification
@@ -17,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
  * 3.6 B5h 11h 02h - Operational Data of Burner Control Unit to Room Control Unit.
  */
 @Component
-@Slf4j
 public class Address10h08hB5h11h01h02hData implements MasterSlaveData {
 
     public static final Long KEY = 17629583573250L;
@@ -34,33 +31,36 @@ public class Address10h08hB5h11h01h02hData implements MasterSlaveData {
     /* CRC = 0x89 */ 
     private static final int CRC = 0x8A;
 
-    /* 10h 08h B5h 11h 01h 01h*/
-    private final byte[] getMasterData = new byte[] {QQ, ZZ, (byte) PB, SB, NN, M6, (byte) CRC};
-
     /* Length of the slave data (ACK, NN, xx1, xx2, xx3, xx4, ST, CRC) */
     private static final int SLAVE_SIZE = 8;
 
+    /* 10h 08h B5h 11h 01h 01h*/
     @Getter
-    private byte[] slaveData;
+    @Setter
+    private byte[] masterData = new byte[] {QQ, ZZ, (byte) PB, SB, NN, M6, (byte) CRC};
 
-    @Override
-    public byte[] getMasterStartData() {
-        return getMasterData;
+    @Getter
+    @Setter
+    private byte[] slaveData = new byte[SLAVE_SIZE];
+    
+    @Getter
+    @Setter
+    private Date date;
+
+    /**
+     * 
+     */
+    public Address10h08hB5h11h01h02hData() {
+        setMasterData(masterData);
     }
 
-    @Override
-    public int getSlaveSize() {
-        return SLAVE_SIZE;
-    }
-
-    @Override
-    public void setSlaveData(byte[] response) {
-        int crcResponsed = response[response.length - 1] & 0xFF;
-        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(response, response.length - 1)) & 0xFF;
-        if (crcResponsed != crcComputed) {
-            log.info("CRC responsed {} != CRC computed {}", crcResponsed, crcComputed); 
-        }
-        slaveData = response;
+    /**
+     * 
+     * @param address
+     * @param data
+     */
+    public Address10h08hB5h11h01h02hData(byte[] address, byte[] data) {
+        setMasterSlaveData(address, data);
     }
 
     @Override

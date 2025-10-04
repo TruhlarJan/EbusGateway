@@ -1,11 +1,12 @@
 package com.joiner.ebus.communication.protherm;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import com.joiner.ebus.communication.EbusCrc;
 
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Setter;
 
 
 /**
@@ -15,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
  * 
  * 3.5 B5h 10h - Operational Data from Room Controller to Burner Control Unit
  */
-@Slf4j
 public class Address10h08hB5h10hData implements MasterSlaveData {
     
     public static final Long KEY = 17629583509760L;
@@ -28,38 +28,37 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
 
     /* Default value M8 = 14 */
     private static final int M8 = 0x14;
-    private static final int M8_INDEX = 7;
+    public static final int M8_INDEX = 7;
 
     /* Default value M9 = 0x5A */
     private static final int M9 = 0x5A;
-    private static final int M9_INDEX = 8;
+    public static final int M9_INDEX = 8;
 
     /* Default value M12 = 0x01 */
     private static final int M12 = 0x05;
-    private static final int M12_INDEX = 11;
+    public static final int M12_INDEX = 11;
     
     /* Default value CRC = 0x47 */ 
     private static final int CRC = 0x47;
     private static final int CRC_INDEX = 14;
 
-    /* 10h 08h B5h 10h 09h*/
-    private final byte[] masterData = new byte[] {QQ, ZZ, (byte) PB, SB, NN, 0x00, 0x00, M8, M9, (byte) 0xFF, (byte) 0xFF, M12, (byte) 0xFF, 0x00, CRC};
-
     /* Length of the slave data (ACK, NN, ZZ, CRC) */
     private static final int SLAVE_SIZE = 4;
-
+    
+    /* 10h 08h B5h 10h 09h*/
     @Getter
-    private byte[] slaveData;
+    @Setter
+    private byte[] masterData = new byte[] {QQ, ZZ, (byte) PB, SB, NN, 0x00, 0x00, M8, M9, (byte) 0xFF, (byte) 0xFF, M12, (byte) 0xFF, 0x00, CRC};
 
-    /**
-     * Default constructor.
-     * <li>M8={@value #M8}
-     * <li>M9={@value #M9}
-     * <li>M12={@value #M12}
-     */
-    public Address10h08hB5h10hData() {
-    }    
-   
+    /* ACK, NN, ZZ, CRC */
+    @Getter
+    @Setter
+    private byte[] slaveData = new byte[SLAVE_SIZE];
+    
+    @Getter
+    @Setter
+    private Date date;
+  
     /**
      * Master byte M1 - M15
      * @param m8 M8 - Lead water target temperature
@@ -70,32 +69,21 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
         masterData[M8_INDEX] = (byte) m8byte;
         masterData[M9_INDEX] = (byte) m9byte;
         masterData[M12_INDEX] = (byte) m12byte;
-    }
-
-    @Override
-    public byte[] getMasterStartData() {
         masterData[CRC_INDEX] = (byte) EbusCrc.computeCrc(Arrays.copyOf(masterData, masterData.length - 1));
-        return masterData;
-    }
-    
-    @Override
-    public int getSlaveSize() {
-        return SLAVE_SIZE;
+        setMasterData(masterData);
     }
 
-    @Override
-    public void setSlaveData(byte[] response) {
-        int crcResponsed = response[response.length - 1] & 0xFF;
-        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(response, response.length - 1)) & 0xFF;
-        if (crcResponsed != crcComputed) {
-            log.info("CRC responsed {} != CRC computed {}", crcResponsed, crcComputed); 
-        }
-        slaveData = response;
+    /**
+     * 
+     * @param address
+     * @param data
+     */
+    public Address10h08hB5h10hData(byte[] address, byte[] data) {
+        setMasterSlaveData(address, data);
     }
 
     @Override
     public long getKey() {
         return KEY;
     }
-
 }

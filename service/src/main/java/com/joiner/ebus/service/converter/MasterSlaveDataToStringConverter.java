@@ -11,7 +11,7 @@ public class MasterSlaveDataToStringConverter implements Converter<MasterSlaveDa
     @Override
     public String convert(MasterSlaveData source) {
         return String.format("%s %s %s",
-                bytesToHex(source.getMasterStartData()),
+                bytesToHex(source.getMasterData()),
                 bytesToHex(source.getSlaveData()),
                 bytesToHex(source.getMasterFinalData()));
     }

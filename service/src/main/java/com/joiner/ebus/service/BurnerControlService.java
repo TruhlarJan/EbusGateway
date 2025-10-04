@@ -44,16 +44,20 @@ public class BurnerControlService {
         burnerControlUnit.setBlock02(getBurnerControlUnitBlock02Dto());
         return burnerControlUnit;
     }
-
+    
     /**
      * @param masterSlaveDataMap
      * @return
      */
     public BurnerControlUnitBlock00Dto getBurnerControlUnitBlock00Dto() {
-        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h00hData.KEY);
-        
         BurnerControlUnitBlock00Dto dto = new BurnerControlUnitBlock00Dto();
+        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h00hData.KEY);
+        if (masterSlaveData == null) {
+            return dto;
+        }
+        byte[] slaveData = masterSlaveData.getSlaveData();
         dto.setData(conversionService.convert(masterSlaveData, String.class));
+        dto.setDate(masterSlaveData.getDate());
         return dto;
     }
     
@@ -62,11 +66,14 @@ public class BurnerControlService {
      * @return
      */
     public BurnerControlUnitBlock01Dto getBurnerControlUnitBlock01Dto() {
-        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h01hData.KEY);
-        byte[] slaveData = masterSlaveData.getSlaveData();
-        
         BurnerControlUnitBlock01Dto dto = new BurnerControlUnitBlock01Dto();
+        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h01hData.KEY);
+        if (masterSlaveData == null) {
+            return dto;
+        }
+        byte[] slaveData = masterSlaveData.getSlaveData();
         dto.setData(conversionService.convert(masterSlaveData, String.class));
+        dto.setDate(masterSlaveData.getDate());
         dto.setLeadWaterTemperature(conversionService.convert(S3.of(slaveData), Double.class));
         dto.setReturnWaterTemperature(conversionService.convert(S4.of(slaveData), Double.class));
         dto.setServiceWaterTemperature(conversionService.convert(S8.of(slaveData), Double.class));
@@ -80,11 +87,14 @@ public class BurnerControlService {
      * @return
      */
     public BurnerControlUnitBlock02Dto getBurnerControlUnitBlock02Dto() {
-        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h02hData.KEY);
-        byte[] slaveData = masterSlaveData.getSlaveData();
-        
         BurnerControlUnitBlock02Dto dto = new BurnerControlUnitBlock02Dto();
+        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h02hData.KEY);
+        if (masterSlaveData == null) {
+            return dto;
+        }
+        byte[] slaveData = masterSlaveData.getSlaveData();
         dto.setData(conversionService.convert(masterSlaveData, String.class));
+        dto.setDate(masterSlaveData.getDate());
         dto.setServiceWaterTargetTemperature(conversionService.convert(S7.of(slaveData), Double.class));
         return dto;
     }

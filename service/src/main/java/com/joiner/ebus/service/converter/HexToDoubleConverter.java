@@ -14,7 +14,8 @@ public class HexToDoubleConverter implements Converter<Hex, Double> {
         if (value == null) {
             return null;
         }
-        if (value < 0 || value > 255) {
+        int val = value & 0xFF;
+        if (val < 0 || val > 255) {
             throw new IllegalArgumentException("Value out of byte range: " + value);
         }
         return value / 2.0;

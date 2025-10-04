@@ -1,5 +1,7 @@
 package com.joiner.ebus.service.dto;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,4 +10,7 @@ import lombok.Setter;
 public class BurnerControlUnitBlock00Dto {
     
     String data;
+    
+    Date date;
+
 }

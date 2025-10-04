@@ -1,7 +1,6 @@
 package com.joiner.ebus.communication;
 
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,13 +8,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.link.EbusMasterSlaveLink;
-import com.joiner.ebus.communication.link.EbusSlaveMasterLink;
+import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -28,19 +26,12 @@ public class DataCollector {
     @Autowired
     private EbusMasterSlaveLink ebusMasterSlaveLink;
 
-    @Autowired
-    private EbusSlaveMasterLink ebusSlaveMasterLink;
-
-    @Autowired
-    private ByteUtils byteUtils;
-    
-    private final ReentrantLock ebusLock = new ReentrantLock();
-
-    @PostConstruct
-    public void init() {
-        ebusMasterSlaveLink.setLock(ebusLock);
-        ebusSlaveMasterLink.setLock(ebusLock);
-    }
+    /* Default value M8 = 14 */
+    private int m8 = 0x14;
+    /* Default value M9 = 0x5A */
+    private int m9 = 0x5A;
+    /* Default value M12 = 0x01 */
+    private int m12 = 0x05;
 
     @Scheduled(fixedRateString = "${collector.scheduler.rate:10000}")
     public void sendData() {
@@ -49,6 +40,7 @@ public class DataCollector {
         }
 
         List<MasterSlaveData> list = List.of(
+                new Address10h08hB5h10hData(m8, m9, m12),
                 new Address10h08hB5h11h01h00hData(),
                 new Address10h08hB5h11h01h01hData(),
                 new Address10h08hB5h11h01h02hData());
@@ -56,21 +48,18 @@ public class DataCollector {
         for (MasterSlaveData masterSlaveData : list) {
             try {
                 ebusMasterSlaveLink.sendFrame(masterSlaveData);
-                log.debug("Slave response: {}", byteUtils.bytesToHex(masterSlaveData.getSlaveData()));
+                Thread.sleep(1000);
             } catch (Exception e) {
                 log.error("Ebus MasterToSlave communication failed.", e);
             }
         }
     } 
 
-    public byte[] sendDataImmidiately(MasterSlaveData masterSlaveData) {
-        try {
-            ebusMasterSlaveLink.sendFrame(masterSlaveData);
-            return masterSlaveData.getSlaveData();
-        } catch (Exception e) {
-            log.error("Ebus MasterToSlave communication failed.", e);
-            throw new RuntimeException(e);
-        }
+    public void sendDataImmidiately(MasterSlaveData masterSlaveData) {
+        byte[] masterStartData = masterSlaveData.getMasterData();
+        m8 = masterStartData[Address10h08hB5h10hData.M8_INDEX];
+        m9 = masterStartData[Address10h08hB5h10hData.M9_INDEX];
+        m12 = masterStartData[Address10h08hB5h10hData.M12_INDEX];
     }
 
 }

@@ -1,5 +1,7 @@
 package com.joiner.ebus.service.dto;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,4 +20,7 @@ public class BurnerControlUnitBlock01Dto {
     Boolean heating;
     
     Boolean serviceWater;
+    
+    Date date;
+
 }

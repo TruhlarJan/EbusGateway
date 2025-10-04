@@ -3,44 +3,57 @@ package com.joiner.ebus.communication.link;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.concurrent.locks.ReentrantLock;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class EbusMasterSlaveLink {
 
-    @Value("${adapter.host:127.0.0.1}")
+    @Value("${adapter.host:172.20.10.3}")
     private String host;
 
     @Value("${adapter.port.raw:3333}")
     private int port;
 
-    @Autowired
-    private ApplicationEventPublisher publisher;
+    private Socket socket;
+    private OutputStream out;
+    private InputStream in;
+    private volatile boolean running = true;
 
-    private ReentrantLock lock = new ReentrantLock();
-
-    
-    public void setLock(ReentrantLock lock) {
-        this.lock = lock;
+    private void connect() throws InterruptedException {
+        int attempt = 0;
+        while (running) {
+            try {
+                socket = new Socket(host, port);
+                socket.setSoTimeout(0); // blokující read
+                out = socket.getOutputStream();
+                in = socket.getInputStream();
+                log.info("Connected to eBUS server at {}", socket.getInetAddress());
+                break;
+            } catch (Exception e) {
+                attempt++;
+                int wait = Math.min(100 * attempt, 2000); // max 2 s
+                if (attempt % 5 == 0) {
+                    log.warn("Still waiting for eBUS server at {}:{} after {} attempts", host, port, attempt, e);
+                }
+                Thread.sleep(wait);
+            }
+        }
     }
 
     public void sendFrame(MasterSlaveData masterSlaveData) throws Exception {
-        lock.lock();
-        try (Socket socket = new Socket(host, port)) {
-            socket.setSoTimeout(2000); // timeout 2s
-
-            OutputStream out = socket.getOutputStream();
-            InputStream in = socket.getInputStream();
-
+        if (socket == null || socket.isClosed() || !socket.isConnected()) {
+            connect();
+        }
+        try {
             // -------------------------------
-            // čekáme na první SYN (0xAA) - ignorujeme přebytečné SYNy
+            // čekáme na první SYN (0xAA)
             // -------------------------------
             int readByte;
             do {
@@ -53,53 +66,14 @@ public class EbusMasterSlaveLink {
             // -------------------------------
             // pošleme master rámec po bytech
             // -------------------------------
-            byte[] masterFrame = masterSlaveData.getMasterStartData();
+            byte[] masterFrame = masterSlaveData.getMasterData();
             for (byte b : masterFrame) {
-                out.write(b & 0xFF);
+                out.write(b);
                 out.flush();
-                Thread.sleep(4, 170_000); // simulace 2400 Bd
+                Thread.sleep(4); // simulace 2400 Bd
             }
-
-            // -------------------------------
-            // načteme master echo po bytech
-            // -------------------------------
-            byte[] masterEcho = new byte[masterFrame.length];
-            int read = 0;
-            while (read < masterEcho.length) {
-                int r = in.read(masterEcho, read, masterEcho.length - read);
-                if (r == -1) {
-                    throw new RuntimeException("Connection closed while reading master echo");
-                }
-                read += r;
-            }
-
-            // -------------------------------
-            // načteme slave odpověď přesně podle velikosti
-            // -------------------------------
-            byte[] slaveResponse = new byte[masterSlaveData.getSlaveSize()];
-            read = 0;
-            while (read < slaveResponse.length) {
-                int r = in.read(slaveResponse, read, slaveResponse.length - read);
-                if (r == -1) {
-                    throw new RuntimeException("Connection closed before receiving slave response");
-                }
-                read += r;
-            }
-
-            // -------------------------------
-            // pošleme ACK (a SYN) po bytech
-            // -------------------------------
-            byte[] ack = masterSlaveData.getMasterFinalData();
-            for (byte b : ack) {
-                out.write(b & 0xFF);
-                out.flush();
-                Thread.sleep(4, 170_000); // simulace 2400 Bd
-            }
-
-            masterSlaveData.setSlaveData(slaveResponse);
-            publisher.publishEvent(new MasterSlaveDataReadyEvent(this, masterSlaveData));
-        } finally {
-            lock.unlock();
+        } catch (Exception e) {
+            // TODO: handle exception
         }
     }
 

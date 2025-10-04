@@ -3,7 +3,6 @@ package com.joiner.ebus.communication.link;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.Socket;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
-import com.joiner.ebus.communication.protherm.SlaveData;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -21,17 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class EbusSlaveMasterLink {
-
-    @Value("${collector.listener.enabled:true}")
-    private boolean listenerEnabled;
     
     @Value("${adapter.host:127.0.0.1}")
     private String host;
 
     @Value("${adapter.port.listen:3334}")
     private int port;
-
-    private ReentrantLock lock = new ReentrantLock();
 
     private Socket socket;
     private InputStream in;
@@ -48,14 +41,7 @@ public class EbusSlaveMasterLink {
 
     @PostConstruct
     public void start() {
-        if (!listenerEnabled) {
-            return;
-        }
         new Thread(this::readLoop, "DataListenerThread").start();
-    }
-
-    public void setLock(ReentrantLock lock) {
-        this.lock = lock;
     }
 
     private void connect() throws InterruptedException {
@@ -84,16 +70,8 @@ public class EbusSlaveMasterLink {
                 if (socket == null || socket.isClosed() || !socket.isConnected()) {
                     connect();
                 }
-
-                lock.lock();
-                try {
-                    int b = in.read(); // blokuje dokud není byte k dispozici
-                    processByte(b);
-                } finally {
-                    if (lock.isHeldByCurrentThread()) {
-                        lock.unlock();
-                    }
-                }
+                int b = in.read(); // blokuje dokud není byte k dispozici
+                processByte(b);
             } catch (Exception e) {
                 if (running) {
                     log.warn("Lost connection to {}:{}, will retry...", host, port, e);
@@ -118,10 +96,10 @@ public class EbusSlaveMasterLink {
                 byteArrayOutputStream.reset();
             }
         }
-        if (byteArrayOutputStream.size() > 0 && b == MasterSlaveData.SYN) {
-            SlaveData slaveData = frameParser.getSlaveData(byteArrayOutputStream.toByteArray());
+        if (byteArrayOutputStream.size() > 5 && b == MasterSlaveData.SYN) {
+            MasterSlaveData slaveData = frameParser.getMasterSlaveData(byteArrayOutputStream.toByteArray());
             byteArrayOutputStream.reset();
-            publisher.publishEvent(new SlaveDataReadyEvent(this, slaveData));
+            publisher.publishEvent(new MasterSlaveDataReadyEvent(this, slaveData));
         }
     }
 
