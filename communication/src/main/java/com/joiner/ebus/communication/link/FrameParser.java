@@ -18,11 +18,13 @@ import com.joiner.ebus.communication.protherm.MasterSlaveData;
 @Component
 public class FrameParser {
     
+    public static int ADDRESS_SIZE = 6;
+
     @Autowired
     private ByteUtils utils;
     
     public MasterSlaveData getMasterSlaveData(byte[] data) {
-        byte[] address = Arrays.copyOfRange(data, 0, 6);
+        byte[] address = Arrays.copyOfRange(data, 0, ADDRESS_SIZE);
         
         long key = utils.getKey(address);
         if (key == Address10h08hB5h10hData.KEY) {

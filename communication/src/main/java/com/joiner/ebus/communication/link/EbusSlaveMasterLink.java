@@ -1,5 +1,9 @@
 package com.joiner.ebus.communication.link;
 
+import static com.joiner.ebus.communication.ByteUtils.isAllZero;
+import static com.joiner.ebus.communication.link.FrameParser.ADDRESS_SIZE;
+import static com.joiner.ebus.communication.protherm.MasterSlaveData.SYN;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.Socket;
@@ -7,7 +11,7 @@ import java.net.Socket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
@@ -16,7 +20,7 @@ import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@Component
 @Slf4j
 public class EbusSlaveMasterLink {
     
@@ -51,7 +55,7 @@ public class EbusSlaveMasterLink {
                 socket = new Socket(host, port);
                 socket.setSoTimeout(0); // blokující read
                 in = socket.getInputStream();
-                log.info("Connected to eBUS server at {}", socket.getInetAddress());
+                log.info("Connected to eBUS server at {}:{}", socket.getInetAddress(), socket.getPort());
                 break;
             } catch (Exception e) {
                 attempt++;
@@ -88,7 +92,7 @@ public class EbusSlaveMasterLink {
     }
 
     private void processByte(int b) {
-        if (b != -1 && b != MasterSlaveData.SYN) {
+        if (b != -1 && b != SYN) {
             byteArrayOutputStream.write(b);
 
             if (byteArrayOutputStream.size() > 1024) {
@@ -96,10 +100,12 @@ public class EbusSlaveMasterLink {
                 byteArrayOutputStream.reset();
             }
         }
-        if (byteArrayOutputStream.size() > 5 && b == MasterSlaveData.SYN) {
-            MasterSlaveData slaveData = frameParser.getMasterSlaveData(byteArrayOutputStream.toByteArray());
+        if (byteArrayOutputStream.size() >= ADDRESS_SIZE && b == SYN) {
+            MasterSlaveData masterSlaveData = frameParser.getMasterSlaveData(byteArrayOutputStream.toByteArray());
             byteArrayOutputStream.reset();
-            publisher.publishEvent(new MasterSlaveDataReadyEvent(this, slaveData));
+            if (!isAllZero(masterSlaveData.getSlaveData())) {
+                publisher.publishEvent(new MasterSlaveDataReadyEvent(this, masterSlaveData));
+            }
         }
     }
 

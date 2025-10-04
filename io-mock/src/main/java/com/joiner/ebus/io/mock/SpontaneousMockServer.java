@@ -1,6 +1,8 @@
 package com.joiner.ebus.io.mock;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -16,6 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @Slf4j
+@Profile(value = "Test")
 public class SpontaneousMockServer {
 
     private static final int PORT = 3334;

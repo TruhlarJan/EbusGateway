@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.io.mock.MockContainer.MockData;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@Profile(value = "Test")
 public class MasterSlaveMockServer {
 
     private static final int PORT = 3333;

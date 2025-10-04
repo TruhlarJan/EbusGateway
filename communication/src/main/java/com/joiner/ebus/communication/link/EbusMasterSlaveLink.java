@@ -34,7 +34,7 @@ public class EbusMasterSlaveLink {
                 socket.setSoTimeout(0); // blokující read
                 out = socket.getOutputStream();
                 in = socket.getInputStream();
-                log.info("Connected to eBUS server at {}", socket.getInetAddress());
+                log.info("Connected to eBUS server at {}:{}", socket.getInetAddress(), socket.getPort());
                 break;
             } catch (Exception e) {
                 attempt++;

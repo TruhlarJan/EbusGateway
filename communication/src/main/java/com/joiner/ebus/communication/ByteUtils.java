@@ -22,4 +22,15 @@ public class ByteUtils {
         return sb.toString().trim();
     }
     
+    public static boolean isAllZero(byte[] slave) {
+        // kontrola: všechna data jsou nuly?
+        boolean allZero = true;
+        for (int i = 0; i < slave.length - 1; i++) { // CRC nepočítáme
+            if (slave[i] != 0) {
+                allZero = false;
+                break;
+            }
+        }
+        return allZero;
+    }
 }

@@ -89,7 +89,7 @@ public interface MasterSlaveData {
             byte[] slave = Arrays.copyOfRange(data, getMasterData().length, data.length);
             int crcResponsed = slave[slave.length - 1] & 0xFF;
             int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
-            if (crcResponsed != 0 && crcResponsed == crcComputed) {
+            if (crcResponsed == crcComputed) {
                 setSlaveData(slave);
                 setDate(new Date());
             }
