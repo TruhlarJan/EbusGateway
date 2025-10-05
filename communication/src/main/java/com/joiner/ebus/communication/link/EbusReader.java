@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class EbusSlaveMasterLink {
+public class EbusReader {
 
     @Value("${adapter.host:127.0.0.1}")
     private String host;

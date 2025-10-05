@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.joiner.ebus.communication.link.EbusMasterSlaveLink;
+import com.joiner.ebus.communication.link.EbusWriter;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
 import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
@@ -27,7 +27,7 @@ public class DataCollector {
     private long schedulerDelay;
 
     @Autowired
-    private EbusMasterSlaveLink ebusMasterSlaveLink;
+    private EbusWriter ebusMasterSlaveLink;
 
     /* Default value M8 = 14 */
     private int m8 = 0x14;

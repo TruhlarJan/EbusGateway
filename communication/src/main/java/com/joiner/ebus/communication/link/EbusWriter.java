@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class EbusMasterSlaveLink {
+public class EbusWriter {
 
     @Value("${adapter.host:172.20.10.3}")
     private String host;

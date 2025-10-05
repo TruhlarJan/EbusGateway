@@ -19,13 +19,13 @@ import com.joiner.ebus.communication.protherm.MasterSlaveData;
  * 
  */
 @SpringBootTest
-class EbusMasterSlaveLinkTest {
+class EbusWriterTest {
 
     @Autowired
-    private EbusMasterSlaveLink dataSender;
+    private EbusWriter dataSender;
 
     /**
-     * Test method for {@link com.joiner.ebus.communication.link.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
+     * Test method for {@link com.joiner.ebus.communication.link.EbusWriter#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
      * @throws Exception 
      */
     @Test
@@ -44,7 +44,7 @@ class EbusMasterSlaveLinkTest {
     }
 
     /**
-     * Test method for {@link com.joiner.ebus.communication.link.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
+     * Test method for {@link com.joiner.ebus.communication.link.EbusWriter#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
      * @throws Exception 
      */
 //    @Test
@@ -63,7 +63,7 @@ class EbusMasterSlaveLinkTest {
     }
 
     /**
-     * Test method for {@link com.joiner.ebus.communication.link.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
+     * Test method for {@link com.joiner.ebus.communication.link.EbusWriter#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
      * @throws Exception 
      */
     @Test
@@ -82,7 +82,7 @@ class EbusMasterSlaveLinkTest {
     }
 
     /**
-     * Test method for {@link com.joiner.ebus.communication.link.EbusMasterSlaveLink#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
+     * Test method for {@link com.joiner.ebus.communication.link.EbusWriter#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
      * @throws Exception 
      */
 //    @Test
