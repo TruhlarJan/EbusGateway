@@ -1,6 +1,5 @@
 package com.joiner.ebus.communication.link;
 
-import static com.joiner.ebus.communication.ByteUtils.isAllZero;
 import static com.joiner.ebus.communication.link.FrameParser.ADDRESS_SIZE;
 import static com.joiner.ebus.communication.protherm.MasterSlaveData.SYN;
 
@@ -23,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class EbusSlaveMasterLink {
-    
+
     @Value("${adapter.host:127.0.0.1}")
     private String host;
 
@@ -35,7 +34,7 @@ public class EbusSlaveMasterLink {
     private volatile boolean running = true;
 
     private ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    
+
     @Autowired
     @Getter
     private FrameParser frameParser;
@@ -45,7 +44,9 @@ public class EbusSlaveMasterLink {
 
     @PostConstruct
     public void start() {
-        new Thread(this::readLoop, "DataListenerThread").start();
+        Thread t = new Thread(this::readLoop, "Ebus-DataListener");
+        t.setDaemon(true);
+        t.start();
     }
 
     private void connect() throws InterruptedException {
@@ -53,13 +54,16 @@ public class EbusSlaveMasterLink {
         while (running) {
             try {
                 socket = new Socket(host, port);
-                socket.setSoTimeout(0); // blokující read
+                socket.setSoTimeout(15000); // timeout pro read
                 in = socket.getInputStream();
                 log.info("Connected to eBUS server at {}:{}", socket.getInetAddress(), socket.getPort());
+
+                // nech adapter rozjet stream
+                Thread.sleep(2000);
                 break;
             } catch (Exception e) {
                 attempt++;
-                int wait = Math.min(100 * attempt, 2000); // max 2 s
+                int wait = Math.min(100 * attempt, 2000);
                 if (attempt % 5 == 0) {
                     log.warn("Still waiting for eBUS server at {}:{} after {} attempts", host, port, attempt, e);
                 }
@@ -69,50 +73,83 @@ public class EbusSlaveMasterLink {
     }
 
     private void readLoop() {
+        long lastDataTime = System.currentTimeMillis();
+
         while (running) {
             try {
                 if (socket == null || socket.isClosed() || !socket.isConnected()) {
                     connect();
+                    lastDataTime = System.currentTimeMillis();
                 }
-                int b = in.read(); // blokuje dokud není byte k dispozici
+
+                int b;
+                try {
+                    b = in.read(); // blokuje max 15 s
+                } catch (java.net.SocketTimeoutException ste) {
+                    if (System.currentTimeMillis() - lastDataTime > 30000) {
+                        throw new java.io.IOException("No data from adapter for 30s – assuming dead connection");
+                    }
+                    continue;
+                }
+
+                if (b == -1) {
+                    throw new java.io.EOFException("End of stream reached");
+                }
+
+                lastDataTime = System.currentTimeMillis();
                 processByte(b);
+
             } catch (Exception e) {
                 if (running) {
-                    log.warn("Lost connection to {}:{}, will retry...", host, port, e);
-                    try { 
-                        if (in != null) in.close(); 
-                        if (socket != null) socket.close(); 
-                    } catch (Exception ignored) {}
-                    socket = null;
-                    in = null;
-                    try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+                    log.warn("Lost connection to {}:{}, will retry...", host, port, e.toString());
+                    closeConnection();
+                    try {
+                        Thread.sleep(2000); // pauza před reconnectem
+                    } catch (InterruptedException ignored) {
+                    }
                 }
             }
         }
     }
 
     private void processByte(int b) {
-        if (b != -1 && b != SYN) {
+        if (b == SYN) {
+            if (byteArrayOutputStream.size() >= ADDRESS_SIZE) {
+                try {
+                    MasterSlaveData frame = frameParser.getMasterSlaveData(byteArrayOutputStream.toByteArray());
+                    publisher.publishEvent(new MasterSlaveDataReadyEvent(this, frame));
+                } catch (Exception ex) {
+                    log.warn("Frame parse error: {}", ex.getMessage());
+                }
+            }
+            byteArrayOutputStream.reset();
+        } else {
             byteArrayOutputStream.write(b);
-
-            if (byteArrayOutputStream.size() > 32) {
-                log.warn("StringBuilder overflow, resetting");
+            if (byteArrayOutputStream.size() > 64) {
+                log.warn("Frame buffer overflow, resetting");
                 byteArrayOutputStream.reset();
             }
-        }
-        if (byteArrayOutputStream.size() >= ADDRESS_SIZE && b == SYN) {
-            MasterSlaveData masterSlaveData = frameParser.getMasterSlaveData(byteArrayOutputStream.toByteArray());
-            byteArrayOutputStream.reset();
-            publisher.publishEvent(new MasterSlaveDataReadyEvent(this, masterSlaveData));
         }
     }
 
     @PreDestroy
     public void shutdown() {
         running = false;
+        closeConnection();
+    }
+
+    private void closeConnection() {
         try {
-            if (in != null) in.close();
-            if (socket != null) socket.close();
-        } catch (Exception ignored) {}
+            if (in != null)
+                in.close();
+        } catch (Exception ignored) {
+        }
+        try {
+            if (socket != null)
+                socket.close();
+        } catch (Exception ignored) {
+        }
+        in = null;
+        socket = null;
     }
 }

@@ -21,57 +21,35 @@ public class EbusMasterSlaveLink {
     @Value("${adapter.port.raw:3333}")
     private int port;
     
-    private Socket socket;
-    private OutputStream out;
-    private InputStream in;
-    private volatile boolean running = true;
-
-    private void connect() throws InterruptedException {
-        int attempt = 0;
-        while (running) {
-            try {
-                socket = new Socket(host, port);
-                socket.setSoTimeout(0); // blokující read
-                out = socket.getOutputStream();
-                in = socket.getInputStream();
-                log.info("Connected to eBUS server at {}:{}", socket.getInetAddress(), socket.getPort());
-                break;
-            } catch (Exception e) {
-                attempt++;
-                int wait = Math.min(100 * attempt, 2000); // max 2 s
-                if (attempt % 5 == 0) {
-                    log.warn("Still waiting for eBUS server at {}:{} after {} attempts", host, port, attempt, e);
-                }
-                Thread.sleep(wait);
-            }
-        }
-    }
 
     public void sendFrame(MasterSlaveData masterSlaveData) throws Exception {
-        if (socket == null || socket.isClosed() || !socket.isConnected()) {
-            connect();
-        }
-        try {
-            // -------------------------------
-            // čekáme na první SYN (0xAA)
-            // -------------------------------
-            int readByte;
-            do {
-                readByte = in.read();
-                if (readByte == -1) {
-                    throw new RuntimeException("Connection closed before receiving SYN");
-                }
-            } while (readByte != MasterSlaveData.SYN);
+        try (Socket socket = new Socket(host, port)) {
+            socket.setSoTimeout(2000);
+            
+            try (OutputStream out = socket.getOutputStream();
+                InputStream in = socket.getInputStream()) {
+                // -------------------------------
+                // čekáme na první SYN (0xAA)
+                // -------------------------------
+                int readByte;
+                do {
+                    readByte = in.read();
+                    if (readByte == -1) {
+                        throw new RuntimeException("Connection closed before receiving SYN");
+                    }
+                } while (readByte != MasterSlaveData.SYN);
 
-            // -------------------------------
-            // pošleme master rámec po bytech
-            // -------------------------------
-            out.write(masterSlaveData.getMasterData());
-            out.flush();
-            Thread.sleep(100);
+                
+                // -------------------------------
+                // pošleme master rámec po bytech
+                // -------------------------------
+                out.write(masterSlaveData.getMasterData());
+                out.flush();
+            }
         } catch (Exception e) {
-            // TODO: handle exception
+            log.warn("sendFrame() failed: {}", e.getMessage(), e);
         }
+        
     }
 
 }
