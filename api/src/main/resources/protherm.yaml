@@ -74,9 +74,9 @@ components:
           type: double
         serviceWaterTargetTemperature:
           type: double
-        isLeadWaterHeatingBlocked:
+        leadWaterHeatingBlocked:
           type: int
-        isServiceWaterHeatingBlocked:
+        serviceWaterHeatingBlocked:
           type: int
 
     BurnerControlUnitBlock0:

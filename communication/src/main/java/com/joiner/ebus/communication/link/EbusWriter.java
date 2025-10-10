@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EbusWriter {
 
-    @Value("${adapter.host:172.20.10.3}")
+    @Value("${adapter.host:127.0.0.1}")
     private String host;
 
     @Value("${adapter.port.raw:3333}")

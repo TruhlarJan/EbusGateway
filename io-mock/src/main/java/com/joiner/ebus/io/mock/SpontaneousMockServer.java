@@ -1,11 +1,5 @@
 package com.joiner.ebus.io.mock;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
-
-import jakarta.annotation.PostConstruct;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,9 +10,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.springframework.stereotype.Service;
+
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @Slf4j
-@Profile(value = "Test")
 public class SpontaneousMockServer {
 
     private static final int PORT = 3334;
@@ -29,6 +27,10 @@ public class SpontaneousMockServer {
 
     public SpontaneousMockServer() {
         String[] packets = {
+            "10 08 B5 10 09 00 00 14 5A FF FF 05 FF 00 47 00 01 01 9A",
+            "10 08 B5 11 01 00 88 00 08 50 02 0C 00 1F 10 00 80 07",
+            "10 08 B5 11 01 01 89 00 09 4A 46 00 80 FF 5C 00 00 FF B0",
+            "10 08 B5 11 01 02 8A 00 05 02 14 96 5A 78 0D",
             "03 15 B5 13 03 06 00 00 0E",
             "03 15 B5 13 03 06 64 00 63",
             "03 64 B5 12 02 02 00 66",
