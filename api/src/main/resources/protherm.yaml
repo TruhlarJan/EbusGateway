@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+  title: Protherm API
+  version: "@project.version@"
+  description: Minimal OpenAPI spec for Protherm status dashboard.
+
+paths:
+  /protherm:
+    get:
+      summary: Get Prothern's telegrams 
+      responses:
+        '200':
+          description: Request receives all Prothern's telegrams
+          content:
+            application/json:
+              schema:
+                $ref: Protherm
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: Error
+        '403':
+          description: Read not allowed
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: Error
+
+components:
+  schemas:
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          description: Error code
+          type: integer
+          format: int32
+        message:
+          description: Error message
+          type: string
+
+    Protherm:
+      type: object
+      properties:
+        roomControlUnit:
+          type: RoomControlUnit
+        burnerControlUnitBlock0:
+          type: BurnerControlUnitBlock0
+        burnerControlUnitBlock1:
+          type: BurnerControlUnitBlock1
+        burnerControlUnitBlock2:
+          type: BurnerControlUnitBlock2
+        heaterController:
+          type: HeaterController
+        firingAutomat:
+          type: FiringAutomat
+
+    RoomControlUnit:
+      type: object
+      properties:
+        data:
+          type: string
+        localDate:
+          type: date
+        leadWaterTargetTemperature:
+          type: double
+        serviceWaterTargetTemperature:
+          type: double
+        isLeadWaterHeatingBlocked:
+          type: int
+        isServiceWaterHeatingBlocked:
+          type: int
+
+    BurnerControlUnitBlock0:
+      type: object
+      properties:
+        data:
+          type: string
+        localDate:
+          type: date
+
+    BurnerControlUnitBlock1:
+      type: object
+      properties:
+        data:
+          type: string
+        localDate:
+          type: date
+        leadWaterTemperature:
+          type: double
+        returnWaterTemperature:
+          type: double
+        serviceWaterTemperature:
+          type: double
+        heating:
+          type: int
+        serviceWater:
+          type: int
+    
+    BurnerControlUnitBlock2:
+      type: object
+      properties:
+        data:
+          type: string
+        localDate:
+          type: date
+        serviceWaterTargetTemperature:
+          type: double
+
+    HeaterController:
+      type: object
+      properties:
+        data:
+          type: string
+        localDate:
+          type: date
+        hotWaterCirculatingPump:
+          type: int
+    
+    FiringAutomat:
+      type: object
+      properties:
+        data:
+          type: string
+        localDate:
+          type: date
+        internalPump:
+          type: int
+
+    Unknown:
+      type: object
+      properties:
+        data:
+          type: string
+        localDate:
+          type: date
+    
+    

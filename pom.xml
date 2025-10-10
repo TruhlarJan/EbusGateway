@@ -41,5 +41,6 @@
     	<module>communication</module>
     	<module>io-mock</module>
     	<module>controller</module>
+        <module>api</module>
     </modules>
 </project>
