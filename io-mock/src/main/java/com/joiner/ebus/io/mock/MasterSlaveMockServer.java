@@ -5,8 +5,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -19,13 +19,13 @@ public class MasterSlaveMockServer {
 
     private static final int PORT = 3333;
     private volatile boolean running = true;
-    private Map<Long, byte[]> map = new HashMap<>();
+    private Set<Long> set = new HashSet<>();
 
     public MasterSlaveMockServer() {
-        map.put(17629583509760L, new byte[] { 0x00, 0x01, 0x01, (byte) 0x9A });
-        map.put(17629583573248L, new byte[] { 0x00, 0x08, 0x50, 0x02, 0x0C, 0x00, 0x1F, 0x10, 0x00, (byte) 0x80, (byte) 0x07 });
-        map.put(17629583573249L, new byte[] { 0x00, 0x09, 0x4a, 0x46, 0x00, (byte) 0x80, (byte) 0xFF, 0x5c, 0x00, 0x00, (byte) 0xFF, (byte) 0xB0 });
-        map.put(17629583573250L, new byte[] { 0x00, 0x05, 0x02, 0x14, (byte) 0x96, 0x5A, 0x78, 0x0D });
+        set.add(17629583509760L);
+        set.add(17629583573248L);
+        set.add(17629583573249L);
+        set.add(17629583573250L);
     }
 
     @PostConstruct
@@ -56,8 +56,10 @@ public class MasterSlaveMockServer {
             if (masterData.length >= 6) {
                 byte[] address = Arrays.copyOf(masterData, 6);
                 long key = getKey(address);
-                byte[] slaveData = map.get(key);
-                log.info("Data: {} {}", bytesToHex(masterData), bytesToHex(slaveData));
+                if (!set.contains(key)) {
+                    throw new RuntimeException();
+                }
+                log.info("MasterData: {}: {}", key, bytesToHex(masterData));
             }
         } catch (Exception e) {
             log.error("Transaction error with client {}: {}", client.getInetAddress(), e.getMessage());
