@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class Address03h64hB5h12hData implements MasterSlaveData {
+public class Address03h64hB5h12hData implements MasterData {
 
     public static final long KEY = 3731069469186L;
 
@@ -16,10 +16,6 @@ public class Address03h64hB5h12hData implements MasterSlaveData {
 
     @Getter
     @Setter
-    private byte[] slaveData = new byte[0];
-    
-    @Getter
-    @Setter
     private Date date;
 
     /**
@@ -27,7 +23,7 @@ public class Address03h64hB5h12hData implements MasterSlaveData {
      * @param data
      */
     public Address03h64hB5h12hData(byte[] data) {
-        setMasterSlaveData(data);
+        setMasterData(data);
     }
 
     @Override

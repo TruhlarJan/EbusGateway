@@ -1,7 +1,7 @@
 package com.joiner.ebus.communication.link;
 
-import static com.joiner.ebus.communication.link.FrameParser.ADDRESS_SIZE;
-import static com.joiner.ebus.communication.protherm.MasterSlaveData.SYN;
+import static com.joiner.ebus.communication.link.DataEventFactory.ADDRESS_SIZE;
+import static com.joiner.ebus.communication.protherm.MasterData.SYN;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-
-import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -49,7 +47,7 @@ public class EbusReader {
 
     @Autowired
     @Getter
-    private FrameParser frameParser;
+    private DataEventFactory dataEventFactory;
 
     @Autowired
     private ApplicationEventPublisher publisher;
@@ -133,8 +131,8 @@ public class EbusReader {
         if (b == SYN) {
             if (byteArrayOutputStream.size() >= ADDRESS_SIZE) {
                 try {
-                    MasterSlaveData frame = frameParser.getMasterSlaveData(byteArrayOutputStream.toByteArray());
-                    publisher.publishEvent(new MasterSlaveDataReadyEvent(this, frame));
+                    byte[] data = byteArrayOutputStream.toByteArray();
+                    publisher.publishEvent(dataEventFactory.getDataReadyEvent(this, data));
                 } catch (Exception ex) {
                     log.warn("Frame parse error: {}", ex.getMessage());
                 }

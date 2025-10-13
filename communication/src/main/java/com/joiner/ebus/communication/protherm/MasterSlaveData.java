@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.joiner.ebus.communication.EbusCrc;
 
-public interface MasterSlaveData {
+public interface MasterSlaveData extends MasterData {
 
     /** Source address - Main Control Unit */
     public static int QQ = 0x10;
@@ -16,24 +16,6 @@ public interface MasterSlaveData {
     /** Vaillant command */
     public static int PB = 0xB5;
 
-    /** positive acknowledge symbol. */
-    public static int ACK = 0x00;
-
-    /** synchronization symbol. */
-    public static int SYN = 0xAA;
-
-    /**
-     * Master data terminated CRC.
-     * 
-     * @return
-     */
-    byte[] getMasterData();
-
-    /**
-     * 
-     * @param data
-     */
-    void setMasterData(byte[] masterData);
 
     /**
      * Returns checked slave data according to OCR
@@ -47,27 +29,6 @@ public interface MasterSlaveData {
      * @param slaveData
      */
     void setSlaveData(byte[] slaveData);
-
-    /**
-     * Date of accepted slave data.
-     * 
-     * @return
-     */
-    Date getDate();
-
-    /**
-     * Date of responded correct master slave data
-     * 
-     * @param date
-     */
-    void setDate(Date date);
-
-    /**
-     * Address key of the MasterSlave object.
-     * 
-     * @return
-     */
-    long getKey();
 
     /**
      * Returns the final bytes that the master should send after reading the
