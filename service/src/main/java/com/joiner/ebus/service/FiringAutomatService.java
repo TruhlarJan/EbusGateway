@@ -5,7 +5,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.joiner.ebus.communication.link.DataEventFactory.Address03h15hB5h13hDataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.Tg0315B513DataReadyEvent;
 import com.joiner.ebus.model.FiringAutomatDto;
 import com.joiner.ebus.service.converter.Tg0315B513DataToFiringAutomatDtoConverter;
 
@@ -22,7 +22,7 @@ public class FiringAutomatService {
     
     @Async
     @EventListener
-    public void handleFrame(Address03h15hB5h13hDataReadyEvent event) {
+    public void handleFrame(Tg0315B513DataReadyEvent event) {
         firingAutomatDto = converter.convert(event.getData());
     }
 

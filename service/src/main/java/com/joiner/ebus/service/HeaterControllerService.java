@@ -5,7 +5,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.joiner.ebus.communication.link.DataEventFactory.Address03h64hB5h12hDataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.Tg0364B512DataReadyEvent;
 import com.joiner.ebus.model.HeaterControllerDto;
 import com.joiner.ebus.service.converter.Tg0364B512DataToHeaterControllerDtoConverter;
 
@@ -22,7 +22,7 @@ public class HeaterControllerService {
 
     @Async
     @EventListener
-    public void handleFrame(Address03h64hB5h12hDataReadyEvent event) {
+    public void handleFrame(Tg0364B512DataReadyEvent event) {
         heaterControllerDto = converter.convert(event.getData());
     }
 

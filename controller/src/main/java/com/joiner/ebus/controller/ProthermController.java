@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.joiner.ebus.model.RoomControlUnitDto;
 import com.joiner.ebus.service.BurnerControlService;
-import com.joiner.ebus.service.RoomControlService;
+import com.joiner.ebus.service.RoomControlUnitService;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock00Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock01Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock02Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitsDto;
-import com.joiner.ebus.service.dto.RoomControlUnitDto;
 
 @RestController
 @RequestMapping("/protherm")
@@ -25,7 +25,7 @@ public class ProthermController {
     private BurnerControlService burnerControlService;
     
     @Autowired
-    private RoomControlService roomControlService;
+    private RoomControlUnitService roomControlService;
     
     @GetMapping("/units")
     public ResponseEntity<BurnerControlUnitsDto> readBurnerControlUnit() {
