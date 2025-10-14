@@ -7,13 +7,13 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
 
 import com.joiner.ebus.communication.ByteUtils;
-import com.joiner.ebus.communication.protherm.Address03h15hB5h13hData;
-import com.joiner.ebus.communication.protherm.Address03h64hB5h12hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
-import com.joiner.ebus.communication.protherm.AddressUnknownData;
+import com.joiner.ebus.communication.protherm.Tg0315B513Data;
+import com.joiner.ebus.communication.protherm.Tg0364B512Data;
+import com.joiner.ebus.communication.protherm.Tg1008B510Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110100Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110101Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110102Data;
+import com.joiner.ebus.communication.protherm.TgUnknownData;
 
 import lombok.Getter;
 
@@ -29,20 +29,20 @@ public class DataEventFactory {
         byte[] address = Arrays.copyOfRange(data, 0, ADDRESS_SIZE);
 
         long key = utils.getKey(address);
-        if (key == Address10h08hB5h10hData.KEY) {
-            return new Address10h08hB5h10hDataReadyEvent(source, new Address10h08hB5h10hData(data));
-        } else if (key == Address10h08hB5h11h01h00hData.KEY) {
-            return new Address10h08hB5h11h01h00hDataReadyEvent(source, new Address10h08hB5h11h01h00hData(data));
-        } else if (key == Address10h08hB5h11h01h01hData.KEY) {
-            return new Address10h08hB5h11h01h01hDataReadyEvent(source, new Address10h08hB5h11h01h01hData(data));
-        } else if (key == Address10h08hB5h11h01h02hData.KEY) {
-            return new Address10h08hB5h11h01h02hDataReadyEvent(source, new Address10h08hB5h11h01h02hData(data));
-        } else if (key == Address03h64hB5h12hData.KEY) {
-            return new Address03h64hB5h12hDataReadyEvent(source, new Address03h64hB5h12hData(data));
-         } else if (key == Address03h15hB5h13hData.KEY) {
-             return new Address03h15hB5h13hDataReadyEvent(source, new Address03h15hB5h13hData(data));
+        if (key == Tg1008B510Data.KEY) {
+            return new Address10h08hB5h10hDataReadyEvent(source, new Tg1008B510Data(data));
+        } else if (key == Tg1008B5110100Data.KEY) {
+            return new Address10h08hB5h11h01h00hDataReadyEvent(source, new Tg1008B5110100Data(data));
+        } else if (key == Tg1008B5110101Data.KEY) {
+            return new Address10h08hB5h11h01h01hDataReadyEvent(source, new Tg1008B5110101Data(data));
+        } else if (key == Tg1008B5110102Data.KEY) {
+            return new Address10h08hB5h11h01h02hDataReadyEvent(source, new Tg1008B5110102Data(data));
+        } else if (key == Tg0364B512Data.KEY) {
+            return new Address03h64hB5h12hDataReadyEvent(source, new Tg0364B512Data(data));
+         } else if (key == Tg0315B513Data.KEY) {
+             return new Address03h15hB5h13hDataReadyEvent(source, new Tg0315B513Data(data));
         } else {
-            return new AddressUnknownDataReadyEvent(source, new AddressUnknownData(data));
+            return new AddressUnknownDataReadyEvent(source, new TgUnknownData(data));
         }
     }
 
@@ -51,9 +51,9 @@ public class DataEventFactory {
         private static final long serialVersionUID = 3206849664874081556L;
 
         @Getter
-        private Address10h08hB5h10hData data;
+        private Tg1008B510Data data;
 
-        public Address10h08hB5h10hDataReadyEvent(Object source, Address10h08hB5h10hData data) {
+        public Address10h08hB5h10hDataReadyEvent(Object source, Tg1008B510Data data) {
             super(source);
             this.data = data;
         }
@@ -64,9 +64,9 @@ public class DataEventFactory {
         private static final long serialVersionUID = -5630332542112717458L;
 
         @Getter
-        private Address10h08hB5h11h01h00hData data;
+        private Tg1008B5110100Data data;
 
-        public Address10h08hB5h11h01h00hDataReadyEvent(Object source, Address10h08hB5h11h01h00hData data) {
+        public Address10h08hB5h11h01h00hDataReadyEvent(Object source, Tg1008B5110100Data data) {
             super(source);
             this.data = data;
         }
@@ -77,9 +77,9 @@ public class DataEventFactory {
         private static final long serialVersionUID = -6576733601750592663L;
 
         @Getter
-        private Address10h08hB5h11h01h01hData data;
+        private Tg1008B5110101Data data;
 
-        public Address10h08hB5h11h01h01hDataReadyEvent(Object source, Address10h08hB5h11h01h01hData data) {
+        public Address10h08hB5h11h01h01hDataReadyEvent(Object source, Tg1008B5110101Data data) {
             super(source);
             this.data = data;
         }
@@ -90,9 +90,9 @@ public class DataEventFactory {
         private static final long serialVersionUID = -8162007652446644868L;
 
         @Getter
-        private Address10h08hB5h11h01h02hData data;
+        private Tg1008B5110102Data data;
 
-        public Address10h08hB5h11h01h02hDataReadyEvent(Object source, Address10h08hB5h11h01h02hData data) {
+        public Address10h08hB5h11h01h02hDataReadyEvent(Object source, Tg1008B5110102Data data) {
             super(source);
             this.data = data;
         }
@@ -103,9 +103,9 @@ public class DataEventFactory {
         private static final long serialVersionUID = 451440166722021534L;
 
         @Getter
-        private Address03h64hB5h12hData data;
+        private Tg0364B512Data data;
 
-        public Address03h64hB5h12hDataReadyEvent(Object source, Address03h64hB5h12hData data) {
+        public Address03h64hB5h12hDataReadyEvent(Object source, Tg0364B512Data data) {
             super(source);
             this.data = data;
         }
@@ -116,9 +116,9 @@ public class DataEventFactory {
         private static final long serialVersionUID = -3851909859873689083L;
 
         @Getter
-        private Address03h15hB5h13hData data;
+        private Tg0315B513Data data;
 
-        public Address03h15hB5h13hDataReadyEvent(Object source, Address03h15hB5h13hData data) {
+        public Address03h15hB5h13hDataReadyEvent(Object source, Tg0315B513Data data) {
             super(source);
             this.data = data;
         }
@@ -129,9 +129,9 @@ public class DataEventFactory {
         private static final long serialVersionUID = 363929230694757998L;
 
         @Getter
-        private AddressUnknownData data;
+        private TgUnknownData data;
 
-        public AddressUnknownDataReadyEvent(Object source, AddressUnknownData data) {
+        public AddressUnknownDataReadyEvent(Object source, TgUnknownData data) {
             super(source);
             this.data = data;
         }
