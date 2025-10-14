@@ -31,8 +31,9 @@ public class Tg1008B5110102Data implements MasterSlaveData {
     /* CRC = 0x89 */ 
     private static final int CRC = 0x8A;
 
-    /* Length of the slave data (ACK, NN, xx1, xx2, xx3, xx4, ST, CRC) */
+    /* Length of the slave data (ACK, NN, vv, xx2, xx3, xx4, ST, CRC) */
     private static final int SLAVE_SIZE = 8;
+    public static final int VV_INDEX = 2;
 
     /* 10h 08h B5h 11h 01h 01h*/
     @Getter

@@ -105,10 +105,6 @@ components:
           type: double
         serviceWaterTemperature:
           type: double
-        heating:
-          type: int
-        serviceWater:
-          type: int
     
     BurnerControlUnitBlock2:
       type: object
@@ -117,8 +113,10 @@ components:
           type: string
         localDate:
           type: date
-        serviceWaterTargetTemperature:
-          type: double
+        heating:
+          type: int
+        serviceWater:
+          type: int
 
     HeaterController:
       type: object
