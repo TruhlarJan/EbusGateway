@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
+import com.joiner.ebus.communication.protherm.Tg1008B510Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110100Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110101Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110102Data;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 /**
@@ -34,10 +34,10 @@ class EbusWriterTest {
     void testSendFrame() {
         
         List<MasterSlaveData> list = List.of(
-                new Address10h08hB5h10hData(0x14, 0x5A, 0x05),
-                new Address10h08hB5h11h01h00hData(),
-                new Address10h08hB5h11h01h01hData(),
-                new Address10h08hB5h11h01h02hData());
+                new Tg1008B510Data(0x14, 0x5A, 0x05),
+                new Tg1008B5110100Data(),
+                new Tg1008B5110101Data(),
+                new Tg1008B5110102Data());
 
         assertThatNoException().isThrownBy(() -> {
             for (MasterSlaveData masterSlaveData : list) {

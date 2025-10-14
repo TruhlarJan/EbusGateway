@@ -12,12 +12,12 @@ import lombok.Setter;
  * Application Layer – OSI 7
  * Vaillant specific extensions V0.6.0
  * 
- * 3.6 B5h 11h 00h - Not specified.
+ * 3.6 B5h 11h 01h - Operational Data of Burner Control Unit to Room Control Unit.
  */
 @Component
-public class Address10h08hB5h11h01h00hData implements MasterSlaveData {
+public class Tg1008B5110101Data implements MasterSlaveData {
 
-    public static final Long KEY = 17629583573248L;
+    public static final Long KEY = 17629583573249L;
 
     /* SB byte - Operational Data from Room Controller to Burner Control Unit. */
     private static final int SB = 0x11;
@@ -26,14 +26,14 @@ public class Address10h08hB5h11h01h00hData implements MasterSlaveData {
     private static final int NN = 0x01;
 
     /* M6 byte - Block number */
-    private static final int M6 = 0x00;
+    private static final int M6 = 0x01;
 
     /* CRC = 0x89 */ 
-    private static final int CRC = 0x88;
+    private static final int CRC = 0x89;
 
-    /* Length of the slave data (ACK, NN, ??, ?, ?, ?, ?, ?, ?, ?, CRC) */
-    private static final int SLAVE_SIZE = 11;
-
+    /* Length of the slave data (ACK, NN, VT, NT, TA_L, TA_H, WT, ST, vv, xx1, xx2, CRC) */
+    private static final int SLAVE_SIZE = 12;
+    
     /* 10h 08h B5h 11h 01h 01h*/
     @Getter
     @Setter
@@ -50,7 +50,7 @@ public class Address10h08hB5h11h01h00hData implements MasterSlaveData {
     /**
      * 
      */
-    public Address10h08hB5h11h01h00hData() {
+    public Tg1008B5110101Data() {
         setMasterData(masterData);
     }
 
@@ -58,7 +58,7 @@ public class Address10h08hB5h11h01h00hData implements MasterSlaveData {
      * 
      * @param data
      */
-    public Address10h08hB5h11h01h00hData(byte[] data) {
+    public Tg1008B5110101Data(byte[] data) {
         setMasterSlaveData(data);
     }
 

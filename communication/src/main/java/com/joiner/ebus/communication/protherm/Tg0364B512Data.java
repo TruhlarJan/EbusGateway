@@ -6,10 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class AddressUnknownData implements MasterData {
-    
-    public static final long KEY = Long.MIN_VALUE;
-    
+public class Tg0364B512Data implements MasterData {
+
+    public static final long KEY = 3731069469186L;
+
+    public static final int YY_INDEX = 6;
+
     @Getter
     @Setter
     private byte[] masterData = new byte[0];
@@ -22,7 +24,7 @@ public class AddressUnknownData implements MasterData {
      * 
      * @param data
      */
-    public AddressUnknownData(byte[] data) {
+    public Tg0364B512Data(byte[] data) {
         setMasterData(data);
     }
 
@@ -30,6 +32,5 @@ public class AddressUnknownData implements MasterData {
     public long getKey() {
         return KEY;
     }
-
 
 }

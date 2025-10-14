@@ -15,7 +15,7 @@ import lombok.Setter;
  * 3.6 B5h 11h 02h - Operational Data of Burner Control Unit to Room Control Unit.
  */
 @Component
-public class Address10h08hB5h11h01h02hData implements MasterSlaveData {
+public class Tg1008B5110102Data implements MasterSlaveData {
 
     public static final Long KEY = 17629583573250L;
 
@@ -50,7 +50,7 @@ public class Address10h08hB5h11h01h02hData implements MasterSlaveData {
     /**
      * 
      */
-    public Address10h08hB5h11h01h02hData() {
+    public Tg1008B5110102Data() {
         setMasterData(masterData);
     }
 
@@ -58,7 +58,7 @@ public class Address10h08hB5h11h01h02hData implements MasterSlaveData {
      * 
      * @param data
      */
-    public Address10h08hB5h11h01h02hData(byte[] data) {
+    public Tg1008B5110102Data(byte[] data) {
         setMasterSlaveData(data);
     }
 

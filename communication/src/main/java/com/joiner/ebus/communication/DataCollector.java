@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.link.EbusWriter;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h10hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
+import com.joiner.ebus.communication.protherm.Tg1008B510Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110100Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110101Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110102Data;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +43,10 @@ public class DataCollector {
         }
 
         List<MasterSlaveData> list = List.of(
-                new Address10h08hB5h10hData(m8, m9, m12),
-                new Address10h08hB5h11h01h00hData(),
-                new Address10h08hB5h11h01h01hData(),
-                new Address10h08hB5h11h01h02hData());
+                new Tg1008B510Data(m8, m9, m12),
+                new Tg1008B5110100Data(),
+                new Tg1008B5110101Data(),
+                new Tg1008B5110102Data());
 
         for (MasterSlaveData masterSlaveData : list) {
             try {
@@ -60,9 +60,9 @@ public class DataCollector {
 
     public void sendDataImmidiately(MasterSlaveData masterSlaveData) {
         byte[] masterStartData = masterSlaveData.getMasterData();
-        m8 = masterStartData[Address10h08hB5h10hData.M8_INDEX];
-        m9 = masterStartData[Address10h08hB5h10hData.M9_INDEX];
-        m12 = masterStartData[Address10h08hB5h10hData.M12_INDEX];
+        m8 = masterStartData[Tg1008B510Data.M8_INDEX];
+        m9 = masterStartData[Tg1008B510Data.M9_INDEX];
+        m12 = masterStartData[Tg1008B510Data.M12_INDEX];
     }
 
 }

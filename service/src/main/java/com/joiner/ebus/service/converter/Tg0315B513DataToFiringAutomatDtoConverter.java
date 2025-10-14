@@ -1,6 +1,6 @@
 package com.joiner.ebus.service.converter;
 
-import static com.joiner.ebus.communication.protherm.Address03h15hB5h13hData.YY_INDEX;
+import static com.joiner.ebus.communication.protherm.Tg0315B513Data.YY_INDEX;
 
 import java.time.LocalDate;
 
@@ -9,17 +9,17 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.joiner.ebus.communication.protherm.Address03h15hB5h13hData;
+import com.joiner.ebus.communication.protherm.Tg0315B513Data;
 import com.joiner.ebus.model.FiringAutomatDto;
 
 @Component
-public class Address03h15hB5h13hDataToFiringAutomatDtoConverter implements Converter<Address03h15hB5h13hData, FiringAutomatDto> {
+public class Tg0315B513DataToFiringAutomatDtoConverter implements Converter<Tg0315B513Data, FiringAutomatDto> {
 
     @Autowired
     private ConversionService conversionService;
 
     @Override
-    public FiringAutomatDto convert(Address03h15hB5h13hData source) {
+    public FiringAutomatDto convert(Tg0315B513Data source) {
         byte[] masterData = source.getMasterData();
 
         FiringAutomatDto firingAutomatDto = new FiringAutomatDto();

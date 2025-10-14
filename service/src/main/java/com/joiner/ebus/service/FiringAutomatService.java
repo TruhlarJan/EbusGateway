@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.link.DataEventFactory.Address03h15hB5h13hDataReadyEvent;
 import com.joiner.ebus.model.FiringAutomatDto;
-import com.joiner.ebus.service.converter.Address03h15hB5h13hDataToFiringAutomatDtoConverter;
+import com.joiner.ebus.service.converter.Tg0315B513DataToFiringAutomatDtoConverter;
 
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ import lombok.Getter;
 public class FiringAutomatService {
 
     @Autowired
-    private Address03h15hB5h13hDataToFiringAutomatDtoConverter converter;
+    private Tg0315B513DataToFiringAutomatDtoConverter converter;
     
     @Getter
     private FiringAutomatDto firingAutomatDto;

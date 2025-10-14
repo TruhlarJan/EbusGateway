@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h00hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h01hData;
-import com.joiner.ebus.communication.protherm.Address10h08hB5h11h01h02hData;
+import com.joiner.ebus.communication.protherm.Tg1008B5110100Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110101Data;
+import com.joiner.ebus.communication.protherm.Tg1008B5110102Data;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 import com.joiner.ebus.service.cache.DataCache;
 import com.joiner.ebus.service.converter.source.Bit.S9b0;
@@ -51,7 +51,7 @@ public class BurnerControlService {
      */
     public BurnerControlUnitBlock00Dto getBurnerControlUnitBlock00Dto() {
         BurnerControlUnitBlock00Dto dto = new BurnerControlUnitBlock00Dto();
-        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h00hData.KEY);
+        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Tg1008B5110100Data.KEY);
         if (masterSlaveData == null) {
             return dto;
         }
@@ -67,7 +67,7 @@ public class BurnerControlService {
      */
     public BurnerControlUnitBlock01Dto getBurnerControlUnitBlock01Dto() {
         BurnerControlUnitBlock01Dto dto = new BurnerControlUnitBlock01Dto();
-        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h01hData.KEY);
+        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Tg1008B5110101Data.KEY);
         if (masterSlaveData == null) {
             return dto;
         }
@@ -88,7 +88,7 @@ public class BurnerControlService {
      */
     public BurnerControlUnitBlock02Dto getBurnerControlUnitBlock02Dto() {
         BurnerControlUnitBlock02Dto dto = new BurnerControlUnitBlock02Dto();
-        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Address10h08hB5h11h01h02hData.KEY);
+        MasterSlaveData masterSlaveData = masterSlaveDataMap.get(Tg1008B5110102Data.KEY);
         if (masterSlaveData == null) {
             return dto;
         }

@@ -16,7 +16,7 @@ import lombok.Setter;
  * 
  * 3.5 B5h 10h - Operational Data from Room Controller to Burner Control Unit
  */
-public class Address10h08hB5h10hData implements MasterSlaveData {
+public class Tg1008B510Data implements MasterSlaveData {
     
     public static final Long KEY = 17629583509760L;
     
@@ -65,7 +65,7 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
      * @param m9 M9 - Service water target temperature
      * @param m12 M12 - Burner blocking (00 = nothing blocked, 01 = lead water burner blocked, 02 = service water burner blocked, 05 = all blocked)
      */
-    public Address10h08hB5h10hData(final int m8byte, final int m9byte, final int m12byte) {
+    public Tg1008B510Data(final int m8byte, final int m9byte, final int m12byte) {
         setMasterData(masterData);
         masterData[M8_INDEX] = (byte) m8byte;
         masterData[M9_INDEX] = (byte) m9byte;
@@ -77,7 +77,7 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
      * 
      * @param data
      */
-    public Address10h08hB5h10hData(byte[] data) {
+    public Tg1008B510Data(byte[] data) {
         setMasterSlaveData(data);
     }
 

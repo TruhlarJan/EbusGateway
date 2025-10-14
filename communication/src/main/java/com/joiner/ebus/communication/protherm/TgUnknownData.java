@@ -6,24 +6,23 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class Address03h15hB5h13hData implements MasterData {
-
-    public static final long KEY = 3391767118598L;
+public class TgUnknownData implements MasterData {
     
-    public static final int YY_INDEX = 6;
+    public static final long KEY = Long.MIN_VALUE;
     
     @Getter
     @Setter
     private byte[] masterData = new byte[0];
-    
+
     @Getter
     @Setter
     private Date date;
 
     /**
      * 
+     * @param data
      */
-    public Address03h15hB5h13hData(byte[] data) {
+    public TgUnknownData(byte[] data) {
         setMasterData(data);
     }
 
@@ -31,5 +30,6 @@ public class Address03h15hB5h13hData implements MasterData {
     public long getKey() {
         return KEY;
     }
+
 
 }
