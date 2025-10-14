@@ -11,13 +11,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.joiner.ebus.communication.ByteUtils;
-import com.joiner.ebus.communication.link.DataEventFactory.Address03h15hB5h13hDataReadyEvent;
-import com.joiner.ebus.communication.link.DataEventFactory.Address03h64hB5h12hDataReadyEvent;
-import com.joiner.ebus.communication.link.DataEventFactory.Address10h08hB5h10hDataReadyEvent;
-import com.joiner.ebus.communication.link.DataEventFactory.Address10h08hB5h11h01h00hDataReadyEvent;
-import com.joiner.ebus.communication.link.DataEventFactory.Address10h08hB5h11h01h01hDataReadyEvent;
-import com.joiner.ebus.communication.link.DataEventFactory.Address10h08hB5h11h01h02hDataReadyEvent;
-import com.joiner.ebus.communication.link.DataEventFactory.AddressUnknownDataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.Tg0315B513DataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.Tg0364B512DataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.Tg1008B510DataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.Tg1008B5110100DataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.Tg1008B5110101DataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.Tg1008B5110102DataReadyEvent;
+import com.joiner.ebus.communication.link.DataEventFactory.TgUnknownDataReadyEvent;
 import com.joiner.ebus.communication.protherm.MasterData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 
@@ -43,7 +43,7 @@ public class DataCache {
     
     @Async
     @EventListener
-    public void handleFrame(Address10h08hB5h10hDataReadyEvent event) {
+    public void handleFrame(Tg1008B510DataReadyEvent event) {
         MasterSlaveData masterSlaveData = event.getData();
         if (ByteUtils.isAllZero(masterSlaveData.getSlaveData())) {
             return;
@@ -55,7 +55,7 @@ public class DataCache {
 
     @Async
     @EventListener
-    public void handleFrame(Address10h08hB5h11h01h00hDataReadyEvent event) {
+    public void handleFrame(Tg1008B5110100DataReadyEvent event) {
         MasterSlaveData masterSlaveData = event.getData();
         if (ByteUtils.isAllZero(masterSlaveData.getSlaveData())) {
             return;
@@ -67,7 +67,7 @@ public class DataCache {
 
     @Async
     @EventListener
-    public void handleFrame(Address10h08hB5h11h01h01hDataReadyEvent event) {
+    public void handleFrame(Tg1008B5110101DataReadyEvent event) {
         MasterSlaveData masterSlaveData = event.getData();
         if (ByteUtils.isAllZero(masterSlaveData.getSlaveData())) {
             return;
@@ -79,7 +79,7 @@ public class DataCache {
 
     @Async
     @EventListener
-    public void handleFrame(Address10h08hB5h11h01h02hDataReadyEvent event) {
+    public void handleFrame(Tg1008B5110102DataReadyEvent event) {
         MasterSlaveData masterSlaveData = event.getData();
         if (ByteUtils.isAllZero(masterSlaveData.getSlaveData())) {
             return;
@@ -91,7 +91,7 @@ public class DataCache {
 
     @Async
     @EventListener
-    public void handleFrame(Address03h15hB5h13hDataReadyEvent event) {
+    public void handleFrame(Tg0315B513DataReadyEvent event) {
         MasterData masterData = event.getData();
         long key = masterData.getKey();
         masterDataMap.put(key, masterData);
@@ -100,7 +100,7 @@ public class DataCache {
 
     @Async
     @EventListener
-    public void handleFrame(Address03h64hB5h12hDataReadyEvent event) {
+    public void handleFrame(Tg0364B512DataReadyEvent event) {
         MasterData masterData = event.getData();
         long key = masterData.getKey();
         masterDataMap.put(key, masterData);
@@ -109,7 +109,7 @@ public class DataCache {
 
     @Async
     @EventListener
-    public void handleFrame(AddressUnknownDataReadyEvent event) {
+    public void handleFrame(TgUnknownDataReadyEvent event) {
         MasterData masterData = event.getData();
         long key = masterData.getKey();
         unknownList.add(masterData);
