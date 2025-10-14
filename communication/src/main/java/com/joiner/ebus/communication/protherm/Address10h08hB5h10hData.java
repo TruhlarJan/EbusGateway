@@ -66,11 +66,11 @@ public class Address10h08hB5h10hData implements MasterSlaveData {
      * @param m12 M12 - Burner blocking (00 = nothing blocked, 01 = lead water burner blocked, 02 = service water burner blocked, 05 = all blocked)
      */
     public Address10h08hB5h10hData(final int m8byte, final int m9byte, final int m12byte) {
+        setMasterData(masterData);
         masterData[M8_INDEX] = (byte) m8byte;
         masterData[M9_INDEX] = (byte) m9byte;
         masterData[M12_INDEX] = (byte) m12byte;
         masterData[CRC_INDEX] = (byte) EbusCrc.computeCrc(Arrays.copyOf(masterData, masterData.length - 1));
-        setMasterData(masterData);
     }
 
     /**

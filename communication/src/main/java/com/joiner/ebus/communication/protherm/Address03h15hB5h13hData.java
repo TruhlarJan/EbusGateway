@@ -10,6 +10,8 @@ public class Address03h15hB5h13hData implements MasterData {
 
     public static final long KEY = 3391767118598L;
     
+    public static final int YY_INDEX = 6;
+    
     @Getter
     @Setter
     private byte[] masterData = new byte[0];
