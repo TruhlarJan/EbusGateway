@@ -54,6 +54,10 @@ public class Tg1008B510Data implements MasterSlaveData {
     @Getter
     @Setter
     private byte[] slaveData = new byte[SLAVE_SIZE];
+
+    @Getter
+    @Setter
+    private byte[] masterSlaveData;
     
     @Getter
     @Setter
@@ -71,14 +75,17 @@ public class Tg1008B510Data implements MasterSlaveData {
         masterData[M9_INDEX] = (byte) m9byte;
         masterData[M12_INDEX] = (byte) m12byte;
         masterData[CRC_INDEX] = (byte) EbusCrc.computeCrc(Arrays.copyOf(masterData, masterData.length - 1));
+        setDate(new Date());
     }
 
     /**
      * 
-     * @param data
+     * @param masterSlaveData
      */
-    public Tg1008B510Data(byte[] data) {
-        setMasterSlaveData(data);
+    public Tg1008B510Data(byte[] masterSlaveData) {
+        setMasterSlaveData(masterSlaveData);
+        parseSlaveData(masterSlaveData);
+        setDate(new Date());
     }
 
     @Override

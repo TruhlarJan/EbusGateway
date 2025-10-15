@@ -24,6 +24,7 @@ public class TgUnknownData implements MasterData {
      */
     public TgUnknownData(byte[] data) {
         setMasterData(data);
+        setDate(new Date());
     }
 
     @Override

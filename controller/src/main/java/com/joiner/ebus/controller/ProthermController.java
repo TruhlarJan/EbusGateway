@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.joiner.ebus.model.BurnerControlUnitBlock0Dto;
 import com.joiner.ebus.model.BurnerControlUnitBlock2Dto;
 import com.joiner.ebus.model.RoomControlUnitDto;
 import com.joiner.ebus.service.BurnerControlService;
+import com.joiner.ebus.service.BurnerControlUnitBlock0Service;
 import com.joiner.ebus.service.BurnerControlUnitBlock2Service;
 import com.joiner.ebus.service.RoomControlUnitService;
 import com.joiner.ebus.service.dto.BurnerControlUnitBlock00Dto;
@@ -22,6 +24,8 @@ import com.joiner.ebus.service.dto.BurnerControlUnitsDto;
 @RequestMapping("/protherm")
 public class ProthermController {
 
+    @Autowired
+    private BurnerControlUnitBlock0Service burnerControlUnitBlock0Service;
     
     @Autowired
     private BurnerControlUnitBlock2Service burnerControlUnitBlock2Service;
@@ -43,9 +47,9 @@ public class ProthermController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/units/0")
-    public ResponseEntity<BurnerControlUnitBlock00Dto> readBurnerControlUnitBlock00() {
-        return new ResponseEntity<>(burnerControlService.getBurnerControlUnitBlock00Dto(), HttpStatus.OK);
+    @GetMapping("/burnerControlUnits/block0")
+    public ResponseEntity<BurnerControlUnitBlock0Dto> readBurnerControlUnitBlock00() {
+        return new ResponseEntity<>(burnerControlUnitBlock0Service.getBurnerControlUnitBlock0Dto(), HttpStatus.OK);
     }
 
     @GetMapping("/units/1")
