@@ -19,6 +19,7 @@ public class Tg1008B5110100DataToBurnerControlUnitBlock0DtoConverter implements 
     @Override
     public BurnerControlUnitBlock0Dto convert(Tg1008B5110100Data source) {
         byte[] masterSlaveData = source.getMasterSlaveData();
+
         BurnerControlUnitBlock0Dto burnerControlUnitBlock0Dto = new BurnerControlUnitBlock0Dto();
         burnerControlUnitBlock0Dto.setData(conversionService.convert(masterSlaveData, String.class));
         burnerControlUnitBlock0Dto.setLocalDate(LocalDate.now());

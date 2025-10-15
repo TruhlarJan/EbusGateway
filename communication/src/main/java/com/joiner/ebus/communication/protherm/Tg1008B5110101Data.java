@@ -33,7 +33,11 @@ public class Tg1008B5110101Data implements MasterSlaveData {
 
     /* Length of the slave data (ACK, NN, VT, NT, TA_L, TA_H, WT, ST, vv, xx1, xx2, CRC) */
     private static final int SLAVE_SIZE = 12;
-    
+    public static final int VT_INDEX = 2;
+    public static final int NT_INDEX = 3;
+    public static final int ST_INDEX = 7;
+    public static final int VV_INDEX = 8;
+
     /* 10h 08h B5h 11h 01h 01h*/
     @Getter
     @Setter

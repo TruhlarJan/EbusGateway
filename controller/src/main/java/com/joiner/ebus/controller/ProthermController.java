@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joiner.ebus.model.BurnerControlUnitBlock0Dto;
+import com.joiner.ebus.model.BurnerControlUnitBlock1Dto;
 import com.joiner.ebus.model.BurnerControlUnitBlock2Dto;
 import com.joiner.ebus.model.RoomControlUnitDto;
 import com.joiner.ebus.service.BurnerControlService;
 import com.joiner.ebus.service.BurnerControlUnitBlock0Service;
+import com.joiner.ebus.service.BurnerControlUnitBlock1Service;
 import com.joiner.ebus.service.BurnerControlUnitBlock2Service;
 import com.joiner.ebus.service.RoomControlUnitService;
-import com.joiner.ebus.service.dto.BurnerControlUnitBlock00Dto;
-import com.joiner.ebus.service.dto.BurnerControlUnitBlock01Dto;
 import com.joiner.ebus.service.dto.BurnerControlUnitsDto;
 
 @RestController
@@ -26,6 +26,9 @@ public class ProthermController {
 
     @Autowired
     private BurnerControlUnitBlock0Service burnerControlUnitBlock0Service;
+
+    @Autowired
+    private BurnerControlUnitBlock1Service burnerControlUnitBlock1Service;
     
     @Autowired
     private BurnerControlUnitBlock2Service burnerControlUnitBlock2Service;
@@ -52,9 +55,9 @@ public class ProthermController {
         return new ResponseEntity<>(burnerControlUnitBlock0Service.getBurnerControlUnitBlock0Dto(), HttpStatus.OK);
     }
 
-    @GetMapping("/units/1")
-    public ResponseEntity<BurnerControlUnitBlock01Dto> readBurnerControlUnitBlock01() {
-        return new ResponseEntity<>(burnerControlService.getBurnerControlUnitBlock01Dto(), HttpStatus.OK);
+    @GetMapping("/burnerControlUnits/block1")
+    public ResponseEntity<BurnerControlUnitBlock1Dto> readBurnerControlUnitBlock1() {
+        return new ResponseEntity<>(burnerControlUnitBlock1Service.getBurnerControlUnitBlock1Dto(), HttpStatus.OK);
     }
 
     @GetMapping("/burnerControlUnits/block2")
