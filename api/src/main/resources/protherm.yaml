@@ -4,31 +4,123 @@ info:
   version: "@project.version@"
   description: Minimal OpenAPI spec for Protherm status dashboard.
 
+servers:
+  - url: /protherm
+    description: Root path for all Protherm endpoints.
+
 paths:
-  /protherm:
+
+  /roomControlUnit:
     get:
-      summary: Get Prothern's telegrams 
+      summary: Get current Room Control Unit status
+      operationId: readRoomControlUnit
       responses:
         '200':
-          description: Request receives all Prothern's telegrams
+          description: Successfully returned RoomControlUnitDto
           content:
             application/json:
               schema:
-                $ref: Protherm
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: Error
-        '403':
-          description: Read not allowed
+                $ref: '#/components/schemas/RoomControlUnit'
         '500':
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: Error
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update Room Control Unit parameters
+      operationId: updateRoomControlUnit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomControlUnit'
+      responses:
+        '200':
+          description: Successfully updated
+        '400':
+          description: Invalid request payload
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /burnerControlUnits/block0:
+    get:
+      summary: Get Burner Control Unit Block 0 data
+      operationId: readBurnerControlUnitBlock0
+      responses:
+        '200':
+          description: Successfully returned BurnerControlUnitBlock0Dto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BurnerControlUnitBlock0'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /burnerControlUnits/block1:
+    get:
+      summary: Get Burner Control Unit Block 1 data
+      operationId: readBurnerControlUnitBlock1
+      responses:
+        '200':
+          description: Successfully returned BurnerControlUnitBlock1Dto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BurnerControlUnitBlock1'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /burnerControlUnits/block2:
+    get:
+      summary: Get Burner Control Unit Block 2 data
+      operationId: readBurnerControlUnitBlock2
+      responses:
+        '200':
+          description: Successfully returned BurnerControlUnitBlock2Dto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BurnerControlUnitBlock2'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /unknowns:
+    get:
+      summary: Get list of unknown telegrams
+      operationId: readUnknowns
+      responses:
+        '200':
+          description: Successfully returned list of UnknownDto
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Unknown'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
