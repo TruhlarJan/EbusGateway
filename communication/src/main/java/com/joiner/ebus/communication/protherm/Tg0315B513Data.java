@@ -25,6 +25,7 @@ public class Tg0315B513Data implements MasterData {
      */
     public Tg0315B513Data(byte[] data) {
         setMasterData(data);
+        setDate(new Date());
     }
 
     @Override

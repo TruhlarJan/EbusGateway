@@ -1,7 +1,6 @@
 package com.joiner.ebus.communication.protherm;
 
 import java.util.Arrays;
-import java.util.Date;
 
 import com.joiner.ebus.communication.EbusCrc;
 
@@ -31,31 +30,40 @@ public interface MasterSlaveData extends MasterData {
     void setSlaveData(byte[] slaveData);
 
     /**
+     * 
+     * @param masterSlaveData
+     */
+    void setMasterSlaveData(byte[] masterSlaveData);
+    
+    /**
+     * 
+     * @return
+     */
+    byte[] getMasterSlaveData();
+
+    /**
+     * 
+     * @param slaveData
+     */
+    default void parseSlaveData(byte[] masterSlaveData) {
+        if (getMasterSlaveData().length != masterSlaveData.length) {
+            return;
+        }
+        byte[] slave = Arrays.copyOfRange(masterSlaveData, getMasterData().length, masterSlaveData.length);
+        int crcResponsed = slave[slave.length - 1] & 0xFF;
+        int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
+        if (crcResponsed != crcComputed) {
+            return;
+        }
+        setSlaveData(slave);
+    }
+
+    /**
      * Returns the final bytes that the master should send after reading the
      * response from the slave. Defaults to ACK + SYN.
      */
     default byte[] getMasterFinalData() {
         return new byte[] { ACK, (byte) SYN };
-    }
-
-    /**
-     * 
-     * @param data
-     */
-    default void setMasterSlaveData(byte[] data) {
-        int masterLength = getMasterData().length;
-        if (masterLength <= data.length) {
-            setMasterData(Arrays.copyOfRange(data, 0, masterLength));
-        }
-        if (data.length > masterLength) {
-            byte[] slave = Arrays.copyOfRange(data, masterLength, data.length);
-            int crcResponsed = slave[slave.length - 1] & 0xFF;
-            int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
-            if (crcResponsed == crcComputed) {
-                setSlaveData(slave);
-                setDate(new Date());
-            }
-        }
     }
 
 }
