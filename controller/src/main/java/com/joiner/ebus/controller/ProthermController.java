@@ -13,40 +13,35 @@ import com.joiner.ebus.model.BurnerControlUnitBlock0Dto;
 import com.joiner.ebus.model.BurnerControlUnitBlock1Dto;
 import com.joiner.ebus.model.BurnerControlUnitBlock2Dto;
 import com.joiner.ebus.model.RoomControlUnitDto;
-import com.joiner.ebus.service.BurnerControlService;
 import com.joiner.ebus.service.BurnerControlUnitBlock0Service;
 import com.joiner.ebus.service.BurnerControlUnitBlock1Service;
 import com.joiner.ebus.service.BurnerControlUnitBlock2Service;
 import com.joiner.ebus.service.RoomControlUnitService;
-import com.joiner.ebus.service.dto.BurnerControlUnitsDto;
 
 @RestController
 @RequestMapping("/protherm")
 public class ProthermController {
 
     @Autowired
+    private RoomControlUnitService roomControlUnitService;
+
+    @Autowired
     private BurnerControlUnitBlock0Service burnerControlUnitBlock0Service;
 
     @Autowired
     private BurnerControlUnitBlock1Service burnerControlUnitBlock1Service;
-    
+
     @Autowired
     private BurnerControlUnitBlock2Service burnerControlUnitBlock2Service;
-    
-    @Autowired
-    private BurnerControlService burnerControlService;
-    
-    @Autowired
-    private RoomControlUnitService roomControlService;
-    
-    @GetMapping("/units")
-    public ResponseEntity<BurnerControlUnitsDto> readBurnerControlUnit() {
-        return new ResponseEntity<>(burnerControlService.getBurnerControlUnits(), HttpStatus.OK);
+
+    @GetMapping("/roomControlUnit")
+    public ResponseEntity<RoomControlUnitDto> readRoomControlUnit() {
+        return new ResponseEntity<>(roomControlUnitService.getRoomControlUnitDto(), HttpStatus.OK);
     }
 
-    @PutMapping("/units")
+    @PutMapping("/roomControlUnit")
     public ResponseEntity<?> updateRoomControlUnit(@RequestBody RoomControlUnitDto roomControlUnitDto) {
-        roomControlService.setRoomControlUnit(roomControlUnitDto);
+        roomControlUnitService.setRoomControlUnit(roomControlUnitDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

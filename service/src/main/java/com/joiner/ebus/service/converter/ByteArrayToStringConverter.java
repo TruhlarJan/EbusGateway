@@ -4,7 +4,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BytesToStringConverter implements Converter<byte[], String> {
+public class ByteArrayToStringConverter implements Converter<byte[], String> {
 
     @Override
     public String convert(byte[] source) {
