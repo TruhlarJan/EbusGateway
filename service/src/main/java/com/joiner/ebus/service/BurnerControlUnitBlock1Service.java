@@ -1,6 +1,7 @@
 package com.joiner.ebus.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.joiner.ebus.communication.link.DataEventFactory.Tg1008B5110101DataReadyEvent;
 import com.joiner.ebus.model.BurnerControlUnitBlock1Dto;
 import com.joiner.ebus.service.converter.Tg1008B5110101DataToBurnerControlUnitBlock1DtoConverter;
+import com.joiner.ebus.service.event.BurnerControlUnitBlock1MqttEvent;
 
 import lombok.Getter;
 
@@ -16,6 +18,9 @@ public class BurnerControlUnitBlock1Service {
 
     @Autowired
     private Tg1008B5110101DataToBurnerControlUnitBlock1DtoConverter converter;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
     
     @Getter
     private BurnerControlUnitBlock1Dto burnerControlUnitBlock1Dto;
@@ -24,6 +29,7 @@ public class BurnerControlUnitBlock1Service {
     @EventListener
     public void handleFrame(Tg1008B5110101DataReadyEvent event) {
         burnerControlUnitBlock1Dto = converter.convert(event.getData());
+        eventPublisher.publishEvent(new BurnerControlUnitBlock1MqttEvent(burnerControlUnitBlock1Dto));
     }
 
 }

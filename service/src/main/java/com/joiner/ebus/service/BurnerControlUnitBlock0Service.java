@@ -29,7 +29,7 @@ public class BurnerControlUnitBlock0Service {
     @EventListener
     public void handleFrame(Tg1008B5110100DataReadyEvent event) {
         burnerControlUnitBlock0Dto = converter.convert(event.getData());
-        eventPublisher.publishEvent(new BurnerControlUnitBlock0MqttEvent(this, burnerControlUnitBlock0Dto));
+        eventPublisher.publishEvent(new BurnerControlUnitBlock0MqttEvent(burnerControlUnitBlock0Dto));
     }
 
 }

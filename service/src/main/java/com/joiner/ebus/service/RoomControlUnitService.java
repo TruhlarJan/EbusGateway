@@ -25,5 +25,5 @@ public class RoomControlUnitService {
         this.roomControlUnitDto = roomControlUnitDto;
         dataCollector.sendDataImmidiately(converter.convert(roomControlUnitDto));
     }
-    
+
 }

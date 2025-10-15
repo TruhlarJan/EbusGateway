@@ -67,21 +67,13 @@ public class MqttConfig {
 
     @Bean
     public MessageProducer inbound(MqttPahoClientFactory mqttClientFactory) {
+        String[] topics = new String[] { "#", "protherm/roomControlUnit/update" };
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(clientId + "-sub", mqttClientFactory, "#");
+                new MqttPahoMessageDrivenChannelAdapter(clientId + "-sub", mqttClientFactory, topics);
         adapter.setOutputChannel(mqttInboundChannel());
         adapter.setQos(1);
         adapter.setConverter(new DefaultPahoMessageConverter());
         return adapter;
     }
 
-    @Bean
-    @ServiceActivator(inputChannel = "mqttInboundChannel")
-    public MessageHandler inboundHandler() {
-        return message -> {
-            String topic = (String) message.getHeaders().get("mqtt_receivedTopic");
-            String payload = (String) message.getPayload();
-            System.out.println("📥 MQTT [" + topic + "]: " + payload);
-        };
-    }
 }
