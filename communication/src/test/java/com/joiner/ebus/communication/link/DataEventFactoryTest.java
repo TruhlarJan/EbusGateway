@@ -21,13 +21,13 @@ class DataEventFactoryTest {
 
     @Test
     void testSave() {
-        Tg0315B513DataReadyEvent dataReadyEvent = (Tg0315B513DataReadyEvent) dataEventFactory.getDataReadyEvent(this, new byte[] {0x03, 0x15, (byte) 0xB5, 0x13, 0x03, 0x06});
+        Tg0315B513DataReadyEvent dataReadyEvent = (Tg0315B513DataReadyEvent) dataEventFactory.getDataReadyEvent(new byte[] {0x03, 0x15, (byte) 0xB5, 0x13, 0x03, 0x06});
         assertEquals(Tg0315B513Data.KEY, dataReadyEvent.getData().getKey());
 
-        Tg0364B512DataReadyEvent dataReadyEvent2 = (Tg0364B512DataReadyEvent) dataEventFactory.getDataReadyEvent(this, new byte[] {0x03, 0x64, (byte) 0xB5, 0x12, 0x02, 0x02});
+        Tg0364B512DataReadyEvent dataReadyEvent2 = (Tg0364B512DataReadyEvent) dataEventFactory.getDataReadyEvent(new byte[] {0x03, 0x64, (byte) 0xB5, 0x12, 0x02, 0x02});
         assertEquals(Tg0364B512Data.KEY, dataReadyEvent2.getData().getKey());
 
-        TgUnknownDataReadyEvent dataReadyEvent3 = (TgUnknownDataReadyEvent) dataEventFactory.getDataReadyEvent(this, new byte[6]);
+        TgUnknownDataReadyEvent dataReadyEvent3 = (TgUnknownDataReadyEvent) dataEventFactory.getDataReadyEvent(new byte[6]);
         assertEquals(TgUnknownData.KEY, dataReadyEvent3.getData().getKey());
 
     }

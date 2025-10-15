@@ -132,7 +132,7 @@ public class EbusReader {
             if (byteArrayOutputStream.size() >= ADDRESS_SIZE) {
                 try {
                     byte[] data = byteArrayOutputStream.toByteArray();
-                    publisher.publishEvent(dataEventFactory.getDataReadyEvent(this, data));
+                    publisher.publishEvent(dataEventFactory.getDataReadyEvent(data));
                 } catch (Exception ex) {
                     log.warn("Frame parse error: {}", ex.getMessage());
                 }
