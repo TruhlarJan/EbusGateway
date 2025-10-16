@@ -11,11 +11,15 @@ import com.joiner.ebus.api.DefaultApi;
 import com.joiner.ebus.model.BurnerControlUnitBlock0Dto;
 import com.joiner.ebus.model.BurnerControlUnitBlock1Dto;
 import com.joiner.ebus.model.BurnerControlUnitBlock2Dto;
+import com.joiner.ebus.model.FiringAutomatDto;
+import com.joiner.ebus.model.HeaterControllerDto;
 import com.joiner.ebus.model.RoomControlUnitDto;
 import com.joiner.ebus.model.UnknownDto;
 import com.joiner.ebus.service.BurnerControlUnitBlock0Service;
 import com.joiner.ebus.service.BurnerControlUnitBlock1Service;
 import com.joiner.ebus.service.BurnerControlUnitBlock2Service;
+import com.joiner.ebus.service.FiringAutomatService;
+import com.joiner.ebus.service.HeaterControllerService;
 import com.joiner.ebus.service.RoomControlUnitService;
 import com.joiner.ebus.service.UnknownService;
 
@@ -30,6 +34,8 @@ public class ProthermController implements DefaultApi {
     private final BurnerControlUnitBlock0Service burnerControlUnitBlock0Service;
     private final BurnerControlUnitBlock1Service burnerControlUnitBlock1Service;
     private final BurnerControlUnitBlock2Service burnerControlUnitBlock2Service;
+    private final HeaterControllerService heaterControllerService;
+    private final FiringAutomatService firingAutomatService;
     private final UnknownService unknownService;
 
     @Override
@@ -59,7 +65,18 @@ public class ProthermController implements DefaultApi {
     }
 
     @Override
+    public ResponseEntity<HeaterControllerDto> readHeaterController() {
+        return ResponseEntity.ok(heaterControllerService.getHeaterControllerDto());
+    }
+
+    @Override
+    public ResponseEntity<FiringAutomatDto> readFiringAutomat() {
+        return ResponseEntity.ok(firingAutomatService.getFiringAutomatDto());
+    }
+
+    @Override
     public ResponseEntity<List<UnknownDto>> readUnknowns() {
         return ResponseEntity.ok(new ArrayList<>(unknownService.getUnknowns()));
     }
+    
 }

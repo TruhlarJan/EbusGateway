@@ -11,9 +11,11 @@ import com.joiner.ebus.model.RoomControlUnitDto;
 import com.joiner.ebus.service.RoomControlUnitService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MqttSubscriberService implements MessageHandler {
 
     private final ObjectMapper objectMapper;
@@ -24,18 +26,14 @@ public class MqttSubscriberService implements MessageHandler {
     public void handleMessage(Message<?> message) {
         String topic = (String) message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC);
         String payload = (String) message.getPayload();
-        System.out.println("📥 MQTT [" + topic + "]: " + payload);
-
         try {
             if ("protherm/roomControlUnit/update".equals(topic)) {
                 RoomControlUnitDto dto = objectMapper.readValue(payload, RoomControlUnitDto.class);
                 roomControlUnitService.setRoomControlUnit(dto);
                 System.out.println("✅ RoomControlUnit updated via MQTT");
             }
-            // sem můžeš přidat další specifické topicy
         } catch (Exception e) {
-            System.err.println("❌ Chyba při parsování MQTT payloadu: " + e.getMessage());
-            e.printStackTrace();
+            log.error("❌ Chyba při parsování MQTT payloadu: {}", e.getMessage());
         }
     }
 }
