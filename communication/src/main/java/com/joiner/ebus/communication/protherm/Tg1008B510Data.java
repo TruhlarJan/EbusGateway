@@ -88,6 +88,13 @@ public class Tg1008B510Data implements MasterSlaveData {
         setDate(new Date());
     }
 
+    /**
+     * Constructor with default values.
+     */
+    public Tg1008B510Data() {
+        this(M8, M9, M12);
+    }
+
     @Override
     public long getKey() {
         return KEY;
