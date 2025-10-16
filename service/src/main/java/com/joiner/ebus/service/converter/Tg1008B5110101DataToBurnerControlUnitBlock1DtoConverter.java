@@ -1,6 +1,6 @@
 package com.joiner.ebus.service.converter;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -27,7 +27,7 @@ public class Tg1008B5110101DataToBurnerControlUnitBlock1DtoConverter implements 
         
         BurnerControlUnitBlock1Dto burnerControlUnitBlock1Dto = new BurnerControlUnitBlock1Dto();
         burnerControlUnitBlock1Dto.setData(conversionService.convert(masterSlaveData, String.class));
-        burnerControlUnitBlock1Dto.setLocalDate(LocalDate.now());
+        burnerControlUnitBlock1Dto.setDateTime(OffsetDateTime.now());
         burnerControlUnitBlock1Dto.setLeadWaterTemperature((vt & 0xFF) / 2.0);
         burnerControlUnitBlock1Dto.setReturnWaterTemperature((nt & 0xFF) / 2.0);
         burnerControlUnitBlock1Dto.setServiceWaterTemperature((st & 0xFF) / 2.0);

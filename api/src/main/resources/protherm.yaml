@@ -165,8 +165,9 @@ components:
       properties:
         data:
           type: string
-        localDate:
-          type: date
+        dateTime:
+          type: string
+          format: date-time    
         leadWaterTargetTemperature:
           type: double
         serviceWaterTargetTemperature:
@@ -181,16 +182,18 @@ components:
       properties:
         data:
           type: string
-        localDate:
-          type: date
+        dateTime:
+          type: string
+          format: date-time    
 
     BurnerControlUnitBlock1:
       type: object
       properties:
         data:
           type: string
-        localDate:
-          type: date
+        dateTime:
+          type: string
+          format: date-time    
         leadWaterTemperature:
           type: double
         returnWaterTemperature:
@@ -207,8 +210,9 @@ components:
       properties:
         data:
           type: string
-        localDate:
-          type: date
+        dateTime:
+          type: string
+          format: date-time    
         heating:
           type: int
         serviceWater:
@@ -219,8 +223,9 @@ components:
       properties:
         data:
           type: string
-        localDate:
-          type: date
+        dateTime:
+          type: string
+          format: date-time    
         hotWaterCirculatingPump:
           type: int
     
@@ -229,8 +234,9 @@ components:
       properties:
         data:
           type: string
-        localDate:
-          type: date
+        dateTime:
+          type: string
+          format: date-time    
         internalPump:
           type: int
 
@@ -239,7 +245,7 @@ components:
       properties:
         data:
           type: string
-        localDate:
-          type: date
-    
+        dateTime:
+          type: string
+          format: date-time    
     

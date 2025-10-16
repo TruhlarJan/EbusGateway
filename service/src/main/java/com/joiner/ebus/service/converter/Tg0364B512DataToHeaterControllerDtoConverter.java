@@ -2,7 +2,7 @@ package com.joiner.ebus.service.converter;
 
 import static com.joiner.ebus.communication.protherm.Tg0364B512Data.YY_INDEX;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -24,7 +24,7 @@ public class Tg0364B512DataToHeaterControllerDtoConverter implements Converter<T
 
         HeaterControllerDto heaterControllerDto = new HeaterControllerDto();
         heaterControllerDto.setData(conversionService.convert(masterData, String.class));
-        heaterControllerDto.setLocalDate(LocalDate.now());
+        heaterControllerDto.setDateTime(OffsetDateTime.now());
 
         byte b = masterData[YY_INDEX];
         if (b == 0x00) {
