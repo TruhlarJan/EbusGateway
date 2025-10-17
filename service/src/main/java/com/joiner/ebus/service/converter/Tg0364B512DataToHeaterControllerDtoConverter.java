@@ -31,7 +31,7 @@ public class Tg0364B512DataToHeaterControllerDtoConverter implements Converter<T
             heaterControllerDto.setHotWaterCirculatingPump(0);
         } else if (b == 0x64) {
             heaterControllerDto.setHotWaterCirculatingPump(1);
-        } else if (b == 0xFF) {
+        } else if (b == 0xFE) {
             heaterControllerDto.setHotWaterCirculatingPump(2);
         } else {
             heaterControllerDto.setHotWaterCirculatingPump(-1);

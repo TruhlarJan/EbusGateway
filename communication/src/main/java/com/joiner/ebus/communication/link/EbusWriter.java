@@ -54,7 +54,7 @@ public class EbusWriter {
                 out.flush();
             }
         } catch (Exception e) {
-            log.warn("sendFrame() failed: {}", e.getMessage(), e);
+            log.warn("sendFrame() failed: {}", e.getMessage());
         }
     }
 

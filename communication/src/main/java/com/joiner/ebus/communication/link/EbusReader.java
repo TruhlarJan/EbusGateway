@@ -73,7 +73,7 @@ public class EbusReader {
                 attempt++;
                 int wait = Math.min(100 * attempt, 2000);
                 if (attempt % 5 == 0) {
-                    log.warn("Still waiting for eBUS server at {}:{} after {} attempts", host, port, attempt, e);
+                    log.warn("Still waiting for eBUS server at {}:{} after {} attempts. {}", host, port, attempt, e.getMessage());
                 }
                 Thread.sleep(wait);
             }
