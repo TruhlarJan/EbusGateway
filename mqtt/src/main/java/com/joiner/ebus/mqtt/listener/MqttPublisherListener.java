@@ -3,6 +3,11 @@ package com.joiner.ebus.mqtt.listener;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import com.joiner.ebus.model.BurnerControlUnitBlock0Dto;
+import com.joiner.ebus.model.BurnerControlUnitBlock1Dto;
+import com.joiner.ebus.model.BurnerControlUnitBlock2Dto;
+import com.joiner.ebus.model.FiringAutomatDto;
+import com.joiner.ebus.model.HeaterControllerDto;
 import com.joiner.ebus.mqtt.service.MqttPublisherService;
 import com.joiner.ebus.service.event.BurnerControlUnitBlock0MqttEvent;
 import com.joiner.ebus.service.event.BurnerControlUnitBlock1MqttEvent;
@@ -20,27 +25,46 @@ public class MqttPublisherListener {
 
     @EventListener
     public void handleBurnerBlock0(BurnerControlUnitBlock0MqttEvent event) {
-        mqttPublisherService.publish("protherm/burnerControlUnit/block0", event.getBurnerControlUnitBlock0Dto());
+        BurnerControlUnitBlock0Dto burnerControlUnitBlock0Dto = event.getBurnerControlUnitBlock0Dto();
+        mqttPublisherService.publish("protherm/burnerControlUnit/block0/data", burnerControlUnitBlock0Dto.getData());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block0/dateTime", burnerControlUnitBlock0Dto.getDateTime());
     }
 
     @EventListener
     public void handleBurnerBlock1(BurnerControlUnitBlock1MqttEvent event) {
-        mqttPublisherService.publish("protherm/burnerControlUnit/block1", event.getBurnerControlUnitBlock1Dto());
+        BurnerControlUnitBlock1Dto burnerControlUnitBlock1Dto = event.getBurnerControlUnitBlock1Dto();
+        mqttPublisherService.publish("protherm/burnerControlUnit/block1/data", burnerControlUnitBlock1Dto.getData());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block1/dateTime", burnerControlUnitBlock1Dto.getDateTime());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block1/heating", burnerControlUnitBlock1Dto.getHeating());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block1/leadWaterTemperature", burnerControlUnitBlock1Dto.getLeadWaterTemperature());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block1/returnWaterTemperature", burnerControlUnitBlock1Dto.getReturnWaterTemperature());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block1/serviceWater", burnerControlUnitBlock1Dto.getServiceWater());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block1/serviceWaterTemperature", burnerControlUnitBlock1Dto.getServiceWaterTemperature());
     }
 
     @EventListener
     public void handleBurnerBlock2(BurnerControlUnitBlock2MqttEvent event) {
-        mqttPublisherService.publish("protherm/burnerControlUnit/block2", event.getBurnerControlUnitBlock2Dto());
-    }
+        BurnerControlUnitBlock2Dto burnerControlUnitBlock2Dto = event.getBurnerControlUnitBlock2Dto();
+        mqttPublisherService.publish("protherm/burnerControlUnit/block2/data", burnerControlUnitBlock2Dto.getData());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block2/dateTime", burnerControlUnitBlock2Dto.getDateTime());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block2/heating", burnerControlUnitBlock2Dto.getHeating());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block2/serviceWater", burnerControlUnitBlock2Dto.getServiceWater());
+        }
 
     @EventListener
     public void handleHeaterController(HeaterControllerMqttEvent event) {
-        mqttPublisherService.publish("protherm/heaterController", event.getHeaterControllerDto());
+        HeaterControllerDto heaterControllerDto = event.getHeaterControllerDto();
+        mqttPublisherService.publish("protherm/heaterController/data", heaterControllerDto.getData());
+        mqttPublisherService.publish("protherm/heaterController/dateTime", heaterControllerDto.getDateTime());
+        mqttPublisherService.publish("protherm/heaterController/hotWaterCirculatingPump", heaterControllerDto.getHotWaterCirculatingPump());
     }
 
     @EventListener
     public void handleFiringAutomat(FiringAutomatMqttEvent event) {
-        mqttPublisherService.publish("protherm/firingAutomat", event.getFiringAutomatDto());
+        FiringAutomatDto firingAutomatDto = event.getFiringAutomatDto();
+        mqttPublisherService.publish("protherm/firingAutomat/data", firingAutomatDto.getData());
+        mqttPublisherService.publish("protherm/firingAutomat/dateTime", firingAutomatDto.getDateTime());
+        mqttPublisherService.publish("protherm/firingAutomat/internalPump", firingAutomatDto.getInternalPump());
     }
 
 }
