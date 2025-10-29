@@ -1,12 +1,11 @@
 package com.joiner.ebus.mqtt.service;
 
-import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joiner.ebus.model.RoomControlUnitDto;
 import com.joiner.ebus.service.RoomControlUnitService;
 
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MqttSubscriberService implements MessageHandler {
 
-    private final ObjectMapper objectMapper;
     private final RoomControlUnitService roomControlUnitService;
 
     @Override
@@ -26,14 +24,26 @@ public class MqttSubscriberService implements MessageHandler {
     public void handleMessage(Message<?> message) {
         String topic = (String) message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC);
         String payload = (String) message.getPayload();
+        // Loxone optimization
+        if (payload.isEmpty()) {
+            payload = String.valueOf(0);
+        }
         try {
-            if ("protherm/roomControlUnit/update".equals(topic)) {
-                RoomControlUnitDto dto = objectMapper.readValue(payload, RoomControlUnitDto.class);
-                roomControlUnitService.setRoomControlUnit(dto);
-                System.out.println("✅ RoomControlUnit updated via MQTT");
+            RoomControlUnitDto roomControlUnitDto = new RoomControlUnitDto();
+            if ("protherm/roomControlUnit/leadWaterTargetTemperature".equals(topic)) {
+                roomControlUnitDto.setLeadWaterTargetTemperature(Double.valueOf(payload));
+            } else if ("protherm/roomControlUnit/serviceWaterTargetTemperature".equals(topic)) {
+                roomControlUnitDto.setServiceWaterTargetTemperature(Double.valueOf(payload));
+            } else if ("protherm/roomControlUnit/leadWaterHeatingBlocked".equals(topic)) {
+                roomControlUnitDto.setLeadWaterHeatingBlocked(Integer.valueOf(payload));
+            } else if ("protherm/roomControlUnit/serviceWaterHeatingBlocked".equals(topic)) {
+                roomControlUnitDto.setServiceWaterHeatingBlocked(Integer.valueOf(payload));
+            } else {
+                log.error("Topic {} has not been processed.", topic);
             }
+            roomControlUnitService.setRoomControlUnit(roomControlUnitDto);
         } catch (Exception e) {
-            log.error("❌ Chyba při parsování MQTT payloadu: {}", e.getMessage());
+            log.error("Error parsing MQTT payload: {}", e.getMessage());
         }
     }
 }

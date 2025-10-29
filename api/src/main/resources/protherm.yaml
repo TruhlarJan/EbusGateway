@@ -195,11 +195,6 @@ components:
 
     RoomControlUnit:
       type: object
-      required:
-        - leadWaterTargetTemperature
-        - serviceWaterTargetTemperature
-        - leadWaterHeatingBlocked
-        - serviceWaterHeatingBlocked
       properties:
         data:
           type: string

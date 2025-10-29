@@ -15,6 +15,7 @@ import com.joiner.ebus.communication.protherm.Tg1008B5110100Data;
 import com.joiner.ebus.communication.protherm.Tg1008B5110101Data;
 import com.joiner.ebus.communication.protherm.Tg1008B5110102Data;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -33,6 +34,7 @@ public class DataCollector {
     @Autowired
     private EbusWriter ebusMasterSlaveLink;
 
+    @Getter
     private MasterSlaveData masterSlaveData = new Tg1008B510Data();
     private List<MasterSlaveData> masterSlaveDataList = List.of(new Tg1008B5110100Data(), new Tg1008B5110101Data(), new Tg1008B5110102Data());
     
