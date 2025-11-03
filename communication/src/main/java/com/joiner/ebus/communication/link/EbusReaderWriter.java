@@ -3,26 +3,35 @@ package com.joiner.ebus.communication.link;
 import static com.joiner.ebus.communication.protherm.MasterData.SYN;
 
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import com.joiner.ebus.communication.protherm.MasterData;
+import com.joiner.ebus.communication.protherm.MasterSlaveData;
+
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class EbusReader {
+public class EbusReaderWriter {
 
     @Value("${adapter.host:127.0.0.1}")
     private String host;
 
-    @Value("${adapter.port.listen:3334}")
+    @Value("${adapter.port:3333}")
     private int port;
 
     @Value("${ebus.read.timeout:2000}")
@@ -36,13 +45,17 @@ public class EbusReader {
 
     private Socket socket;
     private InputStream in;
+    private OutputStream out;
     private volatile boolean running = true;
-
-    private final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-    /* max size of byte array output stream */
+    private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     private static final int MAX_SIZE = 64;
 
+    @Getter
+    private Queue<MasterData> masterDataQueue = new ArrayDeque<>();
+
+    @Autowired	
+    private DataParser dataParser;
+    
     @Autowired
     @Getter
     private DataEventFactory dataEventFactory;
@@ -50,11 +63,17 @@ public class EbusReader {
     @Autowired
     private ApplicationEventPublisher publisher;
 
-//    @PostConstruct
+    @PostConstruct
     public void start() {
-        Thread t = new Thread(this::readLoop, "Ebus-DataListener");
+        Thread t = new Thread(this::readWriteLoop, "Ebus-Read/Write");
         t.setDaemon(true);
         t.start();
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        running = false;
+        closeConnection();
     }
 
     private void connect() throws InterruptedException {
@@ -62,10 +81,11 @@ public class EbusReader {
         while (running) {
             try {
                 socket = new Socket(host, port);
-                socket.setSoTimeout(readTimeout); // čtení po bytech s configurable timeoutem
+                socket.setSoTimeout(readTimeout);
                 in = socket.getInputStream();
+                out = socket.getOutputStream();
                 log.info("Connected to eBUS server at {}:{}", socket.getInetAddress(), socket.getPort());
-                Thread.sleep(reconnectPause); // pauza po reconnectu
+                Thread.sleep(reconnectPause);
                 break;
             } catch (Exception e) {
                 attempt++;
@@ -78,7 +98,7 @@ public class EbusReader {
         }
     }
 
-    private void readLoop() {
+    private void readWriteLoop() {
         long lastDataTime = System.currentTimeMillis();
         int reconnectAttempt = 0;
 
@@ -95,25 +115,31 @@ public class EbusReader {
                     b = in.read();
                 } catch (java.net.SocketTimeoutException ste) {
                     if (System.currentTimeMillis() - lastDataTime > watchdogInterval) {
-                        throw new java.io.IOException(
-                                "No data from adapter for " + watchdogInterval + " ms – assuming dead connection");
+                        throw new IOException("No data from adapter for " + watchdogInterval + " ms – assuming dead connection");
                     }
                     continue;
                 }
-
-                if (b == -1)
-                    throw new java.io.EOFException("End of stream reached");
-
+                if (b == -1) {
+                    throw new EOFException("End of stream reached");
+                }
                 lastDataTime = System.currentTimeMillis();
-                processByte(b);
 
+                if (b == SYN) {
+                    if (buffer.size() > 0) {
+                        processMasterData();
+                    }
+                    if (!masterDataQueue.isEmpty()) {
+                        sendMasterData();
+                    }
+                } else {
+                    processByte(b);
+                }
             } catch (Exception e) {
                 if (running) {
                     reconnectAttempt++;
                     int delay = Math.min(500 * (1 << (reconnectAttempt - 1)), 30000);
                     if (reconnectAttempt % 5 == 0) {
-                        log.warn("Lost connection to {}:{}, retrying in {} ms (attempt {})", host, port, delay,
-                                reconnectAttempt, e.toString());
+                        log.warn("Lost connection to {}:{}, retrying in {} ms (attempt {})", host, port, delay, reconnectAttempt, e.toString());
                     }
                     closeConnection();
                     try {
@@ -125,44 +151,58 @@ public class EbusReader {
         }
     }
 
-    private void processByte(int b) {
-        if (b == SYN) {
-            if (byteArrayOutputStream.size() >= 64) {
-                try {
-                    byte[] data = byteArrayOutputStream.toByteArray();
-//                    publisher.publishEvent(dataEventFactory.getDataReadyEvent(data));
-                } catch (Exception ex) {
-                    log.warn("Frame parse error: {}", ex.getMessage());
-                }
-            }
-            byteArrayOutputStream.reset();
-        } else {
-            byteArrayOutputStream.write(b);
-            if (byteArrayOutputStream.size() > MAX_SIZE) {
-                log.warn("Frame buffer overflow, resetting");
-                byteArrayOutputStream.reset();
-            }
-        }
+    private void sendMasterData() throws IOException {
+        MasterData data = masterDataQueue.poll();
+        out.write(data.getMasterData());
+        out.flush();
     }
 
-    @PreDestroy
-    public void shutdown() {
-        running = false;
-        closeConnection();
+    private void processMasterData() {
+        byte[] data = buffer.toByteArray();
+        MasterData masterData = dataParser.getMasterData(data);
+		if (masterData != null) {
+			publisher.publishEvent(dataEventFactory.getDataReadyEvent(masterData));
+	        buffer.reset();
+		}
+    }
+
+	private void processByte(int b) {
+        buffer.write(b);
+        byte[] data = buffer.toByteArray();
+        MasterSlaveData masterSlaveData = dataParser.getMasterSlaveData(data);
+		if (masterSlaveData != null) {
+			try {
+				out.write(masterSlaveData.getMasterFinalData());
+				out.flush();
+			} catch (IOException e) {
+			}
+			publisher.publishEvent(dataEventFactory.getDataReadyEvent(masterSlaveData));
+			buffer.reset();
+		}
+        if (buffer.size() > MAX_SIZE) {
+            log.warn("Frame buffer overflow, resetting");
+            buffer.reset();
+        }
     }
 
     private void closeConnection() {
         try {
-            if (in != null)
-                in.close();
+            if (in != null) {
+				in.close();
+			}
+            if (out != null) {
+				out.close();
+			}
         } catch (Exception ignored) {
         }
         try {
-            if (socket != null)
-                socket.close();
+            if (socket != null) {
+				socket.close();
+			}
         } catch (Exception ignored) {
         }
         in = null;
+        out = null;
         socket = null;
     }
 }

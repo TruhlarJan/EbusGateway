@@ -46,14 +46,22 @@ public interface MasterSlaveData extends MasterData {
      * @param slaveData
      */
     default void parseSlaveData(byte[] masterSlaveData) {
+        if (masterSlaveData == null) {
+            throw new IllegalArgumentException("masterSlaveData must not be null");
+        }
+
         if (getMasterSlaveData().length != masterSlaveData.length) {
-            return;
+            throw new IllegalArgumentException("Length mismatch: expected " + getMasterSlaveData().length + " but got " + masterSlaveData.length
+            );
         }
         byte[] slave = Arrays.copyOfRange(masterSlaveData, getMasterData().length, masterSlaveData.length);
+        if (slave.length < 2) { // at least 1 byte of data + 1 byte CRC
+            throw new IllegalArgumentException("Slave data too short to contain CRC");
+        }
         int crcResponsed = slave[slave.length - 1] & 0xFF;
         int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
         if (crcResponsed != crcComputed) {
-            return;
+            throw new IllegalStateException(String.format("CRC mismatch: expected 0x%02X but got 0x%02X", crcComputed, crcResponsed));
         }
         setSlaveData(slave);
     }

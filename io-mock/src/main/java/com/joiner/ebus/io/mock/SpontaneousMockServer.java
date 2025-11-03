@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SpontaneousMockServer {
 
-    private static final int PORT = 3334;
+    private static final int PORT = 3333;
     private final List<Socket> clients = new CopyOnWriteArrayList<>();
     private final List<byte[]> spontaneousPackets = new ArrayList<>();
     private final Random random = new Random();

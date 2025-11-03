@@ -28,7 +28,7 @@ public class MasterSlaveMockServer {
         set.add(17629583573250L);
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void startServer() {
         new Thread(() -> {
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {

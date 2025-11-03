@@ -1,11 +1,9 @@
 package com.joiner.ebus.communication.link;
 
-import java.util.Arrays;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.joiner.ebus.communication.ByteUtils;
+import com.joiner.ebus.communication.protherm.MasterData;
+import com.joiner.ebus.communication.protherm.MasterSlaveData;
 import com.joiner.ebus.communication.protherm.Tg0315B513Data;
 import com.joiner.ebus.communication.protherm.Tg0364B512Data;
 import com.joiner.ebus.communication.protherm.Tg1008B510Data;
@@ -19,31 +17,31 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 public class DataEventFactory {
-    
-    public static int ADDRESS_SIZE = 6;
+   
+    public Object getDataReadyEvent(MasterSlaveData masterSlaveData) {
+        if (masterSlaveData instanceof Tg1008B510Data tg1008b510Data) {
+            return new Tg1008B510DataReadyEvent(tg1008b510Data);
+        } else if (masterSlaveData instanceof Tg1008B5110100Data tg1008b5110100Data) {
+            return new Tg1008B5110100DataReadyEvent(tg1008b5110100Data);
+        } else if (masterSlaveData instanceof Tg1008B5110101Data tg1008b5110101Data) {
+            return new Tg1008B5110101DataReadyEvent(tg1008b5110101Data);
+        } else if (masterSlaveData instanceof Tg1008B5110102Data tg1008b5110102Data) {
+            return new Tg1008B5110102DataReadyEvent(tg1008b5110102Data);
+		} else {
+			return new MasterSlaveDataReadyEvent(masterSlaveData);
+		}
+    }
 
-    @Autowired
-    private ByteUtils utils;
-    
-    public Object getDataReadyEvent(byte[] data) {
-        byte[] address = Arrays.copyOfRange(data, 0, ADDRESS_SIZE);
-
-        long key = utils.getKey(address);
-        if (key == Tg1008B510Data.KEY) {
-            return new Tg1008B510DataReadyEvent(new Tg1008B510Data(data));
-        } else if (key == Tg1008B5110100Data.KEY) {
-            return new Tg1008B5110100DataReadyEvent(new Tg1008B5110100Data(data));
-        } else if (key == Tg1008B5110101Data.KEY) {
-            return new Tg1008B5110101DataReadyEvent(new Tg1008B5110101Data(data));
-        } else if (key == Tg1008B5110102Data.KEY) {
-            return new Tg1008B5110102DataReadyEvent(new Tg1008B5110102Data(data));
-        } else if (key == Tg0364B512Data.KEY) {
-            return new Tg0364B512DataReadyEvent(new Tg0364B512Data(data));
-         } else if (key == Tg0315B513Data.KEY) {
-             return new Tg0315B513DataReadyEvent(new Tg0315B513Data(data));
-        } else {
-            return new TgUnknownDataReadyEvent(new TgUnknownData(data));
-        }
+    public Object getDataReadyEvent(MasterData masterData) {
+        if (masterData instanceof Tg0364B512Data tg0364b512Data) {
+            return new Tg0364B512DataReadyEvent(tg0364b512Data);
+         } else if (masterData instanceof Tg0315B513Data tg0315b513Data) {
+             return new Tg0315B513DataReadyEvent(tg0315b513Data);
+        } else if (masterData instanceof TgUnknownData tgUnknownData) {
+            return new TgUnknownDataReadyEvent(tgUnknownData);
+		} else {
+			return new MasterDataReadyEvent(masterData);
+		}
     }
 
     @RequiredArgsConstructor
@@ -95,4 +93,18 @@ public class DataEventFactory {
         private final TgUnknownData data;
     }
 
+    @RequiredArgsConstructor
+    public class MasterSlaveDataReadyEvent {
+
+        @Getter
+        private final MasterSlaveData data;
+    }
+
+    @RequiredArgsConstructor
+    public class MasterDataReadyEvent {
+
+        @Getter
+        private final MasterData data;
+    }
+    
 }

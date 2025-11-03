@@ -1,14 +1,15 @@
 package com.joiner.ebus.communication;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.joiner.ebus.communication.link.EbusWriter;
+import com.joiner.ebus.communication.link.EbusReaderWriter;
+import com.joiner.ebus.communication.protherm.MasterData;
 import com.joiner.ebus.communication.protherm.MasterSlaveData;
 import com.joiner.ebus.communication.protherm.Tg1008B510Data;
 import com.joiner.ebus.communication.protherm.Tg1008B5110100Data;
@@ -32,7 +33,7 @@ public class DataCollector {
     private long schedulerDelay;
 
     @Autowired
-    private EbusWriter ebusMasterSlaveLink;
+    private EbusReaderWriter ebusReaderWriter;
 
     @Getter
     private MasterSlaveData masterSlaveData = new Tg1008B510Data();
@@ -43,20 +44,12 @@ public class DataCollector {
         if (!pollerEnabled) {
             return;
         }
-
-        List<MasterSlaveData> list = new ArrayList<>(masterSlaveDataList); 
+    	Queue<MasterData> masterDataQueue = ebusReaderWriter.getMasterDataQueue();
+    	masterDataQueue.clear();
         if (settingEnabled) {
-            list.add(0, masterSlaveData);
+        	masterDataQueue.add(masterSlaveData);
         }
-
-        for (MasterSlaveData masterSlaveData : list) {
-            try {
-                ebusMasterSlaveLink.sendFrame(masterSlaveData);
-                Thread.sleep(schedulerDelay);
-            } catch (Exception e) {
-                log.error("Ebus MasterToSlave communication failed.", e);
-            }
-        }
+        masterDataQueue.addAll(masterSlaveDataList);
     } 
 
     /**
