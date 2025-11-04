@@ -24,7 +24,7 @@ import com.joiner.ebus.communication.protherm.MasterSlaveData;
 class EbusWriterTest {
 
     @Autowired
-    private EbusWriter dataSender;
+    private EbusReaderWriter dataSender;
 
     /**
      * Test method for {@link com.joiner.ebus.communication.link.EbusWriter#sendFrame(com.joiner.ebus.communication.protherm.MasterSlaveData)}.
@@ -39,11 +39,7 @@ class EbusWriterTest {
                 new Tg1008B5110101Data(),
                 new Tg1008B5110102Data());
 
-        assertThatNoException().isThrownBy(() -> {
-            for (MasterSlaveData masterSlaveData : list) {
-                dataSender.sendFrame(masterSlaveData);
-            }
-        });
+        assertThatNoException().isThrownBy(() -> dataSender.getMasterDataQueue().addAll(list));
     }
 
 }

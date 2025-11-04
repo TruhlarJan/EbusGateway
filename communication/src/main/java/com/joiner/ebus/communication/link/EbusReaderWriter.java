@@ -65,7 +65,7 @@ public class EbusReaderWriter {
 
     @PostConstruct
     public void start() {
-        Thread t = new Thread(this::readWriteLoop, "Ebus-Read/Write");
+        Thread t = new Thread(this::readWriteLoop, "readWriteLoop");
         t.setDaemon(true);
         t.start();
     }

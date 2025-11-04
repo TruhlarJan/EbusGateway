@@ -23,11 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataCollector {
 
-    @Value("${collector.poller.enabled:true}")
-    private boolean pollerEnabled;
+    @Value("${collector.setter.enabled:true}")
+    private boolean setterEnabled;
 
-    @Value("${collector.setting.enabled:true}")
-    private boolean settingEnabled;
+    @Value("${collector.getter.enabled:true}")
+    private boolean getterEnabled;
     
     @Value("${collector.iteration.delay:2000}")
     private long schedulerDelay;
@@ -41,15 +41,14 @@ public class DataCollector {
     
     @Scheduled(fixedRateString = "${collector.scheduler.rate:10000}")
     public void sendData() {
-        if (!pollerEnabled) {
-            return;
-        }
     	Queue<MasterData> masterDataQueue = ebusReaderWriter.getMasterDataQueue();
     	masterDataQueue.clear();
-        if (settingEnabled) {
+        if (setterEnabled) {
         	masterDataQueue.add(masterSlaveData);
         }
-        masterDataQueue.addAll(masterSlaveDataList);
+        if (getterEnabled) {
+            masterDataQueue.addAll(masterSlaveDataList);
+        }
     } 
 
     /**
