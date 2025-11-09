@@ -170,11 +170,6 @@ public class EbusReaderWriter {
         byte[] data = buffer.toByteArray();
         MasterSlaveData masterSlaveData = dataParser.getMasterSlaveData(data);
 		if (masterSlaveData != null) {
-			try {
-				out.write(masterSlaveData.getMasterFinalData());
-				out.flush();
-			} catch (IOException e) {
-			}
 			publisher.publishEvent(dataEventFactory.getDataReadyEvent(masterSlaveData));
 			buffer.reset();
 		}

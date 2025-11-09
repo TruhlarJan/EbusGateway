@@ -24,25 +24,25 @@ public interface MasterSlaveData extends MasterData {
     byte[] getSlaveData();
 
     /**
-     * 
+     * Set slave data to the object.
      * @param slaveData
      */
     void setSlaveData(byte[] slaveData);
 
     /**
-     * 
-     * @param masterSlaveData
-     */
-    void setMasterSlaveData(byte[] masterSlaveData);
-    
-    /**
-     * 
-     * @return
+     * Returning master + slave data.
+     * @return Master + slave data
      */
     byte[] getMasterSlaveData();
 
     /**
-     * 
+     * Set master + slave data to the object.
+     * @param masterSlaveData
+     */
+    void setMasterSlaveData(byte[] masterSlaveData);
+
+    /**
+     * Parsing slave data before setting it to the object.
      * @param slaveData
      */
     default void parseSlaveData(byte[] masterSlaveData) {
@@ -61,14 +61,6 @@ public interface MasterSlaveData extends MasterData {
             throw new IllegalStateException(String.format("CRC mismatch: expected 0x%02X but got 0x%02X", crcComputed, crcResponsed));
         }
         setSlaveData(slave);
-    }
-
-    /**
-     * Returns the final bytes that the master should send after reading the
-     * response from the slave. Defaults to ACK + SYN but it work with SYN byte only.
-     */
-    default byte getMasterFinalData() {
-        return (byte) SYN ;
     }
 
 }
