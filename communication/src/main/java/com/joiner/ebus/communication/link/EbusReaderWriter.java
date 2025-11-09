@@ -28,19 +28,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EbusReaderWriter {
 
-    @Value("${adapter.host:127.0.0.1}")
+    @Value("${ebus.adapter.host:127.0.0.1}")
     private String host;
 
-    @Value("${adapter.port:3333}")
+    @Value("${ebus.adapter.port:3333}")
     private int port;
 
-    @Value("${ebus.read.timeout:2000}")
+    @Value("${ebus.timeout:2000}")
     private int readTimeout;
 
-    @Value("${ebus.read.watchdog.interval:30000}")
+    @Value("${ebus.watchdog.interval:30000}")
     private int watchdogInterval;
 
-    @Value("${ebus.read.reconnect.pause:2000}")
+    @Value("${ebus.reconnect.pause:2000}")
     private int reconnectPause;
 
     private Socket socket;
@@ -125,11 +125,10 @@ public class EbusReaderWriter {
                 lastDataTime = System.currentTimeMillis();
 
                 if (b == SYN) {
-                    if (buffer.size() > 0) {
-                        processMasterData();
-                    }
                     if (!masterDataQueue.isEmpty()) {
                         sendMasterData();
+                    } else {
+                        processMasterData();
                     }
                 } else {
                     processByte(b);

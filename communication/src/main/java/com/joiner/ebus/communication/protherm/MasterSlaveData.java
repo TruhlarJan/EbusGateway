@@ -50,14 +50,11 @@ public interface MasterSlaveData extends MasterData {
             throw new IllegalArgumentException("masterSlaveData must not be null");
         }
 
-        if (getMasterSlaveData().length != masterSlaveData.length) {
+        if (getMasterData().length + getSlaveData().length != masterSlaveData.length) {
             throw new IllegalArgumentException("Length mismatch: expected " + getMasterSlaveData().length + " but got " + masterSlaveData.length
             );
         }
         byte[] slave = Arrays.copyOfRange(masterSlaveData, getMasterData().length, masterSlaveData.length);
-        if (slave.length < 2) { // at least 1 byte of data + 1 byte CRC
-            throw new IllegalArgumentException("Slave data too short to contain CRC");
-        }
         int crcResponsed = slave[slave.length - 1] & 0xFF;
         int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
         if (crcResponsed != crcComputed) {
@@ -68,10 +65,10 @@ public interface MasterSlaveData extends MasterData {
 
     /**
      * Returns the final bytes that the master should send after reading the
-     * response from the slave. Defaults to ACK + SYN.
+     * response from the slave. Defaults to ACK + SYN but it work with SYN byte only.
      */
-    default byte[] getMasterFinalData() {
-        return new byte[] { ACK, (byte) SYN };
+    default byte getMasterFinalData() {
+        return (byte) SYN ;
     }
 
 }
