@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EbusReaderWriter {
 
+    private static final int MAX_SIZE = 64;
+	
     @Value("${ebus.adapter.host:127.0.0.1}")
     private String host;
 
@@ -43,12 +47,16 @@ public class EbusReaderWriter {
     @Value("${ebus.reconnect.pause:2000}")
     private int reconnectPause;
 
+    @Value("${ebus.sync-bytes-between-telegrams:5}")
+    private int syncBytesBetweenTelegrams;
+    
     private Socket socket;
     private InputStream in;
     private OutputStream out;
     private volatile boolean running = true;
+
     private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-    private static final int MAX_SIZE = 64;
+    private final List<Long> synTimeList = new ArrayList<Long>();
 
     @Getter
     private Queue<MasterData> masterDataQueue = new ArrayDeque<>();
@@ -125,12 +133,14 @@ public class EbusReaderWriter {
                 lastDataTime = System.currentTimeMillis();
 
                 if (b == SYN) {
-                    if (!masterDataQueue.isEmpty()) {
+                	synTimeList.add(System.currentTimeMillis());
+                    if (!masterDataQueue.isEmpty() && synTimeList.size() >= syncBytesBetweenTelegrams) {
                         sendMasterData();
                     } else {
                         processMasterData();
                     }
                 } else {
+                    synTimeList.clear();
                     processByte(b);
                 }
             } catch (Exception e) {
@@ -150,7 +160,7 @@ public class EbusReaderWriter {
         }
     }
 
-    private void sendMasterData() throws IOException {
+    private void sendMasterData() throws Exception {
         MasterData data = masterDataQueue.poll();
         out.write(data.getMasterData());
         out.flush();
