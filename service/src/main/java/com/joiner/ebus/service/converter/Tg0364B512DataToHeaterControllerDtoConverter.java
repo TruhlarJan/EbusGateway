@@ -28,11 +28,11 @@ public class Tg0364B512DataToHeaterControllerDtoConverter implements Converter<T
 
         byte b = masterData[YY_INDEX];
         if (b == 0x00) {
-            heaterControllerDto.setHotWaterCirculatingPump(0);
-        } else if (b == 0x64) {
             heaterControllerDto.setHotWaterCirculatingPump(1);
-        } else if (b == 0xFE) {
+        } else if (b == 0x64) {
             heaterControllerDto.setHotWaterCirculatingPump(2);
+        } else if (b == (byte) 0xFE) {
+            heaterControllerDto.setHotWaterCirculatingPump(0);
         } else {
             heaterControllerDto.setHotWaterCirculatingPump(-1);
         }
