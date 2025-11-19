@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class SpontaneousMockServer {
+public class ProthermEbusMock {
 
     private static final int PORT = 3333;
     private final List<Socket> clients = new CopyOnWriteArrayList<>();
@@ -25,7 +25,7 @@ public class SpontaneousMockServer {
     private final Random random = new Random();
     private volatile boolean running = true;
 
-    public SpontaneousMockServer() {
+    public ProthermEbusMock() {
         String[] packets = {
             "10 08 B5 10 09 00 00 14 5A FF FF 05 FF 00 47 00 01 01 9A",
             "10 08 B5 11 01 00 88 00 08 50 02 0C 00 1F 10 00 80 07",
@@ -44,7 +44,7 @@ public class SpontaneousMockServer {
     public void startServer() {
         new Thread(() -> {
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-                log.info("SpontaneousMockServer listening on port {}", PORT);
+                log.info("ProthermEbusMock listening on port {}", PORT);
 
                 while (running) {
                     Socket client = serverSocket.accept();
@@ -56,7 +56,7 @@ public class SpontaneousMockServer {
             } catch (Exception e) {
                 if (running) log.error("Server error", e);
             }
-        }, "SpontaneousMockServerThread").start();
+        }, "ProthermEbusMockThread").start();
     }
 
     private void sendSpontaneousPackets(Socket client) {
