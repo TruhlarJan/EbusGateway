@@ -28,7 +28,7 @@ public class ProthermEbusMock {
     public ProthermEbusMock() {
         String[] packets = {
             "10 08 B5 10 09 00 00 14 5A FF FF 05 FF 00 47 00 01 01 9A",
-            "10 08 B5 11 01 00 88 00 08 50 02 0C 00 1F 10 00 80 07",
+            "10 08 B5 11 01 00 88 00 08 49 02 0C 00 1F 10 00 80 2E",
             "10 08 B5 11 01 01 89 00 09 4A 46 00 80 FF 5C 04 00 FF E8",
             "10 08 B5 11 01 02 8A 00 05 02 14 96 5A 78 0D",
             "03 15 B5 13 03 06 00 00 0E",

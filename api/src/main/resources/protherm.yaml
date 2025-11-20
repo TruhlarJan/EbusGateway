@@ -218,6 +218,12 @@ components:
         dateTime:
           type: string
           format: date-time    
+        flueGasTemperature:
+          type: double
+        waterPressure:
+          type: double
+        flameBurningPower:
+          type: double
 
     BurnerControlUnitBlock1:
       type: object

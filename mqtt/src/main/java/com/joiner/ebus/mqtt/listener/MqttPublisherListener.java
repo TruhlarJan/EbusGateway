@@ -28,6 +28,9 @@ public class MqttPublisherListener {
         BurnerControlUnitBlock0Dto burnerControlUnitBlock0Dto = event.getBurnerControlUnitBlock0Dto();
         mqttPublisherService.publish("protherm/burnerControlUnit/block0/data", burnerControlUnitBlock0Dto.getData());
         mqttPublisherService.publish("protherm/burnerControlUnit/block0/dateTime", burnerControlUnitBlock0Dto.getDateTime());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block0/flueGasTemperature", burnerControlUnitBlock0Dto.getFlueGasTemperature());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block0/waterPressure", burnerControlUnitBlock0Dto.getWaterPressure());
+        mqttPublisherService.publish("protherm/burnerControlUnit/block0/flameBurningPower", burnerControlUnitBlock0Dto.getFlameBurningPower());
     }
 
     @EventListener
@@ -49,7 +52,7 @@ public class MqttPublisherListener {
         mqttPublisherService.publish("protherm/burnerControlUnit/block2/dateTime", burnerControlUnitBlock2Dto.getDateTime());
         mqttPublisherService.publish("protherm/burnerControlUnit/block2/heating", burnerControlUnitBlock2Dto.getHeating());
         mqttPublisherService.publish("protherm/burnerControlUnit/block2/serviceWater", burnerControlUnitBlock2Dto.getServiceWater());
-        }
+    }
 
     @EventListener
     public void handleHeaterController(HeaterControllerMqttEvent event) {

@@ -19,10 +19,17 @@ public class Tg1008B5110100DataToBurnerControlUnitBlock0DtoConverter implements 
     @Override
     public BurnerControlUnitBlock0Dto convert(Tg1008B5110100Data source) {
         byte[] slaveData = source.getSlaveData();
+        byte gt2 = slaveData[Tg1008B5110100Data.GT2_INDEX];
+        byte gt1 = slaveData[Tg1008B5110100Data.GT1_INDEX];
+        byte wp = slaveData[Tg1008B5110100Data.WP_INDEX];
+        byte bp = slaveData[Tg1008B5110100Data.BP_INDEX];
 
         BurnerControlUnitBlock0Dto burnerControlUnitBlock0Dto = new BurnerControlUnitBlock0Dto();
         burnerControlUnitBlock0Dto.setData(conversionService.convert(slaveData, String.class));
         burnerControlUnitBlock0Dto.setDateTime(OffsetDateTime.now());
+        burnerControlUnitBlock0Dto.setFlueGasTemperature((gt2 + (gt1 * 0xFF)) / 10.0);
+        burnerControlUnitBlock0Dto.setWaterPressure(wp / 10.0);
+        burnerControlUnitBlock0Dto.setFlameBurningPower(bp / 2.0);
         return burnerControlUnitBlock0Dto;
     }
 
