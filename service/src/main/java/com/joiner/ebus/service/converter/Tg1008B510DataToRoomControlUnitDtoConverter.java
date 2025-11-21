@@ -7,18 +7,17 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.joiner.ebus.communication.protherm.MasterData;
 import com.joiner.ebus.communication.protherm.Tg1008B510Data;
 import com.joiner.ebus.model.RoomControlUnitDto;
 
 @Component
-public class MasterDataToRoomControlUnitDtoConverter implements Converter<MasterData, RoomControlUnitDto> {
+public class Tg1008B510DataToRoomControlUnitDtoConverter implements Converter<Tg1008B510Data, RoomControlUnitDto> {
 
     @Autowired
     private ConversionService conversionService;
 
     @Override
-    public RoomControlUnitDto convert(MasterData source) {
+    public RoomControlUnitDto convert(Tg1008B510Data source) {
         byte[] masterData = source.getMasterData();
         byte m8 = masterData[Tg1008B510Data.M8_INDEX];
         byte m9 = masterData[Tg1008B510Data.M9_INDEX];

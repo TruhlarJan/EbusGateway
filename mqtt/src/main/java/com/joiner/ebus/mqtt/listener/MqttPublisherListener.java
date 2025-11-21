@@ -8,12 +8,14 @@ import com.joiner.ebus.model.BurnerControlUnitBlock1Dto;
 import com.joiner.ebus.model.BurnerControlUnitBlock2Dto;
 import com.joiner.ebus.model.FiringAutomatDto;
 import com.joiner.ebus.model.HeaterControllerDto;
+import com.joiner.ebus.model.RoomControlUnitDto;
 import com.joiner.ebus.mqtt.service.MqttPublisherService;
 import com.joiner.ebus.service.event.BurnerControlUnitBlock0MqttEvent;
 import com.joiner.ebus.service.event.BurnerControlUnitBlock1MqttEvent;
 import com.joiner.ebus.service.event.BurnerControlUnitBlock2MqttEvent;
 import com.joiner.ebus.service.event.FiringAutomatMqttEvent;
 import com.joiner.ebus.service.event.HeaterControllerMqttEvent;
+import com.joiner.ebus.service.event.RoomControlUnitMqttEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,12 @@ import lombok.RequiredArgsConstructor;
 public class MqttPublisherListener {
 
     private final MqttPublisherService mqttPublisherService;
+
+    @EventListener
+    public void handleRoomControlUnit(RoomControlUnitMqttEvent event) {
+        RoomControlUnitDto roomControlUnitDto = event.getRoomControlUnitDto();
+        mqttPublisherService.publish("protherm/roomControlUnitDto", roomControlUnitDto);
+    }
 
     @EventListener
     public void handleBurnerBlock0(BurnerControlUnitBlock0MqttEvent event) {

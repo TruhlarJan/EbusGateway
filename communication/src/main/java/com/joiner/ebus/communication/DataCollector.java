@@ -36,7 +36,7 @@ public class DataCollector {
     private EbusReaderWriter ebusReaderWriter;
 
     @Getter
-    private MasterSlaveData masterSlaveData = new Tg1008B510Data();
+    private Tg1008B510Data tg1008B510Data = new Tg1008B510Data();
     private List<MasterSlaveData> masterSlaveDataList = List.of(new Tg1008B5110100Data(), new Tg1008B5110101Data(), new Tg1008B5110102Data());
     
     @Scheduled(fixedRateString = "${collector.scheduler.rate:10000}")
@@ -44,7 +44,7 @@ public class DataCollector {
     	Queue<MasterData> masterDataQueue = ebusReaderWriter.getMasterDataQueue();
     	masterDataQueue.clear();
         if (setterEnabled) {
-        	masterDataQueue.add(masterSlaveData);
+        	masterDataQueue.add(tg1008B510Data);
         }
         if (getterEnabled) {
             masterDataQueue.addAll(masterSlaveDataList);
@@ -55,8 +55,8 @@ public class DataCollector {
      * Setting MasterSlaveData.
      * @param masterSlaveData (Tg1008B510Data) telegram.
      */
-    public void sendDataImmidiately(MasterSlaveData masterSlaveData) {
-        this.masterSlaveData = masterSlaveData;
+    public void sendDataImmidiately(Tg1008B510Data masterSlaveData) {
+        this.tg1008B510Data = masterSlaveData;
     }
 
 }
