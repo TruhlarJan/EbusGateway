@@ -39,7 +39,7 @@ public class RoomControlUnitService {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-    
+
     @Async
     @EventListener
     public void handleFrame(Tg1008B510DataReadyEvent event) {
