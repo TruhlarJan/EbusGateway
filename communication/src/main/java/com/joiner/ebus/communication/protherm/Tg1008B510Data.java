@@ -64,6 +64,7 @@ public class Tg1008B510Data implements MasterSlaveData {
     private Date date;
   
     /**
+     * Constructor set actual master data.
      * Master byte M1 - M15
      * @param m8 M8 - Lead water target temperature
      * @param m9 M9 - Service water target temperature
@@ -79,10 +80,11 @@ public class Tg1008B510Data implements MasterSlaveData {
     }
 
     /**
-     * 
+     * Constructor set masterData, masterSlaveData and slaveData.
      * @param masterSlaveData
      */
     public Tg1008B510Data(byte[] masterSlaveData) {
+        this(masterSlaveData[M8_INDEX], masterSlaveData[M9_INDEX], masterSlaveData[M12_INDEX]);
         setMasterSlaveData(masterSlaveData);
         parseSlaveData(masterSlaveData);
         setDate(new Date());

@@ -26,7 +26,7 @@ import lombok.Getter;
 public class RoomControlUnitService {
 
     @Autowired
-    private Tg1008B510DataToRoomControlUnitDtoConverter converter1;
+    private Tg1008B510DataToRoomControlUnitDtoConverter converter;
     
     @Autowired
     private RoomControlUnitDtoToTg1008B510DataConverter converter2;
@@ -43,12 +43,12 @@ public class RoomControlUnitService {
     @Async
     @EventListener
     public void handleFrame(Tg1008B510DataReadyEvent event) {
-        roomControlUnitDto = converter1.convert(event.getData());
+        roomControlUnitDto = converter.convert(event.getData());
         eventPublisher.publishEvent(new RoomControlUnitMqttEvent(roomControlUnitDto));
     }
 
     public void setRoomControlUnit(RoomControlUnitDto roomControlUnitDtoStub) {
-        roomControlUnitDto = converter1.convert(dataCollector.getTg1008B510Data());
+        RoomControlUnitDto roomControlUnitDto = converter.convert(dataCollector.getTg1008B510Data());
         copyNonNullProperties(roomControlUnitDtoStub, roomControlUnitDto);
         dataCollector.sendDataImmidiately(converter2.convert(roomControlUnitDto));
     }
