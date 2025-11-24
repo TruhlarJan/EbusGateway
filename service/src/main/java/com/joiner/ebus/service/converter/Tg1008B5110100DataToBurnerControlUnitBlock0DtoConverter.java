@@ -28,8 +28,8 @@ public class Tg1008B5110100DataToBurnerControlUnitBlock0DtoConverter implements 
         burnerControlUnitBlock0Dto.setData(conversionService.convert(slaveData, String.class));
         burnerControlUnitBlock0Dto.setDateTime(OffsetDateTime.now());
         burnerControlUnitBlock0Dto.setFlueGasTemperature((gt2 + (gt1 * 0xFF)) / 10.0);
-        burnerControlUnitBlock0Dto.setWaterPressure(wp / 10.0);
-        burnerControlUnitBlock0Dto.setFlameBurningPower(bp / 2.0);
+        burnerControlUnitBlock0Dto.setWaterPressure((wp & 0xFF) / 10.0);
+        burnerControlUnitBlock0Dto.setFlameBurningPower((bp & 0xFF) / 2.0);
         return burnerControlUnitBlock0Dto;
     }
 
