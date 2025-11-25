@@ -24,8 +24,8 @@ public class Tg1008B5110102DataToBurnerControlUnitBlock2DtoConverter implements 
         BurnerControlUnitBlock2Dto burnerControlUnitBlock2Dto = new BurnerControlUnitBlock2Dto();
         burnerControlUnitBlock2Dto.setData(conversionService.convert(slaveData, String.class));
         burnerControlUnitBlock2Dto.setDateTime(OffsetDateTime.now());
-        burnerControlUnitBlock2Dto.setHeating(vv & 1);
-        burnerControlUnitBlock2Dto.setServiceWater((vv >> 1) & 1);
+        burnerControlUnitBlock2Dto.setHeatingEnabled(vv & 1);
+        burnerControlUnitBlock2Dto.setServiceWaterEnabled((vv >> 1) & 1);
         return burnerControlUnitBlock2Dto;
     }
 

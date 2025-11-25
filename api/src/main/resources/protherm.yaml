@@ -218,7 +218,7 @@ components:
         dateTime:
           type: string
           format: date-time    
-        flueGasTemperature:
+        primaryTemperature:
           type: double
         waterPressure:
           type: double
@@ -239,9 +239,9 @@ components:
           type: double
         serviceWaterTemperature:
           type: double
-        heating:
+        heatingOn:
           type: int
-        serviceWater:
+        serviceWaterOn:
           type: int
     
     BurnerControlUnitBlock2:
@@ -252,9 +252,9 @@ components:
         dateTime:
           type: string
           format: date-time    
-        heating:
+        heatingEnabled:
           type: int
-        serviceWater:
+        serviceWaterEnabled:
           type: int
 
     HeaterController:
@@ -265,7 +265,7 @@ components:
         dateTime:
           type: string
           format: date-time    
-        hotWaterCirculatingPump:
+        waterCirculatingPump:
           type: int
     
     FiringAutomat:

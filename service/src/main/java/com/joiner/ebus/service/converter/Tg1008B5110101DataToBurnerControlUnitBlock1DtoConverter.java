@@ -30,8 +30,8 @@ public class Tg1008B5110101DataToBurnerControlUnitBlock1DtoConverter implements 
         burnerControlUnitBlock1Dto.setLeadWaterTemperature((vt & 0xFF) / 2.0);
         burnerControlUnitBlock1Dto.setReturnWaterTemperature((nt & 0xFF) / 2.0);
         burnerControlUnitBlock1Dto.setServiceWaterTemperature((st & 0xFF) / 2.0);
-        burnerControlUnitBlock1Dto.setHeating(vv & 1);
-        burnerControlUnitBlock1Dto.setServiceWater((vv >> 2) & 1);
+        burnerControlUnitBlock1Dto.setHeatingOn(vv & 1);
+        burnerControlUnitBlock1Dto.setServiceWaterOn((vv >> 2) & 1);
 
         return burnerControlUnitBlock1Dto;
     }
