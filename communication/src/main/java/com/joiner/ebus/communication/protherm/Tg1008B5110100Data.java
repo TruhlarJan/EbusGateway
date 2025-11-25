@@ -46,10 +46,6 @@ public class Tg1008B5110100Data implements MasterSlaveData {
     @Getter
     @Setter
     private byte[] slaveData = new byte[SLAVE_SIZE];
-
-    @Getter
-    @Setter
-    private byte[] masterSlaveData;
     
     @Getter
     @Setter
@@ -68,8 +64,7 @@ public class Tg1008B5110100Data implements MasterSlaveData {
      * @param data
      */
     public Tg1008B5110100Data(byte[] masterSlaveData) {
-        setMasterSlaveData(masterSlaveData);
-        parseSlaveData(masterSlaveData);
+        parseMasterSlaveData(masterSlaveData);
         setDate(new Date());
     }
 

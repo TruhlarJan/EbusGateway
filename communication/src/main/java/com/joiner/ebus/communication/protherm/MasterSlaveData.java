@@ -30,30 +30,22 @@ public interface MasterSlaveData extends MasterData {
     void setSlaveData(byte[] slaveData);
 
     /**
-     * Returning master + slave data.
-     * @return Master + slave data
-     */
-    byte[] getMasterSlaveData();
-
-    /**
-     * Set master + slave data to the object.
-     * @param masterSlaveData
-     */
-    void setMasterSlaveData(byte[] masterSlaveData);
-
-    /**
      * Parsing slave data before setting it to the object.
      * @param slaveData
      */
-    default void parseSlaveData(byte[] masterSlaveData) {
+    default void parseMasterSlaveData(byte[] masterSlaveData) {
         if (masterSlaveData == null) {
             throw new IllegalArgumentException("masterSlaveData must not be null");
         }
 
         if (getMasterData().length + getSlaveData().length != masterSlaveData.length) {
-            throw new IllegalArgumentException("Length mismatch: expected " + getMasterSlaveData().length + " but got " + masterSlaveData.length
+            throw new IllegalArgumentException("Length mismatch: expected " + (getMasterData().length + getSlaveData().length) + " but got " + masterSlaveData.length
             );
         }
+
+        byte[] master = Arrays.copyOfRange(masterSlaveData, 0, getMasterData().length);
+        setMasterData(master);
+        
         byte[] slave = Arrays.copyOfRange(masterSlaveData, getMasterData().length, masterSlaveData.length);
         int crcResponsed = slave[slave.length - 1] & 0xFF;
         int crcComputed = EbusCrc.computeCrc(Arrays.copyOf(slave, slave.length - 1)) & 0xFF;
