@@ -67,7 +67,7 @@ public class MqttConfig {
 
     @Bean
     public MessageProducer inbound(MqttPahoClientFactory mqttClientFactory) {
-        String[] topics = new String[] {"protherm/roomControlUnit/#" };
+        String[] topics = new String[] {"protherm/roomControlUnit/+" };
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter(clientId + "-sub", mqttClientFactory, topics);
         adapter.setOutputChannel(mqttInboundChannel());
