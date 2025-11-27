@@ -16,6 +16,19 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Mock Protherm Ebus device for testing purposes. It generates spontaneous supported frames.
+ * It also responds to master requests by updating its internal state.
+ * The first spontaneous frame is treated as the authoritative device state.
+ * When a master request is received, the dynamic part of the request updates the authoritative state.
+ * Subsequent spontaneous frames include this updated state.
+ * The mock server listens on port 3333 and handles multiple clients concurrently.
+ * Each client connection spawns a dedicated thread for handling master requests and sending spontaneous frames.
+ * The spontaneous frames are sent in random order, with the authoritative state included in the mix.
+ * The server can be stopped gracefully by calling the stop() method.
+ * Source code has been generated AI.
+ * @author joiner
+ */
 @Service
 @Slf4j
 public class ProthermEbusMock {
@@ -190,12 +203,6 @@ public class ProthermEbusMock {
         for (int i = 0; i < tokens.length; i++)
             out[i] = (byte) Integer.parseInt(tokens[i], 16);
         return out;
-    }
-
-    private String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) sb.append(String.format("%02X ", b));
-        return sb.toString().trim();
     }
 
     private int indexOf(byte[] data, byte[] pattern) {
