@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.joiner</groupId>
     <artifactId>EbusGateway</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0-SNAPSHOT</version>
   </parent>
   <artifactId>communication</artifactId>
   <name>communication</name>
@@ -11,7 +11,7 @@
   	<dependency>
   		<groupId>com.joiner</groupId>
   		<artifactId>io-mock</artifactId>
-  		<version>1.4.0</version>
+  		<version>1.5.0-SNAPSHOT</version>
   	</dependency>
   </dependencies>
 </project>
