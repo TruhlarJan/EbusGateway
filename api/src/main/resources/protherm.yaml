@@ -181,17 +181,17 @@ components:
       type: object
       properties:
         roomControlUnit:
-          type: RoomControlUnit
+          $ref: '#/components/schemas/RoomControlUnit'
         burnerControlUnitBlock0:
-          type: BurnerControlUnitBlock0
+          $ref: '#/components/schemas/BurnerControlUnitBlock0'
         burnerControlUnitBlock1:
-          type: BurnerControlUnitBlock1
+          $ref: '#/components/schemas/BurnerControlUnitBlock1'
         burnerControlUnitBlock2:
-          type: BurnerControlUnitBlock2
+          $ref: '#/components/schemas/BurnerControlUnitBlock2'
         heaterController:
-          type: HeaterController
+          $ref: '#/components/schemas/HeaterController'
         firingAutomat:
-          type: FiringAutomat
+          $ref: '#/components/schemas/FiringAutomat'
 
     RoomControlUnit:
       type: object
@@ -202,13 +202,17 @@ components:
           type: string
           format: date-time    
         leadWaterTargetTemperature:
-          type: double
+          type: number
+          format: double
         serviceWaterTargetTemperature:
-          type: double
+          type: number
+          format: double
         leadWaterHeatingBlocked:
-          type: int
+          type: integer
+          format: int32
         serviceWaterHeatingBlocked:
-          type: int
+          type: integer
+          format: int32
 
     BurnerControlUnitBlock0:
       type: object
@@ -219,11 +223,14 @@ components:
           type: string
           format: date-time    
         primaryTemperature:
-          type: double
+          type: number
+          format: double
         waterPressure:
-          type: double
+          type: number
+          format: double
         flameBurningPower:
-          type: double
+          type: number
+          format: double
 
     BurnerControlUnitBlock1:
       type: object
@@ -234,15 +241,20 @@ components:
           type: string
           format: date-time    
         leadWaterTemperature:
-          type: double
+          type: number
+          format: double
         returnWaterTemperature:
-          type: double
+          type: number
+          format: double
         serviceWaterTemperature:
-          type: double
+          type: number
+          format: double
         heatingOn:
-          type: int
+          type: integer
+          format: int32
         serviceWaterOn:
-          type: int
+          type: integer
+          format: int32
     
     BurnerControlUnitBlock2:
       type: object
@@ -253,9 +265,11 @@ components:
           type: string
           format: date-time    
         heatingEnabled:
-          type: int
+          type: integer
+          format: int32
         serviceWaterEnabled:
-          type: int
+          type: integer
+          format: int32
 
     HeaterController:
       type: object
@@ -266,7 +280,8 @@ components:
           type: string
           format: date-time    
         waterCirculatingPump:
-          type: int
+          type: integer
+          format: int32
     
     FiringAutomat:
       type: object
@@ -277,7 +292,8 @@ components:
           type: string
           format: date-time    
         internalPump:
-          type: int
+          type: integer
+          format: int32
 
     Unknown:
       type: object
