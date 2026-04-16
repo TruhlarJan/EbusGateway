@@ -1,4 +1,4 @@
-package com.joiner.ebus;
+package com.joiner.ebus.communication.mock;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.springframework.stereotype.Service;
-
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,9 +26,8 @@ import lombok.extern.slf4j.Slf4j;
  * Source code has been generated AI.
  * @author joiner
  */
-@Service
 @Slf4j
-public class ProthermEbusMock {
+public class ProthermEbusMockServer {
 
     private static final int PORT = 3333;
     private final List<Socket> clients = new CopyOnWriteArrayList<>();
@@ -45,7 +41,7 @@ public class ProthermEbusMock {
     // prefix master requestu 10 08 B5 10 09 00
     private final byte[] PREFIX = hexToBytes("10 08 B5 10 09 00");
 
-    public ProthermEbusMock() {
+    public ProthermEbusMockServer() {
         String[] packets = {
             "10 08 B5 10 09 00 00 14 5A FF FF 05 FF 00 47 00 01 01 9A",
             "10 08 B5 11 01 00 88 00 08 49 02 0C 00 1F 10 00 80 2E",
@@ -62,11 +58,10 @@ public class ProthermEbusMock {
         }
     }
 
-    @PostConstruct
-    public void startServer() {
+    public void start() {
         new Thread(() -> {
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-                log.info("ProthermEbusMock listening on port {}", PORT);
+                log.info("ProthermEbusMockServer listening on port {}", PORT);
 
                 while (running) {
                     Socket client = serverSocket.accept();
@@ -217,10 +212,12 @@ public class ProthermEbusMock {
     }
 
     public void stop() {
+        log.info("Stopping ProthermEbusMockServer...");
         running = false;
         for (Socket client : clients) {
             try { client.close(); } catch (Exception ignored) {}
         }
         clients.clear();
+        log.info("ProthermEbusMockServer stopped.");
     }
 }
