@@ -3,6 +3,7 @@ target/
 .vscode/
 .metadata/
 **/META-INF/
+data/
 
 .classpath
 .project
