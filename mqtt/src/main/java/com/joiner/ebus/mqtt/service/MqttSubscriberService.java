@@ -2,6 +2,7 @@ package com.joiner.ebus.mqtt.service;
 
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.mqtt.support.MqttHeaders;
+import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class MqttSubscriberService implements MessageHandler {
 
     @Override
     @ServiceActivator(inputChannel = "mqttInboundChannel")
-    public void handleMessage(Message<?> message) {
+    public void handleMessage(@NonNull Message<?> message) {
         String topic = (String) message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC);
         String payload = (String) message.getPayload();
         // Loxone optimization
