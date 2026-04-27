@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -48,6 +49,9 @@ import lombok.Getter;
 public class RoomControlUnitService {
 
     private final Object lock = new Object();
+
+    @Value("${collector.scheduler.rate:10000}")
+    private long schedulerRate;
 
     @Autowired
     private Tg1008B510DataToRoomControlUnitDtoConverter converter;
@@ -103,7 +107,7 @@ public class RoomControlUnitService {
     public void setRoomControlUnit(RoomControlUnitDto roomControlUnitDtoStub) {
         RoomControlUnitDto snapshot;
         synchronized (lock) {
-            lastSetTime.set(System.currentTimeMillis());
+            lastSetTime.set(System.currentTimeMillis() + schedulerRate);
             roomControlUnitDtoStub.setDateTime(OffsetDateTime.now());
             copyNonNullProperties(roomControlUnitDtoStub, roomControlUnitDto);
             snapshot = roomControlUnitDto;
