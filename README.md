@@ -1,4 +1,4 @@
-## EbusGateway 1.4.0
+## EbusGateway 1.5.1
 Gateway between eBUS and MQTT for easy integration of Protherm boilers into a smart home.
 REST, MQTT supported. 
 
