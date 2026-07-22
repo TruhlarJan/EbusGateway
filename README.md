@@ -53,7 +53,7 @@ This makes it possible to:
 
 ## Key features
 
-- Spring Boot 3 / Java 17 multi-module application
+- Spring Boot 3 / Java 21 multi-module application
 - eBUS TCP client with reconnect and watchdog logic
 - REST API for reading supported values and updating selected room-control parameters
 - MQTT publisher for boiler data
@@ -169,7 +169,7 @@ Fields:
 
 ### Runtime
 
-- Java **17+**
+- Java **21+**
 - Maven **3.9+** recommended
 - Running MQTT broker, unless you use the `DEV` profile
 - Reachable eBUS TCP adapter, unless you use the `DEV` profile
