@@ -169,7 +169,7 @@ Fields:
 
 ### Runtime
 
-- Java **21+**
+- Java **17+**
 - Maven **3.9+** recommended
 - Running MQTT broker, unless you use the `DEV` profile
 - Reachable eBUS TCP adapter, unless you use the `DEV` profile
