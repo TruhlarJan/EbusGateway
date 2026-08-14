@@ -3,6 +3,7 @@ package com.joiner.ebus.mqtt;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,10 +51,16 @@ public class MqttConfig {
     @Bean
     MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
-        var options = new org.eclipse.paho.client.mqttv3.MqttConnectOptions();
-        options.setServerURIs(new String[]{brokerUrl});
+
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setServerURIs(new String[] { brokerUrl });
         options.setCleanSession(true);
+
+        // Automatically reconnect after connection loss
+        options.setAutomaticReconnect(true);
+
         factory.setConnectionOptions(options);
+
         return factory;
     }
 
@@ -68,10 +75,13 @@ public class MqttConfig {
     @Bean
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
     MessageHandler mqttOutbound(MqttPahoClientFactory mqttClientFactory) {
+
         MqttPahoMessageHandler handler = new MqttPahoMessageHandler(clientId + "-pub", mqttClientFactory);
+
         handler.setAsync(true);
         handler.setDefaultTopic(defaultTopic);
-        handler.setConverter(new DefaultPahoMessageConverter()); // JSON string bude ok
+        handler.setConverter(new DefaultPahoMessageConverter());
+
         return handler;
     }
 
@@ -85,13 +95,16 @@ public class MqttConfig {
 
     @Bean
     MessageProducer inbound(MqttPahoClientFactory mqttClientFactory) {
-        String[] topics = new String[] {"protherm/roomControlUnit/+" };
-        MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(clientId + "-sub", mqttClientFactory, topics);
+
+        String[] topics = new String[] { "protherm/roomControlUnit/+" };
+
+        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(clientId + "-sub",
+                mqttClientFactory, topics);
+
         adapter.setOutputChannel(mqttInboundChannel());
         adapter.setQos(1);
         adapter.setConverter(new DefaultPahoMessageConverter());
+
         return adapter;
     }
-
 }
