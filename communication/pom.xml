@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.joiner.ebus</groupId>
     <artifactId>EbusGateway</artifactId>
-    <version>1.5.2-SNAPSHOT</version>
+    <version>1.5.2</version>
   </parent>
   <artifactId>communication</artifactId>
   <name>communication</name>
