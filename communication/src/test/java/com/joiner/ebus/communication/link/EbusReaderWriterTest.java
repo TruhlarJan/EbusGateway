@@ -37,17 +37,13 @@ class EbusReaderWriterTest {
         ApplicationEventPublisher publisher = mock(ApplicationEventPublisher.class);
 
         TestMasterSlaveData parsedData = new TestMasterSlaveData();
-
         Object event = new Object();
 
         ReflectionTestUtils.setField(readerWriter, "dataParser", dataParser);
-
         ReflectionTestUtils.setField(readerWriter, "dataEventFactory", dataEventFactory);
-
         ReflectionTestUtils.setField(readerWriter, "publisher", publisher);
 
         when(dataParser.getMasterSlaveData(any(byte[].class))).thenReturn(parsedData);
-
         when(dataEventFactory.getDataReadyEvent(parsedData)).thenReturn(event);
 
         ReflectionTestUtils.invokeMethod(readerWriter, "processByte", 0x10);
@@ -72,9 +68,7 @@ class EbusReaderWriterTest {
         ApplicationEventPublisher publisher = mock(ApplicationEventPublisher.class);
 
         ReflectionTestUtils.setField(readerWriter, "dataParser", dataParser);
-
         ReflectionTestUtils.setField(readerWriter, "dataEventFactory", dataEventFactory);
-
         ReflectionTestUtils.setField(readerWriter, "publisher", publisher);
 
         when(dataParser.getMasterSlaveData(any(byte[].class))).thenReturn(null);
@@ -84,7 +78,6 @@ class EbusReaderWriterTest {
         assertArrayEquals(new byte[] { 0x22 }, getBuffer(readerWriter).toByteArray());
 
         verify(publisher, never()).publishEvent(any());
-
         verify(dataEventFactory, never()).getDataReadyEvent(any(MasterSlaveData.class));
     }
 
@@ -114,19 +107,15 @@ class EbusReaderWriterTest {
         ApplicationEventPublisher publisher = mock(ApplicationEventPublisher.class);
 
         TestMasterData parsedData = new TestMasterData();
-
         Object event = new Object();
 
         ReflectionTestUtils.setField(readerWriter, "dataParser", dataParser);
-
         ReflectionTestUtils.setField(readerWriter, "dataEventFactory", dataEventFactory);
-
         ReflectionTestUtils.setField(readerWriter, "publisher", publisher);
 
         getBuffer(readerWriter).writeBytes(new byte[] { 0x03, 0x64, (byte) 0xB5, 0x12, 0x02, 0x02 });
 
         when(dataParser.getMasterData(any(byte[].class))).thenReturn(parsedData);
-
         when(dataEventFactory.getDataReadyEvent(parsedData)).thenReturn(event);
 
         ReflectionTestUtils.invokeMethod(readerWriter, "processMasterData");
@@ -143,16 +132,15 @@ class EbusReaderWriterTest {
     }
 
     @Test
-    void processMasterData_whenParserReturnsNull_keepsBufferedBytes() {
+    void processMasterData_whenParserReturnsNull_resetsBuffer() {
         EbusReaderWriter readerWriter = newReaderWriter();
 
         DataParser dataParser = mock(DataParser.class);
         ApplicationEventPublisher publisher = mock(ApplicationEventPublisher.class);
 
-        byte[] bufferedFrame = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
+        byte[] bufferedFrame = { 0x03, 0x64, (byte) 0xB5, 0x12, 0x02, 0x02 };
 
         ReflectionTestUtils.setField(readerWriter, "dataParser", dataParser);
-
         ReflectionTestUtils.setField(readerWriter, "publisher", publisher);
 
         getBuffer(readerWriter).writeBytes(bufferedFrame);
@@ -161,20 +149,40 @@ class EbusReaderWriterTest {
 
         ReflectionTestUtils.invokeMethod(readerWriter, "processMasterData");
 
-        assertArrayEquals(bufferedFrame, getBuffer(readerWriter).toByteArray());
+        /*
+         * Even an unknown Master telegram must be discarded. Otherwise it could be
+         * concatenated with the next telegram.
+         */
+        assertEquals(0, getBuffer(readerWriter).size());
 
         verify(publisher, never()).publishEvent(any());
     }
 
     @Test
-    void sendMasterData_writesQueuedMasterData_toOutputStream() throws Exception {
+    void processMasterData_whenBufferIsEmpty_doesNothing() {
+        EbusReaderWriter readerWriter = newReaderWriter();
 
+        DataParser dataParser = mock(DataParser.class);
+        ApplicationEventPublisher publisher = mock(ApplicationEventPublisher.class);
+
+        ReflectionTestUtils.setField(readerWriter, "dataParser", dataParser);
+        ReflectionTestUtils.setField(readerWriter, "publisher", publisher);
+
+        ReflectionTestUtils.invokeMethod(readerWriter, "processMasterData");
+
+        verify(dataParser, never()).getMasterData(any(byte[].class));
+        verify(publisher, never()).publishEvent(any());
+
+        assertEquals(0, getBuffer(readerWriter).size());
+    }
+
+    @Test
+    void sendMasterData_writesQueuedMasterData_toOutputStream() throws Exception {
         EbusReaderWriter readerWriter = newReaderWriter();
 
         OutputStream out = mock(OutputStream.class);
 
         TestMasterData data = new TestMasterData();
-
         data.setMasterData(new byte[] { 0x10, 0x20, 0x30 });
 
         ReflectionTestUtils.setField(readerWriter, "out", out);
@@ -198,9 +206,7 @@ class EbusReaderWriterTest {
         EbusReaderWriter readerWriter = newReaderWriter();
 
         TestMasterData oldData = new TestMasterData();
-
         TestMasterData newData1 = new TestMasterData();
-
         TestMasterData newData2 = new TestMasterData();
 
         replaceQueue(readerWriter, List.of(oldData));
@@ -236,13 +242,11 @@ class EbusReaderWriterTest {
         ReflectionTestUtils.invokeMethod(readerWriter, "resetReceiveState");
 
         assertEquals(0, getBuffer(readerWriter).size());
-
         assertEquals(0, ReflectionTestUtils.getField(readerWriter, "synCount"));
     }
 
     @Test
     void shutdown_stopsReaderWriter_andClosesConnectionResources() throws Exception {
-
         EbusReaderWriter readerWriter = newReaderWriter();
 
         InputStream in = mock(InputStream.class);
@@ -250,11 +254,8 @@ class EbusReaderWriterTest {
         Socket socket = mock(Socket.class);
 
         ReflectionTestUtils.setField(readerWriter, "in", in);
-
         ReflectionTestUtils.setField(readerWriter, "out", out);
-
         ReflectionTestUtils.setField(readerWriter, "socket", socket);
-
         ReflectionTestUtils.setField(readerWriter, "running", true);
 
         readerWriter.shutdown();
