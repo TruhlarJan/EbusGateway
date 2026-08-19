@@ -18,11 +18,14 @@ public class Tg1008B5110102DataToBurnerControlUnitBlock2DtoConverter implements 
 
     @Override
     public BurnerControlUnitBlock2Dto convert(Tg1008B5110102Data source) {
+        byte[] masterData = source.getMasterData();
         byte[] slaveData = source.getSlaveData();
+        String data = String.format("%s  %s", conversionService.convert(masterData, String.class), conversionService.convert(slaveData, String.class));
+
         byte vv = slaveData[Tg1008B5110102Data.VV_INDEX];
 
         BurnerControlUnitBlock2Dto burnerControlUnitBlock2Dto = new BurnerControlUnitBlock2Dto();
-        burnerControlUnitBlock2Dto.setData(conversionService.convert(slaveData, String.class));
+        burnerControlUnitBlock2Dto.setData(data);
         burnerControlUnitBlock2Dto.setDateTime(OffsetDateTime.now());
         burnerControlUnitBlock2Dto.setHeatingEnabled(vv & 1);
         burnerControlUnitBlock2Dto.setServiceWaterEnabled((vv >> 1) & 1);

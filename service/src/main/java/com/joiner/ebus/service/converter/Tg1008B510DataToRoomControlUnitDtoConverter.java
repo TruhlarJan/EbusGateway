@@ -19,12 +19,15 @@ public class Tg1008B510DataToRoomControlUnitDtoConverter implements Converter<Tg
     @Override
     public RoomControlUnitDto convert(Tg1008B510Data source) {
         byte[] masterData = source.getMasterData();
+        byte[] slaveData = source.getSlaveData();
+        String data = String.format("%s  %s", conversionService.convert(masterData, String.class), conversionService.convert(slaveData, String.class));
+
         byte m8 = masterData[Tg1008B510Data.M8_INDEX];
         byte m9 = masterData[Tg1008B510Data.M9_INDEX];
         byte m12 = masterData[Tg1008B510Data.M12_INDEX];
 
         RoomControlUnitDto roomControlUnitDto = new RoomControlUnitDto();
-        roomControlUnitDto.setData(conversionService.convert(masterData, String.class));
+        roomControlUnitDto.setData(data);
         roomControlUnitDto.setDateTime(OffsetDateTime.now());
         roomControlUnitDto.setLeadWaterTargetTemperature((m8 & 0xFF) / 2.0);
         roomControlUnitDto.setServiceWaterTargetTemperature((m9 & 0xFF) / 2.0);
