@@ -353,15 +353,14 @@ public class EbusReaderWriter {
         }
 
         byte[] data = buffer.toByteArray();
-
         MasterData masterData = dataParser.getMasterData(data);
 
         if (masterData != null) {
-
             publisher.publishEvent(dataEventFactory.getDataReadyEvent(masterData));
-
-            buffer.reset();
         }
+        // SYN marks the end of the current Master telegram.
+        // Reset the buffer even if the telegram is unknown
+        buffer.reset();
     }
 
     /**
