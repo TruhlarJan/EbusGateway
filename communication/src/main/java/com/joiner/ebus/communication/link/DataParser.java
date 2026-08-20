@@ -32,9 +32,13 @@ public class DataParser {
 	        } else if (key == Tg1008B5110102Data.KEY) {
 	            return new Tg1008B5110102Data(data);
 	        } else {
+	            // UNKNOWN – unknown telegram longer or equal to 6
 	            return null;
 	        }
 		} catch (Exception e) {
+		    // INCOMPLETE – the telegram is shorter than the expected format
+		    // or
+		    // INVALID_CRC – the telegram has the correct length/structure, but the CRC does not match
 			return null;
 		}
 	}
@@ -47,9 +51,11 @@ public class DataParser {
 	         } else if (key == Tg0315B513Data.KEY) {
 	             return new Tg0315B513Data(data);
 	        } else {
+	            // UNKNOWN – unknown telegram longer or equal to 6
 	            return new TgUnknownData(data);
 	        }
 		} catch (Exception e) {
+		    // UNKNOWN – unknown telegram shorter than 6
 		    return new TgUnknownData(data);
 		}
 	}
