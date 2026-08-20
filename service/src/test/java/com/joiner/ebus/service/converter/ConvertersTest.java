@@ -60,11 +60,12 @@ class ConvertersTest {
         Tg1008B510DataToRoomControlUnitDtoConverter converter = withConversionService(new Tg1008B510DataToRoomControlUnitDtoConverter(), conversionService);
         Tg1008B510Data source = new Tg1008B510Data(97, 90, 5);
 
-        when(conversionService.convert(source.getMasterData(), String.class)).thenReturn("room-control");
+        when(conversionService.convert(source.getMasterData(), String.class)).thenReturn("master-data");
+        when(conversionService.convert(source.getSlaveData(), String.class)).thenReturn("slave-data");
 
         RoomControlUnitDto converted = converter.convert(source);
 
-        assertThat(converted.getData()).isEqualTo("room-control");
+        assertThat(converted.getData()).isEqualTo("master-data  slave-data");
         assertThat(converted.getDateTime()).isNotNull();
         assertThat(converted.getLeadWaterTargetTemperature()).isEqualTo(48.5);
         assertThat(converted.getServiceWaterTargetTemperature()).isEqualTo(45.0);
@@ -84,11 +85,12 @@ class ConvertersTest {
         slaveData[Tg1008B5110100Data.BP_INDEX] = 40;
         source.setSlaveData(slaveData);
 
-        when(conversionService.convert(slaveData, String.class)).thenReturn("block0");
+        when(conversionService.convert(source.getMasterData(), String.class)).thenReturn("master-data");
+        when(conversionService.convert(source.getSlaveData(), String.class)).thenReturn("slave-data");
 
         BurnerControlUnitBlock0Dto converted = converter.convert(source);
 
-        assertThat(converted.getData()).isEqualTo("block0");
+        assertThat(converted.getData()).isEqualTo("master-data  slave-data");
         assertThat(converted.getDateTime()).isNotNull();
         assertThat(converted.getPrimaryTemperature()).isCloseTo(25.7, within(0.0001));
         assertThat(converted.getWaterPressure()).isEqualTo(1.5);
@@ -107,11 +109,12 @@ class ConvertersTest {
         slaveData[Tg1008B5110101Data.VV_INDEX] = 0b0000_0101;
         source.setSlaveData(slaveData);
 
-        when(conversionService.convert(slaveData, String.class)).thenReturn("block1");
+        when(conversionService.convert(source.getMasterData(), String.class)).thenReturn("master-data");
+        when(conversionService.convert(source.getSlaveData(), String.class)).thenReturn("slave-data");
 
         BurnerControlUnitBlock1Dto converted = converter.convert(source);
 
-        assertThat(converted.getData()).isEqualTo("block1");
+        assertThat(converted.getData()).isEqualTo("master-data  slave-data");
         assertThat(converted.getDateTime()).isNotNull();
         assertThat(converted.getLeadWaterTemperature()).isEqualTo(25.0);
         assertThat(converted.getReturnWaterTemperature()).isEqualTo(30.0);
@@ -129,11 +132,12 @@ class ConvertersTest {
         slaveData[Tg1008B5110102Data.VV_INDEX] = 0b0000_0011;
         source.setSlaveData(slaveData);
 
-        when(conversionService.convert(slaveData, String.class)).thenReturn("block2");
+        when(conversionService.convert(source.getMasterData(), String.class)).thenReturn("master-data");
+        when(conversionService.convert(source.getSlaveData(), String.class)).thenReturn("slave-data");
 
         BurnerControlUnitBlock2Dto converted = converter.convert(source);
 
-        assertThat(converted.getData()).isEqualTo("block2");
+        assertThat(converted.getData()).isEqualTo("master-data  slave-data");
         assertThat(converted.getDateTime()).isNotNull();
         assertThat(converted.getHeatingEnabled()).isEqualTo(1);
         assertThat(converted.getServiceWaterEnabled()).isEqualTo(1);
