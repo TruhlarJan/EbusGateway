@@ -50,7 +50,7 @@ public class DataParser {
 	            return new TgUnknownData(data);
 	        }
 		} catch (Exception e) {
-			return null;
+		    return new TgUnknownData(data);
 		}
 	}
 
