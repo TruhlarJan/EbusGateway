@@ -36,8 +36,7 @@ public class DataCollector {
     private EbusReaderWriter ebusReaderWriter;
 
     @Getter
-    private volatile Tg1008B510Data tg1008B510Data =
-            new Tg1008B510Data();
+    private volatile Tg1008B510Data tg1008B510Data = new Tg1008B510Data();
 
     private final List<MasterSlaveData> masterSlaveDataList =
             List.of(
@@ -46,9 +45,8 @@ public class DataCollector {
                     new Tg1008B5110102Data()
             );
 
-    @Scheduled(fixedRateString = "${collector.scheduler.rate:10000}")
+    @Scheduled(fixedRateString = "${collector.scheduler.rate:8000}")
     public void sendData() {
-
         List<MasterData> data = new ArrayList<>();
 
         if (setterEnabled) {
