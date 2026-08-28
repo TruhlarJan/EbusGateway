@@ -129,7 +129,7 @@ class ConvertersTest {
         Tg1008B5110102DataToBurnerControlUnitBlock2DtoConverter converter = withConversionService(new Tg1008B5110102DataToBurnerControlUnitBlock2DtoConverter(), conversionService);
         Tg1008B5110102Data source = new Tg1008B5110102Data();
         byte[] slaveData = new byte[8];
-        slaveData[Tg1008B5110102Data.VV_INDEX] = 0b0000_0011;
+        slaveData[Tg1008B5110102Data.ENABLED_HSW_INDEX] = 0b0000_0011;
         source.setSlaveData(slaveData);
 
         when(conversionService.convert(source.getMasterData(), String.class)).thenReturn("master-data");

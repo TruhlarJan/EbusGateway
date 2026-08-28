@@ -22,13 +22,21 @@ public class Tg1008B5110102DataToBurnerControlUnitBlock2DtoConverter implements 
         byte[] slaveData = source.getSlaveData();
         String data = String.format("%s  %s", conversionService.convert(masterData, String.class), conversionService.convert(slaveData, String.class));
 
-        byte vv = slaveData[Tg1008B5110102Data.VV_INDEX];
+        byte enabledHSW = slaveData[Tg1008B5110102Data.ENABLED_HSW_INDEX];
+        byte minLWT = slaveData[Tg1008B5110102Data.MIN_LWT];
+        byte maxLWT = slaveData[Tg1008B5110102Data.MAX_LWT];
+        byte minSWT = slaveData[Tg1008B5110102Data.MIN_SWT];
+        byte maxSWT = slaveData[Tg1008B5110102Data.MAX_SWT];
 
         BurnerControlUnitBlock2Dto burnerControlUnitBlock2Dto = new BurnerControlUnitBlock2Dto();
         burnerControlUnitBlock2Dto.setData(data);
         burnerControlUnitBlock2Dto.setDateTime(OffsetDateTime.now());
-        burnerControlUnitBlock2Dto.setHeatingEnabled(vv & 1);
-        burnerControlUnitBlock2Dto.setServiceWaterEnabled((vv >> 1) & 1);
+        burnerControlUnitBlock2Dto.setHeatingEnabled(enabledHSW & 1);
+        burnerControlUnitBlock2Dto.setServiceWaterEnabled((enabledHSW >> 1) & 1);
+        burnerControlUnitBlock2Dto.setMinLeadWaterTemperature((minLWT & 0xFF) / 2.0);
+        burnerControlUnitBlock2Dto.setMaxLeadWaterTemperature((maxLWT & 0xFF) / 2.0);
+        burnerControlUnitBlock2Dto.setMinServiceWaterTemperature((minSWT & 0xFF) / 2.0);
+        burnerControlUnitBlock2Dto.setMaxServiceWaterTemperature((maxSWT & 0xFF) / 2.0);
         return burnerControlUnitBlock2Dto;
     }
 

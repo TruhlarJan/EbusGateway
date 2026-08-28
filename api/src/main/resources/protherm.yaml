@@ -270,6 +270,18 @@ components:
         serviceWaterEnabled:
           type: integer
           format: int32
+        minLeadWaterTemperature:
+            type: number
+            format: double
+        maxLeadWaterTemperature:
+          type: number
+          format: double
+        minServiceWaterTemperature:
+          type: number
+          format: double
+        maxServiceWaterTemperature:
+          type: number
+          format: double
 
     HeaterController:
       type: object
