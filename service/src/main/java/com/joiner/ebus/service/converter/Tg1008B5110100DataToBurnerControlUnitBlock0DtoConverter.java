@@ -26,6 +26,10 @@ public class Tg1008B5110100DataToBurnerControlUnitBlock0DtoConverter implements 
         byte gt1 = slaveData[Tg1008B5110100Data.GT1_INDEX];
         byte wp = slaveData[Tg1008B5110100Data.WP_INDEX];
         byte bp = slaveData[Tg1008B5110100Data.BP_INDEX];
+        byte s7 = slaveData[Tg1008B5110100Data.S7_INDEX];
+        byte s8 = slaveData[Tg1008B5110100Data.S8_INDEX];
+        byte s9 = slaveData[Tg1008B5110100Data.S9_INDEX];
+        byte s10 = slaveData[Tg1008B5110100Data.S10_INDEX];
 
         BurnerControlUnitBlock0Dto burnerControlUnitBlock0Dto = new BurnerControlUnitBlock0Dto();
         burnerControlUnitBlock0Dto.setData(data);
@@ -33,6 +37,10 @@ public class Tg1008B5110100DataToBurnerControlUnitBlock0DtoConverter implements 
         burnerControlUnitBlock0Dto.setPrimaryTemperature((gt2 + (gt1 * 0xFF)) / 10.0);
         burnerControlUnitBlock0Dto.setWaterPressure((wp & 0xFF) / 10.0);
         burnerControlUnitBlock0Dto.setFlameBurningPower((bp & 0xFF) / 2.0);
+        burnerControlUnitBlock0Dto.setS7(s7 & 0xFF);
+        burnerControlUnitBlock0Dto.setS8(s8 & 0xFF);
+        burnerControlUnitBlock0Dto.setS9(s9 & 0xFF);
+        burnerControlUnitBlock0Dto.setS10(s10 & 0xFF);
         return burnerControlUnitBlock0Dto;
     }
 

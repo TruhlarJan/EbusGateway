@@ -231,6 +231,18 @@ components:
         flameBurningPower:
           type: number
           format: double
+        s7:
+          type: integer
+          format: int32
+        s8:
+          type: integer
+          format: int32
+        s9:
+          type: integer
+          format: int32
+        s10:
+          type: integer
+          format: int32
 
     BurnerControlUnitBlock1:
       type: object
