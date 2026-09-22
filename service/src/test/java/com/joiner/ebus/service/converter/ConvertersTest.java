@@ -65,7 +65,7 @@ class ConvertersTest {
 
         RoomControlUnitDto converted = converter.convert(source);
 
-        assertThat(converted.getData()).isEqualTo("master-data  slave-data");
+        assertThat(converted.getData()).isEqualTo("master-data slave-data");
         assertThat(converted.getDateTime()).isNotNull();
         assertThat(converted.getLeadWaterTargetTemperature()).isEqualTo(48.5);
         assertThat(converted.getServiceWaterTargetTemperature()).isEqualTo(45.0);
@@ -90,7 +90,7 @@ class ConvertersTest {
 
         BurnerControlUnitBlock0Dto converted = converter.convert(source);
 
-        assertThat(converted.getData()).isEqualTo("master-data  slave-data");
+        assertThat(converted.getData()).isEqualTo("master-data slave-data");
         assertThat(converted.getDateTime()).isNotNull();
         assertThat(converted.getPrimaryTemperature()).isCloseTo(25.7, within(0.0001));
         assertThat(converted.getWaterPressure()).isEqualTo(1.5);
@@ -114,7 +114,7 @@ class ConvertersTest {
 
         BurnerControlUnitBlock1Dto converted = converter.convert(source);
 
-        assertThat(converted.getData()).isEqualTo("master-data  slave-data");
+        assertThat(converted.getData()).isEqualTo("master-data slave-data");
         assertThat(converted.getDateTime()).isNotNull();
         assertThat(converted.getLeadWaterTemperature()).isEqualTo(25.0);
         assertThat(converted.getReturnWaterTemperature()).isEqualTo(30.0);
@@ -137,7 +137,7 @@ class ConvertersTest {
 
         BurnerControlUnitBlock2Dto converted = converter.convert(source);
 
-        assertThat(converted.getData()).isEqualTo("master-data  slave-data");
+        assertThat(converted.getData()).isEqualTo("master-data slave-data");
         assertThat(converted.getDateTime()).isNotNull();
         assertThat(converted.getHeatingEnabled()).isEqualTo(1);
         assertThat(converted.getServiceWaterEnabled()).isEqualTo(1);

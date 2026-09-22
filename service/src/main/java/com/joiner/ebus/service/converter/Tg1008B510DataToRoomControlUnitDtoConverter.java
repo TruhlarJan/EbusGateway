@@ -21,7 +21,7 @@ public class Tg1008B510DataToRoomControlUnitDtoConverter implements Converter<Tg
     public RoomControlUnitDto convert(@NonNull Tg1008B510Data source) {
         byte[] masterData = source.getMasterData();
         byte[] slaveData = source.getSlaveData();
-        String data = String.format("%s  %s", conversionService.convert(masterData, String.class), conversionService.convert(slaveData, String.class));
+        String data = String.format("%s %s", conversionService.convert(masterData, String.class), conversionService.convert(slaveData, String.class));
 
         byte m8 = masterData[Tg1008B510Data.M8_INDEX];
         byte m9 = masterData[Tg1008B510Data.M9_INDEX];
