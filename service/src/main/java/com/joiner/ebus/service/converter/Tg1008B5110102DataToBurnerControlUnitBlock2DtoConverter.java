@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import com.joiner.ebus.communication.protherm.Tg1008B5110102Data;
@@ -17,10 +18,10 @@ public class Tg1008B5110102DataToBurnerControlUnitBlock2DtoConverter implements 
     private ConversionService conversionService;
 
     @Override
-    public BurnerControlUnitBlock2Dto convert(Tg1008B5110102Data source) {
+    public BurnerControlUnitBlock2Dto convert(@NonNull Tg1008B5110102Data source) {
         byte[] masterData = source.getMasterData();
         byte[] slaveData = source.getSlaveData();
-        String data = String.format("%s  %s", conversionService.convert(masterData, String.class), conversionService.convert(slaveData, String.class));
+        String data = String.format("%s %s", conversionService.convert(masterData, String.class), conversionService.convert(slaveData, String.class));
 
         byte enabledHSW = slaveData[Tg1008B5110102Data.ENABLED_HSW_INDEX];
         byte minLWT = slaveData[Tg1008B5110102Data.MIN_LWT];

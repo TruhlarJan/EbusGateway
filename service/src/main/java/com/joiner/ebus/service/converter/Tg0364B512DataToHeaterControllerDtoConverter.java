@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import com.joiner.ebus.communication.protherm.Tg0364B512Data;
@@ -19,7 +20,7 @@ public class Tg0364B512DataToHeaterControllerDtoConverter implements Converter<T
     private ConversionService conversionService;
     
     @Override
-    public HeaterControllerDto convert(Tg0364B512Data source) {
+    public HeaterControllerDto convert(@NonNull Tg0364B512Data source) {
         byte[] masterData = source.getMasterData();
 
         HeaterControllerDto heaterControllerDto = new HeaterControllerDto();

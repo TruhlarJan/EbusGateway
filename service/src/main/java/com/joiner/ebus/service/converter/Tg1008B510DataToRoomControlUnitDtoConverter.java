@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import com.joiner.ebus.communication.protherm.Tg1008B510Data;
@@ -17,7 +18,7 @@ public class Tg1008B510DataToRoomControlUnitDtoConverter implements Converter<Tg
     private ConversionService conversionService;
 
     @Override
-    public RoomControlUnitDto convert(Tg1008B510Data source) {
+    public RoomControlUnitDto convert(@NonNull Tg1008B510Data source) {
         byte[] masterData = source.getMasterData();
         byte[] slaveData = source.getSlaveData();
         String data = String.format("%s  %s", conversionService.convert(masterData, String.class), conversionService.convert(slaveData, String.class));
