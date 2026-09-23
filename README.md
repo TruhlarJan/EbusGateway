@@ -4,7 +4,7 @@ Gateway between **eBUS** and **MQTT/REST** for integrating **Protherm boilers** 
 
 The application connects to an eBUS TCP adapter, parses selected Protherm telegrams, exposes the current boiler state through a secured REST API, and republishes the same data to MQTT topics. It also supports writing selected room control values back to the boiler via REST or MQTT.
 
-Current version: **1.5.1**
+Current version: **1.6.0**
 
 ---
 
