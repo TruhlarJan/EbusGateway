@@ -200,7 +200,7 @@ class ConvertersTest {
         UnknownDto converted = converter.convert(source);
 
         assertThat(converted.getData()).isEqualTo("unknown");
-        assertThat(converted.getDateTime()).isNotNull();
+        assertThat(converted.getDateTimes()).isNotNull();
     }
 
     private static <T> T withConversionService(T converter, ConversionService conversionService) {

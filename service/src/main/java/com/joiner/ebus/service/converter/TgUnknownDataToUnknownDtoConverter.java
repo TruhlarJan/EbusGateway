@@ -1,7 +1,5 @@
 package com.joiner.ebus.service.converter;
 
-import java.time.OffsetDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
@@ -22,7 +20,6 @@ public class TgUnknownDataToUnknownDtoConverter implements Converter<TgUnknownDa
 
         UnknownDto unknownDto = new UnknownDto();
         unknownDto.setData(conversionService.convert(masterData, String.class));
-        unknownDto.setDateTime(OffsetDateTime.now());
         return unknownDto;
     }
 

@@ -1,6 +1,9 @@
 package com.joiner.ebus.service;
 
-import java.util.ArrayDeque;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -20,17 +23,35 @@ public class UnknownService {
 
     @Autowired
     private TgUnknownDataToUnknownDtoConverter converter;
-    
+
     @Getter
-    ArrayDeque<UnknownDto> unknowns = new ArrayDeque<>(CAPACITY);
+    private final Map<String, UnknownDto> unknowns = new LinkedHashMap<>();
 
     @Async
     @EventListener
     public void handleFrame(TgUnknownDataReadyEvent event) {
-        if (unknowns.size() == CAPACITY) {
-            unknowns.removeFirst();
-        }
-        unknowns.addLast(converter.convert(event.getData()));
-    }
 
+        UnknownDto dto = converter.convert(event.getData());
+        String data = dto.getData();
+
+        if (data == null) {
+            return;
+        }
+
+        UnknownDto existing = unknowns.get(data);
+
+        if (existing == null) {
+            if (unknowns.size() >= CAPACITY) {
+                String firstKey = unknowns.keySet().iterator().next();
+                unknowns.remove(firstKey);
+            }
+
+            dto.setDateTimes(new ArrayList<>());
+            dto.getDateTimes().add(OffsetDateTime.now());
+
+            unknowns.put(data, dto);
+        } else {
+            existing.getDateTimes().add(OffsetDateTime.now());
+        }
+    }
 }

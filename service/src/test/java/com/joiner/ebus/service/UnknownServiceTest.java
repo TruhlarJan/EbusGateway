@@ -31,15 +31,48 @@ class UnknownServiceTest {
     }
 
     @Test
-    void handleFrame_addsConvertedUnknownToQueue() {
+    void handleFrame_addsConvertedUnknown() {
         TgUnknownData data = mock(TgUnknownData.class);
         UnknownDto dto = new UnknownDto().data("unknown");
+
         when(converter.convert(data)).thenReturn(dto);
 
         service.handleFrame(dataEventFactory.new TgUnknownDataReadyEvent(data));
 
-        assertThat(service.getUnknowns()).containsExactly(dto);
+        assertThat(service.getUnknowns()).containsKey("unknown");
+
+        assertThat(service.getUnknowns().get("unknown")).isSameAs(dto);
+
+        assertThat(dto.getDateTimes()).hasSize(1);
+
         verify(converter).convert(data);
+    }
+
+    @Test
+    void handleFrame_whenSameTelegramIsReceived_addsAnotherDateTime() {
+        TgUnknownData data1 = mock(TgUnknownData.class, "unknown-data-1");
+        TgUnknownData data2 = mock(TgUnknownData.class, "unknown-data-2");
+
+        UnknownDto dto1 = new UnknownDto().data("unknown");
+
+        UnknownDto dto2 = new UnknownDto().data("unknown");
+
+        when(converter.convert(data1)).thenReturn(dto1);
+        when(converter.convert(data2)).thenReturn(dto2);
+
+        service.handleFrame(dataEventFactory.new TgUnknownDataReadyEvent(data1));
+        service.handleFrame(dataEventFactory.new TgUnknownDataReadyEvent(data2));
+
+        assertThat(service.getUnknowns()).hasSize(1).containsKey("unknown");
+
+        UnknownDto stored = service.getUnknowns().get("unknown");
+
+        assertThat(stored).isSameAs(dto1);
+
+        assertThat(stored.getDateTimes()).hasSize(2).allMatch(dateTime -> dateTime != null);
+
+        verify(converter).convert(data1);
+        verify(converter).convert(data2);
     }
 
     @Test
@@ -47,13 +80,31 @@ class UnknownServiceTest {
         for (int i = 0; i < 101; i++) {
             TgUnknownData data = mock(TgUnknownData.class, "unknown-data-" + i);
             UnknownDto dto = new UnknownDto().data("unknown-" + i);
+
             when(converter.convert(data)).thenReturn(dto);
 
             service.handleFrame(dataEventFactory.new TgUnknownDataReadyEvent(data));
         }
 
         assertThat(service.getUnknowns()).hasSize(100);
-        assertThat(service.getUnknowns().getFirst().getData()).isEqualTo("unknown-1");
-        assertThat(service.getUnknowns().getLast().getData()).isEqualTo("unknown-100");
+
+        assertThat(service.getUnknowns()).doesNotContainKey("unknown-0");
+
+        assertThat(service.getUnknowns()).containsKey("unknown-1").containsKey("unknown-100");
     }
+
+    @Test
+    void handleFrame_whenDataIsNull_doesNotAddUnknown() {
+        TgUnknownData data = mock(TgUnknownData.class);
+        UnknownDto dto = new UnknownDto().data(null);
+
+        when(converter.convert(data)).thenReturn(dto);
+
+        service.handleFrame(dataEventFactory.new TgUnknownDataReadyEvent(data));
+
+        assertThat(service.getUnknowns()).isEmpty();
+
+        verify(converter).convert(data);
+    }
+
 }

@@ -76,7 +76,7 @@ public class ProthermController implements DefaultApi {
 
     @Override
     public ResponseEntity<List<UnknownDto>> readUnknowns() {
-        return ResponseEntity.ok(new ArrayList<>(unknownService.getUnknowns()));
+        return ResponseEntity.ok(new ArrayList<>(unknownService.getUnknowns().values()));
     }
     
 }

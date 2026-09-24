@@ -324,7 +324,9 @@ components:
       properties:
         data:
           type: string
-        dateTime:
-          type: string
-          format: date-time    
+        dateTimes:
+          type: array
+          items:
+            type: string
+            format: date-time    
     

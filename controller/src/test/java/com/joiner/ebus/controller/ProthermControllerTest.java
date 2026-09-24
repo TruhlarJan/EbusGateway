@@ -11,15 +11,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayDeque;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joiner.ebus.model.BurnerControlUnitBlock0Dto;
@@ -69,18 +70,12 @@ class ProthermControllerTest {
 
         objectMapper = new ObjectMapper().findAndRegisterModules();
 
-        ProthermController controller = new ProthermController(
-                roomControlUnitService,
-                burnerControlUnitBlock0Service,
-                burnerControlUnitBlock1Service,
-                burnerControlUnitBlock2Service,
-                heaterControllerService,
-                firingAutomatService,
-                unknownService);
+        ProthermController controller = new ProthermController(roomControlUnitService, burnerControlUnitBlock0Service,
+                burnerControlUnitBlock1Service, burnerControlUnitBlock2Service, heaterControllerService,
+                firingAutomatService, unknownService);
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
-                .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
-                .build();
+                .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper)).build();
     }
 
     @Test
@@ -88,8 +83,7 @@ class ProthermControllerTest {
         RoomControlUnitDto dto = new RoomControlUnitDto().data("room-control");
         when(roomControlUnitService.getRoomControlUnitDto()).thenReturn(dto);
 
-        mockMvc.perform(get("/protherm/roomControlUnit"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/protherm/roomControlUnit")).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").value("room-control"));
 
@@ -100,10 +94,8 @@ class ProthermControllerTest {
     void updateRoomControlUnit_readsJsonBodyAndDelegatesToService() throws Exception {
         RoomControlUnitDto dto = new RoomControlUnitDto().data("updated-room-control");
 
-        mockMvc.perform(put("/protherm/roomControlUnit")
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isOk())
+        mockMvc.perform(put("/protherm/roomControlUnit").contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))).andExpect(status().isOk())
                 .andExpect(content().string(""));
 
         ArgumentCaptor<RoomControlUnitDto> captor = ArgumentCaptor.forClass(RoomControlUnitDto.class);
@@ -116,8 +108,7 @@ class ProthermControllerTest {
         BurnerControlUnitBlock0Dto dto = new BurnerControlUnitBlock0Dto().data("block0");
         when(burnerControlUnitBlock0Service.getBurnerControlUnitBlock0Dto()).thenReturn(dto);
 
-        mockMvc.perform(get("/protherm/burnerControlUnits/block0"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/protherm/burnerControlUnits/block0")).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").value("block0"));
 
@@ -129,8 +120,7 @@ class ProthermControllerTest {
         BurnerControlUnitBlock1Dto dto = new BurnerControlUnitBlock1Dto().data("block1");
         when(burnerControlUnitBlock1Service.getBurnerControlUnitBlock1Dto()).thenReturn(dto);
 
-        mockMvc.perform(get("/protherm/burnerControlUnits/block1"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/protherm/burnerControlUnits/block1")).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").value("block1"));
 
@@ -142,8 +132,7 @@ class ProthermControllerTest {
         BurnerControlUnitBlock2Dto dto = new BurnerControlUnitBlock2Dto().data("block2");
         when(burnerControlUnitBlock2Service.getBurnerControlUnitBlock2Dto()).thenReturn(dto);
 
-        mockMvc.perform(get("/protherm/burnerControlUnits/block2"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/protherm/burnerControlUnits/block2")).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").value("block2"));
 
@@ -155,8 +144,7 @@ class ProthermControllerTest {
         HeaterControllerDto dto = new HeaterControllerDto().data("heater-controller");
         when(heaterControllerService.getHeaterControllerDto()).thenReturn(dto);
 
-        mockMvc.perform(get("/protherm/heaterController"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/protherm/heaterController")).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").value("heater-controller"));
 
@@ -168,8 +156,7 @@ class ProthermControllerTest {
         FiringAutomatDto dto = new FiringAutomatDto().data("firing-automat");
         when(firingAutomatService.getFiringAutomatDto()).thenReturn(dto);
 
-        mockMvc.perform(get("/protherm/firingAutomat"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/protherm/firingAutomat")).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").value("firing-automat"));
 
@@ -180,17 +167,18 @@ class ProthermControllerTest {
     void readUnknowns_returnsJsonArray() throws Exception {
         UnknownDto first = new UnknownDto().data("first");
         UnknownDto second = new UnknownDto().data("second");
-        ArrayDeque<UnknownDto> unknowns = new ArrayDeque<>();
-        unknowns.add(first);
-        unknowns.add(second);
+
+        Map<String, UnknownDto> unknowns = new LinkedHashMap<>();
+        unknowns.put("first", first);
+        unknowns.put("second", second);
+
         when(unknownService.getUnknowns()).thenReturn(unknowns);
 
-        mockMvc.perform(get("/protherm/unknowns"))
-                .andExpect(status().isOk())
+        mockMvc.perform(get("/protherm/unknowns")).andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].data").value("first"))
-                .andExpect(jsonPath("$[1].data").value("second"));
+                .andExpect(jsonPath("$[0].data").value("first")).andExpect(jsonPath("$[1].data").value("second"));
 
         verify(unknownService).getUnknowns();
     }
+
 }
